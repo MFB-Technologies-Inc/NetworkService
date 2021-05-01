@@ -1,0 +1,25 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- develop
+
+pool:
+  vmImage: macos-latest
+
+steps:
+- script: swift package resolve
+  failOnStderr: true
+  displayName: 'swift package resolve'
+
+- script: swift build --build-tests
+  failOnStderr: true
+  displayName: 'swift build --build-tests'
+
+- script: swift test
+  # setting failOnStderr: true will cause failure
+  # because 'swift test' writes content to stderr
+#  failOnStderr: true
+  displayName: 'swift test'
