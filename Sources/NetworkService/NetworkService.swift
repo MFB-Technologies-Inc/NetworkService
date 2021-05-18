@@ -12,7 +12,7 @@ import Combine
 /// Provides methods for making network requests and processing the resulting responses
 public class NetworkService: NSObject {
     /// `NetworkService`'s error domain
-    public enum Failure: Error, Equatable {
+    public enum Failure: Error, Hashable {
         case url(URLResponse)
         case http(HTTPURLResponse)
         case cocoa(NSError)
