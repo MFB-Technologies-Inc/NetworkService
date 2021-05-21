@@ -8,8 +8,10 @@
 
 import Foundation
 
-extension NetworkService: URLSessionDelegate {
-    func getSession() -> URLSession {
+/// Base class for a configurable service as a `URLSessionDelegate`. Offers URLSession configuration in exchange for NSObject subclassing.
+open class ConfigurableNetworkService: NSObject {
+    // TODO: Move to AlignCommon. App specific implementation doesn't belong in the library
+    open func getSession() -> URLSession {
         let conn: URLSession = {
             let config = URLSessionConfiguration.ephemeral
             config.timeoutIntervalForRequest = 30.0
@@ -19,7 +21,8 @@ extension NetworkService: URLSessionDelegate {
         return conn
     }
 
-    public func urlSession(
+    // TODO: Move to AlignCommon. App specific implementation doesn't belong in the library
+    open func urlSession(
         _ session: URLSession,
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
@@ -55,3 +58,9 @@ extension NetworkService: URLSessionDelegate {
         completionHandler(.useCredential, credentials)
     }
 }
+
+// MARK: NetworkServiceClient Conformance
+extension ConfigurableNetworkService: NetworkServiceClient {}
+
+// MARK: URLSessionDelegate Conformance
+extension ConfigurableNetworkService: URLSessionDelegate {}

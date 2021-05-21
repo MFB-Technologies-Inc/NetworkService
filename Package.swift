@@ -10,7 +10,8 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "NetworkService",
-            targets: ["NetworkService"])
+            targets: ["NetworkService"]
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", from: "9.1.0")
@@ -20,7 +21,8 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "NetworkService",
-            dependencies: []),
+            dependencies: []
+        ),
         .testTarget(
             name: "NetworkServiceTests",
             dependencies: [
@@ -28,6 +30,14 @@ let package = Package(
                 .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
                 .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs")
             ]
+        ),
+        .target(
+            name: "NetworkServiceTestHelper",
+            dependencies: ["NetworkService"]
+        ),
+        .testTarget(
+            name: "NetworkServiceTestHelperTests",
+            dependencies: ["NetworkServiceTestHelper"]
         )
     ]
 )

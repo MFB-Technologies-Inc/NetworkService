@@ -26,4 +26,4 @@ public protocol CustomDecodable: Decodable {
 }
 
 /// Convenience protocol for conforming to `CustomEncodable` and `CustomDecodable`
-public protocol CustomCodable: CustomEncodable, CustomDecodable {}
+public protocol CustomCodable: CustomEncodable, CustomDecodable where CustomEncoder.Output == CustomDecoder.Input {}
