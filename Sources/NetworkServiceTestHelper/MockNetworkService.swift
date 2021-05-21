@@ -90,12 +90,10 @@ open class MockNetworkService: NetworkServiceClient {
         }
         let value: Output
         let encoder: Encoder
-        let decoder: Decoder
 
-        public init(_ value: Output, encoder: Encoder, decoder: Decoder) {
+        public init(_ value: Output, encoder: Encoder) {
             self.value = value
             self.encoder = encoder
-            self.decoder = decoder
         }
     }
 }
@@ -110,14 +108,7 @@ extension Data: MockOutput {
     }
 }
 
-// FIXME: The `output` implementation defined here does not automatically work when making a `CustomCodable` conforming type also conform to `MockOutput`. Manual conformance to `MockOutput` is required even though it shouldn't be.
-extension MockOutput where Self: CustomCodable, CustomEncoder.Output == Data {
-    var output: Result<Data, MockNetworkService.Failure> {
-        .success(try! Self.encoder.encode(self))
-    }
-}
-
-extension MockNetworkService.Failure: MockOutput, Codable {
+extension NetworkService.Failure: MockOutput {
     public var output: Result<Data, Self> {
         .failure(self)
     }
