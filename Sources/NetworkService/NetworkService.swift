@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 /// Provides methods for making network requests and processing the resulting responses
-public class NetworkService: NSObject {
+public final class NetworkService {
     /// `NetworkService`'s error domain
     public enum Failure: Error, Hashable {
         case url(URLResponse)
@@ -18,39 +18,7 @@ public class NetworkService: NSObject {
         case cocoa(NSError)
     }
 
-    // MARK: URLRequest
-    /// Start a `URLRequest`
-    /// - Parameter request: The request as a `URLRequest`
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    public func start<ResponseBody, Decoder>(
-        _ request: URLRequest,
-        with decoder: Decoder
-    ) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data {
-        return getSession().dataTaskPublisher(for: request)
-            .tryHTTPMap()
-            .decode(with: decoder)
-            .mapToNetworkError()
-            .eraseToAnyPublisher()
-    }
-
-    /// Start a `URLRequest`
-    /// - Parameter request: The request as a `URLRequest`
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    public func start<ResponseBody>(_ request: URLRequest) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: CustomDecodable, ResponseBody.CustomDecoder.Input == Data {
-        start(request, with: ResponseBody.decoder)
-    }
-
-    /// Start a `URLRequest`
-    /// - Parameter request: The request as a `URLRequest`
-    /// - Returns: Type erased publisher with output as `Data` and `NetworkService`'s error domain for failure
-    public func start(_ request: URLRequest) -> AnyPublisher<Data, Failure> {
-        getSession().dataTaskPublisher(for: request)
-            .tryHTTPMap()
-            .mapToNetworkError()
-            .eraseToAnyPublisher()
-    }
+    public init() {}
 }
 
 // MARK: NetworkService+NetworkServiceClient

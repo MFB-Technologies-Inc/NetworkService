@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-extension NetworkService {
+extension NetworkServiceClient {
     // MARK: POST
     /// - Parameters:
     ///   - body: The body of the request as `Data`
