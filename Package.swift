@@ -11,10 +11,15 @@ let package = Package(
         .library(
             name: "NetworkService",
             targets: ["NetworkService"]
+        ),
+        .library(
+            name: "NetworkServiceTestHelper",
+            targets: ["NetworkServiceTestHelper"]
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", from: "9.1.0")
+        .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", from: "9.1.0"),
+        .package(name: "combine-schedulers", url: "https://github.com/pointfreeco/combine-schedulers.git", .upToNextMajor(from: "0.5.0"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -33,11 +38,11 @@ let package = Package(
         ),
         .target(
             name: "NetworkServiceTestHelper",
-            dependencies: ["NetworkService"]
+            dependencies: ["NetworkService", .product(name: "CombineSchedulers", package: "combine-schedulers")]
         ),
         .testTarget(
             name: "NetworkServiceTestHelperTests",
-            dependencies: ["NetworkServiceTestHelper"]
+            dependencies: ["NetworkServiceTestHelper", .product(name: "CombineSchedulers", package: "combine-schedulers")]
         )
     ]
 )

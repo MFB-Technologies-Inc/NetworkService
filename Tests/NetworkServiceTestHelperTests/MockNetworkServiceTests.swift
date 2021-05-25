@@ -8,11 +8,12 @@
 import Foundation
 import XCTest
 import Combine
+import CombineSchedulers
 import NetworkServiceTestHelper
 import NetworkService
 
 struct MockingBird: CustomCodable, MockOutput, Equatable {
-    var output: Result<Data, MockNetworkService.Failure> {
+    var output: Result<Data, NetworkService.Failure> {
         .success(try! Self.encoder.encode(self))
     }
     
@@ -23,11 +24,18 @@ struct MockingBird: CustomCodable, MockOutput, Equatable {
 }
 
 final class NetworkServiceTestHelper: XCTestCase {
+    typealias Failure = MockNetworkService<AnySchedulerOf<DispatchQueue>>.Failure
+    
     var cancellables = [AnyCancellable]()
+    let scheduler: AnySchedulerOf<DispatchQueue> = DispatchQueue.global(qos: .userInteractive).eraseToAnyScheduler()
+
+    override func tearDown() {
+        self.cancellables.forEach { $0.cancel() }
+    }
 
     func testQueueInfiniteRepeat() throws {
-        let mock = MockNetworkService()
-        mock.outputs = [MockNetworkService.RepeatResponse.repeatInfinite(MockingBird(chirp: true))]
+        let mock = MockNetworkService(scheduler: scheduler)
+        mock.outputs = [RepeatResponse.repeatInfinite(MockingBird(chirp: true))]
         for _ in 0..<5 {
             let receiveOutput = expectation(description: "Async output received")
             mock.start(URLRequest(url: URL(string: "/")!))
@@ -38,10 +46,10 @@ final class NetworkServiceTestHelper: XCTestCase {
                     receiveOutput.fulfill()
                 }
                 .store(in: &self.cancellables)
-            wait(for: [receiveOutput], timeout: 1)
+            wait(for: [receiveOutput], timeout: 2)
         }
         assert(mock.outputs.count == 1, "Queued outputs should only be one element.")
-        let queuedOutput = try XCTUnwrap(mock.outputs.first as? MockNetworkService.RepeatResponse)
+        let queuedOutput = try XCTUnwrap(mock.outputs.first as? RepeatResponse)
         switch queuedOutput {
         case .repeat:
             XCTFail("Queued output is wrong value")
@@ -51,26 +59,26 @@ final class NetworkServiceTestHelper: XCTestCase {
     }
 
     func testQueueFiniteRepeat() throws {
-        let mock = MockNetworkService()
-        mock.outputs = [MockNetworkService.RepeatResponse.repeat(MockingBird(chirp: true), count: 5)]
+        let mock = MockNetworkService(scheduler: scheduler)
+        mock.outputs = [RepeatResponse.repeat(MockingBird(chirp: true), count: 5)]
         for _ in 0..<5 {
             let receiveOutput = expectation(description: "Async output received")
             mock.start(URLRequest(url: URL(string: "/")!))
                 .decode(type: MockingBird.self, decoder: JSONDecoder())
                 .assertNoFailure()
                 .sink { output in
-                    assert(output == MockingBird(chirp: true), "Received output matches expected for very many interations")
+                    assert(output == MockingBird(chirp: true), "Received output matches expected for very many iterations")
                     receiveOutput.fulfill()
                 }
                 .store(in: &self.cancellables)
-            wait(for: [receiveOutput], timeout: 1)
+            wait(for: [receiveOutput], timeout: 2)
         }
         assert(mock.outputs.isEmpty, "Output queue is empty after the specified number of repititions")
     }
 
     func testFiniteDelay() throws {
-        let mock = MockNetworkService()
-        mock.delay = MockNetworkService.Delay.seconds(2)
+        let mock = MockNetworkService(scheduler: scheduler)
+        mock.delay = Delay.seconds(2)
         mock.outputs = [MockingBird(chirp: true)]
         let receiveOutput = expectation(description: "Async output received")
         let startTime = Date()
@@ -89,8 +97,8 @@ final class NetworkServiceTestHelper: XCTestCase {
     }
 
     func testInfiniteDelay() throws {
-        let mock = MockNetworkService()
-        mock.delay = MockNetworkService.Delay.infinite
+        let mock = MockNetworkService(scheduler: scheduler)
+        mock.delay = Delay.infinite
         mock.outputs = [MockingBird(chirp: true)]
         let receiveOutput = expectation(description: "Async output received")
         receiveOutput.isInverted = true

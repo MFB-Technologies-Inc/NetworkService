@@ -27,3 +27,23 @@ public protocol CustomDecodable: Decodable {
 
 /// Convenience protocol for conforming to `CustomEncodable` and `CustomDecodable`
 public protocol CustomCodable: CustomEncodable, CustomDecodable where CustomEncoder.Output == CustomDecoder.Input {}
+
+extension Array: CustomEncodable where Element: CustomEncodable {
+    public static var encoder: Element.CustomEncoder { Element.encoder }
+}
+
+extension Array: CustomDecodable where Element: CustomDecodable {
+    public static var decoder: Element.CustomDecoder { Element.decoder }
+}
+
+extension Array: CustomCodable where Element: CustomCodable {}
+
+extension Set: CustomEncodable where Element: CustomEncodable {
+    public static var encoder: Element.CustomEncoder { Element.encoder }
+}
+
+extension Set: CustomDecodable where Element: CustomDecodable {
+    public static var decoder: Element.CustomDecoder { Element.decoder }
+}
+
+extension Set: CustomCodable where Element: CustomCodable {}
