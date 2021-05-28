@@ -8,8 +8,8 @@
 import Foundation
 
 extension NetworkServiceClient {
-    /// Placeholder for `getSession` since it's needed in `ConfigurableNetworkService`
-    func getSession() -> URLSession {
+    /// Default implementation of `getSession` that returns the `shared` instance
+    public func getSession() -> URLSession {
         URLSession.shared
     }
 }

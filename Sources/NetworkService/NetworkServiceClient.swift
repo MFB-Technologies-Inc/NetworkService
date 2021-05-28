@@ -14,6 +14,10 @@ public protocol NetworkServiceClient {
     /// `NetworkService`'s error domain
     typealias Failure = NetworkService.Failure
 
+    // MARK: Get Session
+    /// - Returns: Configured URLSession
+    func getSession() -> URLSession
+
     // MARK: DELETE
     /// - Parameters:
     ///   - url: The destination for the request
