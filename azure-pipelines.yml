@@ -21,8 +21,8 @@ steps:
     organization: 'mfbtech'
     scannerMode: 'CLI'
     configMode: 'manual'
-    cliProjectKey: 'MFBTech_Syzygy-iOS'
-    cliProjectName: 'Syzygy iOS'
+    cliProjectKey: 'MFBTech_NetworkService'
+    cliProjectName: 'NetworkService'
     cliSources: '.'
     extraProperties: | 
       sonar.c.file.suffixes=-
