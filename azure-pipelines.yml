@@ -42,3 +42,7 @@ steps:
   # because 'swift test' writes content to stderr
 #  failOnStderr: true
   displayName: 'swift test'
+- task: SonarCloudAnalyze@1
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
