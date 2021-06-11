@@ -10,6 +10,25 @@ pool:
   vmImage: macos-latest
 
 steps:
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.x'
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'mfbtech'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'MFBTech_NetworkService'
+    cliProjectName: 'NetworkService'
+    cliSources: '.'
+    extraProperties: | 
+      sonar.c.file.suffixes=-
+      sonar.cpp.file.suffixes=-
+      sonar.objc.file.suffixes=-
+
 - script: swift package resolve
   failOnStderr: true
   displayName: 'swift package resolve'
@@ -23,3 +42,7 @@ steps:
   # because 'swift test' writes content to stderr
 #  failOnStderr: true
   displayName: 'swift test'
+- task: SonarCloudAnalyze@1
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
