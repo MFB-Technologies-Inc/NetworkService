@@ -5,6 +5,9 @@
 //  Created by Andrew Roan on 4/20/21.
 //  Copyright © 2021 MFB Technologies. All rights reserved.
 //
+//  This source code is licensed under the MIT license found in the
+//  LICENSE file in the root directory of this source tree.
+//
 
 import Foundation
 
@@ -32,12 +35,10 @@ extension HTTPURLResponse.StatusCode {
     /// Range of status codes for informational response - RFC 2616, RFC 7231
     public static let informational = 100...199
     // MARK: Unused Informational
-    /*
      static let `continue` = 100
      static let switchingProtocol = 101
      static let processing = 102
      static let earlyHints = 103
-     */
 
     // MARK: Successful
     /// Range of status codes for successful response - RFC 2616, RFC 7231
@@ -46,7 +47,6 @@ extension HTTPURLResponse.StatusCode {
     public static let ok = 200
     public static let created = 201
     // MARK: Unused Successful
-    /*
     static let accepted = 202
     static let nonAutoritativeInformation = 203
     static let noContent = 204
@@ -55,24 +55,20 @@ extension HTTPURLResponse.StatusCode {
     static let multiStatus = 207
     static let alreadyReported = 208
     static let imUsed = 226
-     */
 
     // MARK: Redirect
     /// Range of status codes for redirect response - RFC 2616, RFC 7231
     public static let redirect = 300...399
     // MARK: Unused Redirect
-    /*
     static let multipleChoice = 300
     static let movedPermanently = 301
     static let found = 302
     static let seeOther = 303
     static let notModified = 304
-    @available(*, deprecated: *)
     static let useProxy = 305
     static let unused = 306
     static let temporaryRedirect = 307
     static let permanentRedirect = 308
-     */
 
     // MARK: Client Error
     /// Range of status codes for client error response - RFC 2616, RFC 7231
@@ -80,7 +76,6 @@ extension HTTPURLResponse.StatusCode {
     public static let badRequest = 400
     public static let forbidden = 403
     // MARK: Unused Client Error
-    /*
      static let unauthorized = 401
      static let paymentRequired = 402
      static let notFound = 404
@@ -108,13 +103,11 @@ extension HTTPURLResponse.StatusCode {
      static let tooManyRequests = 429
      static let requestHeaderFieldsTooLarge = 431
      static let unavailableForLegalReasons = 451
-     */
 
     // MARK: Server Error
     /// Range of status codes for server error response - RFC 2616, RFC 7231
     public static let serverError = 500...599
     // MARK: Unused Server Error
-    /*
      static let internalServerError = 500
      static let notImplemented = 501
      static let badGateway = 502
@@ -126,5 +119,4 @@ extension HTTPURLResponse.StatusCode {
      static let loopDetected = 508
      static let notExtended = 510
      static let networkAuthenticationRequired = 511
-     */
 }

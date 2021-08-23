@@ -5,6 +5,9 @@
 //  Created by Andrew Roan on 4/22/21.
 //  Copyright © 2021 MFB Technologies. All rights reserved.
 //
+//  This source code is licensed under the MIT license found in the
+//  LICENSE file in the root directory of this source tree.
+//
 
 import Foundation
 import Combine
