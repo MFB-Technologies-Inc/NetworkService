@@ -3,7 +3,7 @@
 Reactive wrapper for URLSession using Combine. At its core, the library consist of the `NetworkServiceClient` protocol along with a minimal implementation `NetworkService`.
 
 ### CustomCodable
-A notable convenience the library provides is the `CustomCodable` protocol that enables easy encoding and decoding of conforming types. The protocol associates a `TopLevelEncoder` and `TopLevelDecoder` with a given type so that it is used by the library without explicitely passing it as a parameter. Additionally, `CustomEncodable` and `CustomDecodable` are included.
+A notable convenience the library provides is the `CustomCodable` protocol that enables easy encoding and decoding of conforming types. The protocol associates a `TopLevelEncoder` and `TopLevelDecoder` with a given type so that it is used by the library without explicitly passing it as a parameter. Additionally, `CustomEncodable` and `CustomDecodable` are included.
 
 ### Basic Usage
 ```swift
