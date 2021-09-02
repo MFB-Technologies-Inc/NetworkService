@@ -117,7 +117,7 @@ public protocol MockOutput {
 }
 
 extension MockOutput where Self: CustomEncodable, CustomEncoder.Output == Data {
-    var output: Result<Data, NetworkService.Failure> {
+    public var output: Result<Data, NetworkService.Failure> {
         let data = try! Self.encoder.encode(self)
         return .success(data)
     }
