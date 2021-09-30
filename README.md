@@ -1,20 +1,64 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# NetworkService
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+Reactive wrapper for URLSession using Combine. At its core, the library consist of the `NetworkServiceClient` protocol along with a minimal implementation `NetworkService`.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+### CustomCodable
+A notable convenience the library provides is the `CustomCodable` protocol that enables easy encoding and decoding of conforming types. The protocol associates a `TopLevelEncoder` and `TopLevelDecoder` with a given type so that it is used by the library without explicitly passing it as a parameter. Additionally, `CustomEncodable` and `CustomDecodable` are included.
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+### Basic Usage
+```swift
+import NetworkService
+let networkService = NetworkService()
+let url = URL(string: "http://www.foobar.com")!
+struct Foo: CustomCodable {
+    static var encoder: JSONEncoder { JSONEncoder() }
+    static var decoder: JSONDecoder { JSONDecoder() }
+    let bar: Int
+}
+let foo = Foo(bar: 0)
+```
+#### GET
+```swift
+let publisher: AnyPublisher<Foo, Failuer> = networkService.get(url)
+let cancellable = publisher.assertNoFailure().sink { foo in
+    print(foo.bar)
+}
+```
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+#### POST
+```swift
+let publisher: AnyPublisher<Foo, Failuer> = networkService.post(foo, to: url)
+let cancellable = publisher.assertNoFailure().sink { foo in
+    print(foo.bar)
+}
+```
+
+#### PUT
+```swift
+let publisher: AnyPublisher<Foo, Failuer> = networkService.put(foo, to: url)
+let cancellable = publisher.assertNoFailure().sink { foo in
+    print(foo.bar)
+}
+```
+
+#### DELETE
+```swift
+let publisher: AnyPublisher<Foo, Failuer> = networkService.get(url)
+let cancellable = publisher.assertNoFailure().sink { _ in }
+```
+
+#### Start
+```swift
+var request = URLRequest(url: url)
+request.method = .GET
+let publisher: AnyPublisher<Foo, Failuer> = networkService.start(request)
+let cancellable = publisher.assertNoFailure().sink { foo in
+    print(foo.bar)
+}
+```
+## NetworkServiceTestHelper
+
+Provides `MockNetworkService` which is an implementation of `NetworkServiceClient` for testing. Supports defining set output values for all network functions, repeating values, and delaying responses.
+
+## Installation
+ Currently, only Swift Package Manager is supported.
