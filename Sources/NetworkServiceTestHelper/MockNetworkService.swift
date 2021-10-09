@@ -28,9 +28,9 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
     }
 
     /// Manages the output queue and returns the new value for reach iteration.
-    private func queue() -> MockOutput {
+    private func queue() throws -> MockOutput {
         guard outputs.count > 0 else {
-            fatalError("No outputs queued")
+            throw Errors.noOutputQueued
         }
         let next = outputs.removeFirst()
         if let repeated = next as? RepeatResponse {
@@ -48,7 +48,13 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
 
     /// Replaces default implementation from protocol. All `NetworkService` functions should eventually end up in this version of `start`. Delay and repeat are handled here.
     public func start(_ request: URLRequest) -> AnyPublisher<Data, Failure> {
-        let next = queue()
+        let next: MockOutput
+        do {
+            next = try queue()
+        } catch {
+            return Fail(error: .cocoa(error as NSError))
+                .eraseToAnyPublisher()
+        }
         switch delay {
         case .infinite, .seconds:
             return next.output.publisher
@@ -63,6 +69,10 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
             // It works better to not add delay for `none`.
             return next.output.publisher.eraseToAnyPublisher()
         }
+    }
+
+    enum Errors: Error, Equatable {
+        case noOutputQueued
     }
 }
 
