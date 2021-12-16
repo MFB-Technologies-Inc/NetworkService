@@ -32,7 +32,7 @@ extension NetworkServiceClient {
     /// - Parameter request: The request as a `URLRequest`
     /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
     public func start<ResponseBody>(_ request: URLRequest) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: CustomDecodable, ResponseBody.CustomDecoder.Input == Data {
+    where ResponseBody: TopLevelDecodable, ResponseBody.Decoder.Input == Data {
         start(request, with: ResponseBody.decoder)
     }
 

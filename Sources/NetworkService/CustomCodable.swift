@@ -1,5 +1,5 @@
 //
-//  CustomCodable.swift
+//  TopLevelCodable.swift
 //  NetworkService
 //
 //  Created by Andrew Roan on 4/23/21.
@@ -13,40 +13,53 @@ import Foundation
 import Combine
 
 /// Associates a default `TopLevelEncoder` type with a given type
-public protocol CustomEncodable: Encodable {
-    associatedtype CustomEncoder: TopLevelEncoder
+public protocol TopLevelEncodable: Encodable {
+    associatedtype Encoder: TopLevelEncoder
+    @available(*, unavailable, renamed: "Encoder")
+    typealias CustomEncoder = Encoder
 
     /// The default `TopLevelEncoder` for the conforming type
-    static var encoder: CustomEncoder { get }
+    static var encoder: Encoder { get }
 }
+
+@available(*, unavailable, renamed: "TopLevelEncodable")
+public typealias CustomEncodable = TopLevelEncodable
 
 /// Associates a default `TopLevelDecoder` type with a given type
-public protocol CustomDecodable: Decodable {
-    associatedtype CustomDecoder: TopLevelDecoder
+public protocol TopLevelDecodable: Decodable {
+    associatedtype Decoder: TopLevelDecoder
+    @available(*, unavailable, renamed: "Encoder")
+    typealias CustomDecoder = Decoder
 
     /// The default `TopLevelDecoder` for the conforming type
-    static var decoder: CustomDecoder { get }
+    static var decoder: Decoder { get }
 }
 
-/// Convenience protocol for conforming to `CustomEncodable` and `CustomDecodable`
-public protocol CustomCodable: CustomEncodable, CustomDecodable where CustomEncoder.Output == CustomDecoder.Input {}
+@available(*, unavailable, renamed: "TopLevelDecodable")
+public typealias CustomDecodable = TopLevelDecodable
 
-extension Array: CustomEncodable where Element: CustomEncodable {
-    public static var encoder: Element.CustomEncoder { Element.encoder }
+/// Convenience protocol for conforming to `TopLevelEncodable` and `TopLevelDecodable`
+public protocol TopLevelCodable: TopLevelEncodable, TopLevelDecodable where Encoder.Output == Decoder.Input {}
+
+@available(*, unavailable, renamed: "TopLevelCodable")
+public typealias CustomCodable = TopLevelCodable
+
+extension Array: TopLevelEncodable where Element: TopLevelEncodable {
+    public static var encoder: Element.Encoder { Element.encoder }
 }
 
-extension Array: CustomDecodable where Element: CustomDecodable {
-    public static var decoder: Element.CustomDecoder { Element.decoder }
+extension Array: TopLevelDecodable where Element: TopLevelDecodable {
+    public static var decoder: Element.Decoder { Element.decoder }
 }
 
-extension Array: CustomCodable where Element: CustomCodable {}
+extension Array: TopLevelCodable where Element: TopLevelCodable {}
 
-extension Set: CustomEncodable where Element: CustomEncodable {
-    public static var encoder: Element.CustomEncoder { Element.encoder }
+extension Set: TopLevelEncodable where Element: TopLevelEncodable {
+    public static var encoder: Element.Encoder { Element.encoder }
 }
 
-extension Set: CustomDecodable where Element: CustomDecodable {
-    public static var decoder: Element.CustomDecoder { Element.decoder }
+extension Set: TopLevelDecodable where Element: TopLevelDecodable {
+    public static var decoder: Element.Decoder { Element.decoder }
 }
 
-extension Set: CustomCodable where Element: CustomCodable {}
+extension Set: TopLevelCodable where Element: TopLevelCodable {}
