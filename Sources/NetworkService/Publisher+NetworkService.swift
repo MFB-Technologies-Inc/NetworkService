@@ -1,16 +1,13 @@
+// Publisher+NetworkService.swift
+// NetworkService
 //
-//  Publisher+NetworkService.swift
-//  NetworkService
+// Copyright © 2021 MFB Technologies, Inc. All rights reserved.
 //
-//  Created by Andrew Roan on 4/20/21.
-//  Copyright © 2021 MFB Technologies, Inc. All rights reserved.
-//
-//  This source code is licensed under the MIT license found in the
-//  LICENSE file in the root directory of this source tree.
-//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
-import Foundation
 import Combine
+import Foundation
 
 extension Publisher where Output == URLSession.DataTaskPublisher.Output {
     /// Casts and unwraps a `URLSession.DataTaskPublisher.Output` while ensuring the
@@ -18,7 +15,7 @@ extension Publisher where Output == URLSession.DataTaskPublisher.Output {
     /// - Returns:
     ///     - `Publishers.TryMap<Self, Data>`
     public func tryHTTPMap() -> Publishers.TryMap<Self, Data> {
-        self.tryMap { data, response -> Data in
+        tryMap { data, response -> Data in
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkService.Failure.url(response)
             }
@@ -35,7 +32,7 @@ extension Publisher {
     /// - Returns:
     ///     - `Publishers.MapError<Self, NetworkService.Failure>`
     public func mapToNetworkError() -> Publishers.MapError<Self, NetworkService.Failure> {
-        self.mapError { error -> NetworkService.Failure in
+        mapError { error -> NetworkService.Failure in
             guard let apiError = error as? NetworkService.Failure else {
                 return NetworkService.Failure.cocoa(error as NSError)
             }
@@ -46,10 +43,10 @@ extension Publisher {
 
 extension Publisher where Output == Data {
     func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Publishers.Decode<Self, T, Decoder> {
-        self.decode(type: T.self, decoder: decoder)
+        decode(type: T.self, decoder: decoder)
     }
 
     func decode<T: TopLevelDecodable>() -> Publishers.Decode<Self, T, T.Decoder> {
-        self.decode(type: T.self, decoder: T.decoder)
+        decode(type: T.self, decoder: T.decoder)
     }
 }

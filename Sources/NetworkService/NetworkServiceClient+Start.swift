@@ -1,19 +1,17 @@
+// NetworkServiceClient+Start.swift
+// NetworkService
 //
-//  NetworkServiceClient+Start.swift
-//  NetworkService
+// Copyright © 2021 MFB Technologies, Inc. All rights reserved.
 //
-//  Created by Andrew Roan on 4/27/21.
-//  Copyright © 2021 MFB Technologies, Inc. All rights reserved.
-//
-//  This source code is licensed under the MIT license found in the
-//  LICENSE file in the root directory of this source tree.
-//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
-import Foundation
 import Combine
+import Foundation
 
 extension NetworkServiceClient {
     // MARK: URLRequest
+
     /// Start a `URLRequest`
     /// - Parameter request: The request as a `URLRequest`
     /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
@@ -21,8 +19,9 @@ extension NetworkServiceClient {
         _ request: URLRequest,
         with decoder: Decoder
     ) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data {
-        return start(request)
+        where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
+    {
+        start(request)
             .decode(with: decoder)
             .mapToNetworkError()
             .eraseToAnyPublisher()
@@ -32,7 +31,8 @@ extension NetworkServiceClient {
     /// - Parameter request: The request as a `URLRequest`
     /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
     public func start<ResponseBody>(_ request: URLRequest) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: TopLevelDecodable {
+        where ResponseBody: TopLevelDecodable
+    {
         start(request, with: ResponseBody.decoder)
     }
 

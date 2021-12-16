@@ -1,16 +1,13 @@
+// TopLevelCodable.swift
+// NetworkService
 //
-//  TopLevelCodable.swift
-//  NetworkService
+// Copyright © 2021 MFB Technologies, Inc. All rights reserved.
 //
-//  Created by Andrew Roan on 4/23/21.
-//  Copyright © 2021 MFB Technologies, Inc. All rights reserved.
-//
-//  This source code is licensed under the MIT license found in the
-//  LICENSE file in the root directory of this source tree.
-//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
-import Foundation
 import Combine
+import Foundation
 
 /// Associates a default `TopLevelEncoder` type with a given type
 public protocol TopLevelEncodable: Encodable {

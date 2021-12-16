@@ -1,24 +1,22 @@
+// MockNetworkService.swift
+// NetworkService
 //
-//  MockNetworkService.swift
-//  NetworkServiceTestHelper
+// Copyright © 2021 MFB Technologies, Inc. All rights reserved.
 //
-//  Created by Andrew Roan on 5/21/21.
-//  Copyright © 2021 MFB Technologies, Inc. All rights reserved.
-//
-//  This source code is licensed under the MIT license found in the
-//  LICENSE file in the root directory of this source tree.
-//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
-import Foundation
 import Combine
-import NetworkService
 import CombineSchedulers
+import Foundation
+import NetworkService
 
-/// Convenience implementation of `NetworkServiceClient` for testing. Supports defining set output values for all network functions, repeating values, and delaying values.
+/// Convenience implementation of `NetworkServiceClient` for testing. Supports defining set output values for all network functions,
+/// repeating values, and delaying values.
 open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
     public var delay: Delay
     public var outputs: [MockOutput]
-    var nextOutput: MockOutput? = nil
+    var nextOutput: MockOutput?
     let scheduler: T
 
     public init(outputs: [MockOutput] = [], delay: Delay = .none, scheduler: T) {
@@ -46,8 +44,9 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
         return next
     }
 
-    /// Replaces default implementation from protocol. All `NetworkService` functions should eventually end up in this version of `start`. Delay and repeat are handled here.
-    public func start(_ request: URLRequest) -> AnyPublisher<Data, Failure> {
+    /// Replaces default implementation from protocol. All `NetworkService` functions should eventually end up in this version of `start`.
+    /// Delay and repeat are handled here.
+    public func start(_: URLRequest) -> AnyPublisher<Data, Failure> {
         let next: MockOutput
         do {
             next = try queue()
@@ -60,9 +59,9 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
             return next.output.publisher
                 .delay(
                     for: T.SchedulerTimeType.Stride.seconds(delay.interval),
-                    scheduler: self.scheduler
+                    scheduler: scheduler
                 )
-                .receive(on: self.scheduler)
+                .receive(on: scheduler)
                 .eraseToAnyPublisher()
         case .none:
             // Setting the delay publisher to zero seconds was buggy.
@@ -76,7 +75,8 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
     }
 }
 
-/// Represents the amount of async delay should be added to the mocked network functions. Consider replacing with `DispatchTimeInterval`. Although, there is no included case for zero/none.
+/// Represents the amount of async delay should be added to the mocked network functions. Consider replacing with `DispatchTimeInterval`.
+/// Although, there is no included case for zero/none.
 public enum Delay {
     case infinite
     case seconds(Int)
@@ -87,7 +87,7 @@ public enum Delay {
         switch self {
         case .infinite:
             return .max
-        case .seconds(let seconds):
+        case let .seconds(seconds):
             return seconds
         case .none:
             return 0
@@ -102,17 +102,21 @@ public enum RepeatResponse: MockOutput {
 
     public var output: Result<Data, NetworkService.Failure> {
         switch self {
-        case .repeat(let output, count: _), .repeatInfinite(let output):
+        case .repeat(let output, count: _), let .repeatInfinite(output):
             return output.output
         }
     }
 }
 
 /// Fundamental wrapper for output values so they can easily be handled by `MockNetworkService`
-public struct CodableOutput<Output: Codable, Encoder: TopLevelEncoder, Decoder: TopLevelDecoder>: MockOutput where Encoder.Output == Data, Decoder.Input == Data {
+public struct CodableOutput<Output: Codable, Encoder: TopLevelEncoder, Decoder: TopLevelDecoder>: MockOutput
+    where Encoder.Output == Data, Decoder.Input == Data
+{
     public var output: Result<Data, NetworkService.Failure> {
+        // swiftlint:disable:next force_try
         .success(try! encoder.encode(value))
     }
+
     let value: Output
     let encoder: Encoder
 
@@ -129,6 +133,7 @@ public protocol MockOutput {
 
 extension MockOutput where Self: TopLevelEncodable {
     public var output: Result<Data, NetworkService.Failure> {
+        // swiftlint:disable:next force_try
         let data = try! Self.encoder.encode(self)
         return .success(data)
     }
