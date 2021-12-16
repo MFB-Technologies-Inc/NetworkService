@@ -65,8 +65,7 @@ extension NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader]
     ) -> AnyPublisher<Data, Failure>
-    where RequestBody: TopLevelEncodable,
-          RequestBody.Encoder.Output == Data {
+    where RequestBody: TopLevelEncodable {
         do {
             let body = try RequestBody.encoder.encode(body)
             return put(body, to: url, headers: headers)
@@ -106,7 +105,7 @@ extension NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader] = []
     ) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: TopLevelDecodable, ResponseBody.Decoder.Input == Data {
+    where ResponseBody: TopLevelDecodable {
         put(body, to: url, headers: headers, decoder: ResponseBody.decoder)
     }
 
@@ -152,9 +151,7 @@ extension NetworkServiceClient {
         headers: [HTTPHeader] = []
     ) -> AnyPublisher<ResponseBody, Failure>
     where RequestBody: TopLevelEncodable,
-          ResponseBody: TopLevelDecodable,
-          RequestBody.Encoder.Output == Data,
-          ResponseBody.Decoder.Input == Data {
+          ResponseBody: TopLevelDecodable {
         put(body, to: url, headers: headers, encoder: RequestBody.encoder, decoder: ResponseBody.decoder)
     }
 }

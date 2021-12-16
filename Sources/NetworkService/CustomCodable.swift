@@ -14,7 +14,7 @@ import Combine
 
 /// Associates a default `TopLevelEncoder` type with a given type
 public protocol TopLevelEncodable: Encodable {
-    associatedtype Encoder: TopLevelEncoder
+    associatedtype Encoder: TopLevelEncoder where Encoder.Output == Data
     @available(*, unavailable, renamed: "Encoder")
     typealias CustomEncoder = Encoder
 
@@ -27,7 +27,7 @@ public typealias CustomEncodable = TopLevelEncodable
 
 /// Associates a default `TopLevelDecoder` type with a given type
 public protocol TopLevelDecodable: Decodable {
-    associatedtype Decoder: TopLevelDecoder
+    associatedtype Decoder: TopLevelDecoder where Decoder.Input == Data
     @available(*, unavailable, renamed: "Encoder")
     typealias CustomDecoder = Decoder
 

@@ -50,7 +50,7 @@ public protocol NetworkServiceClient {
     ///     - headers: HTTP headers for the request
     /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
      func delete<ResponseBody>(_ url: URL, headers: [HTTPHeader]) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: TopLevelDecodable, ResponseBody.Decoder.Input == Data
+    where ResponseBody: TopLevelDecodable
 
     // MARK: GET
     /// - Parameters:
@@ -81,7 +81,7 @@ public protocol NetworkServiceClient {
     ///     - headers: HTTP headers for the request
     /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
     func get<ResponseBody>(_ url: URL, headers: [HTTPHeader]) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: TopLevelDecodable, ResponseBody.Decoder.Input == Data
+    where ResponseBody: TopLevelDecodable
 
     // MARK: POST
     /// - Parameters:
@@ -121,8 +121,7 @@ public protocol NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader]
     ) -> AnyPublisher<Data, Failure>
-    where RequestBody: TopLevelEncodable,
-          RequestBody.Encoder.Output == Data
+    where RequestBody: TopLevelEncodable
 
     /// Send a post request to a `URL`
     /// - Parameters:
@@ -149,7 +148,7 @@ public protocol NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader]
     ) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: TopLevelDecodable, ResponseBody.Decoder.Input == Data
+    where ResponseBody: TopLevelDecodable
 
     /// Send a post request to a `URL`
     /// - Parameters:
@@ -185,9 +184,7 @@ public protocol NetworkServiceClient {
         headers: [HTTPHeader]
     ) -> AnyPublisher<ResponseBody, Failure>
     where RequestBody: TopLevelEncodable,
-          ResponseBody: TopLevelDecodable,
-          RequestBody.Encoder.Output == Data,
-          ResponseBody.Decoder.Input == Data
+          ResponseBody: TopLevelDecodable
 
     // MARK: PUT
     /// - Parameters:
@@ -227,8 +224,7 @@ public protocol NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader]
     ) -> AnyPublisher<Data, Failure>
-    where RequestBody: TopLevelEncodable,
-          RequestBody.Encoder.Output == Data
+    where RequestBody: TopLevelEncodable
 
     /// Send a put request to a `URL`
     /// - Parameters:
@@ -255,7 +251,7 @@ public protocol NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader]
     ) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: TopLevelDecodable, ResponseBody.Decoder.Input == Data
+    where ResponseBody: TopLevelDecodable
 
     /// Send a put request to a `URL`
     /// - Parameters:
@@ -291,9 +287,7 @@ public protocol NetworkServiceClient {
         headers: [HTTPHeader]
     ) -> AnyPublisher<ResponseBody, Failure>
     where RequestBody: TopLevelEncodable,
-          ResponseBody: TopLevelDecodable,
-          RequestBody.Encoder.Output == Data,
-          ResponseBody.Decoder.Input == Data
+          ResponseBody: TopLevelDecodable
 
     // MARK: URLRequest
     /// Start a `URLRequest`
@@ -309,7 +303,7 @@ public protocol NetworkServiceClient {
     /// - Parameter request: The request as a `URLRequest`
     /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
     func start<ResponseBody>(_ request: URLRequest) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: TopLevelDecodable, ResponseBody.Decoder.Input == Data
+    where ResponseBody: TopLevelDecodable
 
     /// Start a `URLRequest`
     /// - Parameter request: The request as a `URLRequest`

@@ -52,7 +52,7 @@ extension NetworkServiceClient {
     ///     - headers: HTTP headers for the request
     /// - Returns: Type erased publisher with `CustomDecodable` output and `NetworkService`'s error domain for failure
     public func delete<ResponseBody>(_ url: URL, headers: [HTTPHeader] = []) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: TopLevelDecodable, ResponseBody.Decoder.Input == Data {
+    where ResponseBody: TopLevelDecodable {
         delete(url, headers: headers, decoder: ResponseBody.decoder)
     }
 
