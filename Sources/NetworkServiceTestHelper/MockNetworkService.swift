@@ -127,7 +127,7 @@ public protocol MockOutput {
     var output: Result<Data, NetworkService.Failure> { get }
 }
 
-extension MockOutput where Self: CustomEncodable, CustomEncoder.Output == Data {
+extension MockOutput where Self: TopLevelEncodable {
     public var output: Result<Data, NetworkService.Failure> {
         let data = try! Self.encoder.encode(self)
         return .success(data)

@@ -19,7 +19,7 @@ import NetworkService
 final class NetworkServiceTests: NetworkTestCase {
     typealias Failure = NetworkService.Failure
 
-    struct Lyric: CustomCodable, Equatable {
+    struct Lyric: TopLevelCodable, Equatable {
         static var encoder: JSONEncoder { JSONEncoder() }
         static var decoder: JSONDecoder { JSONDecoder() }
 

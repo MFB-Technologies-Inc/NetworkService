@@ -16,7 +16,7 @@ import CombineSchedulers
 import NetworkServiceTestHelper
 import NetworkService
 
-struct MockingBird: CustomCodable, MockOutput, Equatable {
+struct MockingBird: TopLevelCodable, MockOutput, Equatable {
     var output: Result<Data, NetworkService.Failure> {
         .success(try! Self.encoder.encode(self))
     }
