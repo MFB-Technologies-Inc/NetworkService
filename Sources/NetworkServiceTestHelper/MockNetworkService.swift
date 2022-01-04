@@ -1,7 +1,7 @@
 // MockNetworkService.swift
 // NetworkService
 //
-// Copyright © 2021 MFB Technologies, Inc. All rights reserved.
+// Copyright © 2022 MFB Technologies, Inc. All rights reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
@@ -116,7 +116,7 @@ public struct FailureOutput<T>: MockOutput where T: Error {
         }
         return .failure(.cocoa(error as NSError))
     }
-    
+
     public let error: T
 
     public init(error: T) {
