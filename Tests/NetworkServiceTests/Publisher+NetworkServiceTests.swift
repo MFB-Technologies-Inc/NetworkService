@@ -1,21 +1,19 @@
+// Publisher+NetworkServiceTests.swift
+// NetworkService
 //
-//  Publisher+NetworkServiceTests.swift
-//  NetworkServiceTests
+// Copyright © 2021 MFB Technologies, Inc. All rights reserved.
 //
-//  Created by Andrew Roan on 4/22/21.
-//  Copyright © 2021 MFB Technologies, Inc. All rights reserved.
-//
-//  This source code is licensed under the MIT license found in the
-//  LICENSE file in the root directory of this source tree.
-//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
-import Foundation
 import Combine
-import XCTest
+import Foundation
 import NetworkService
+import XCTest
 
 final class PublisherNetworkServiceTests: AsyncTestCase {
     // MARK: Publisher where Output == URLSession.DataTaskPublisher.Output
+
     func testInvalidInput() throws {
         let url = try XCTUnwrap(URL(string: "test.com"))
         let response = URLResponse(
@@ -31,7 +29,7 @@ final class PublisherNetworkServiceTests: AsyncTestCase {
             .sink(
                 receiveCompletion: { completion in
                     switch completion {
-                    case .failure(let error):
+                    case let .failure(error):
                         switch error {
                         case NetworkService.Failure.url:
                             urlFailure.fulfill()
@@ -46,7 +44,7 @@ final class PublisherNetworkServiceTests: AsyncTestCase {
                     XCTFail("Unexpected successful output")
                 }
             )
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
         wait(for: [urlFailure], timeout: 0.1)
     }
 
@@ -65,7 +63,7 @@ final class PublisherNetworkServiceTests: AsyncTestCase {
             .sink(
                 receiveCompletion: { completion in
                     switch completion {
-                    case .failure(let error):
+                    case let .failure(error):
                         switch error {
                         case NetworkService.Failure.http:
                             urlFailure.fulfill()
@@ -80,7 +78,7 @@ final class PublisherNetworkServiceTests: AsyncTestCase {
                     XCTFail("Unexpected successful output")
                 }
             )
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
         wait(for: [urlFailure], timeout: 0.1)
     }
 
@@ -110,24 +108,26 @@ final class PublisherNetworkServiceTests: AsyncTestCase {
                     successfulValueReceived.fulfill()
                 }
             )
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
         wait(for: [successfulValueReceived, successfulCompletion], timeout: 0.1)
     }
 
     // MARK: Publisher where Failure: Error, Failure == NetworkService.Failure
+
     func testUnknownNSError() throws {
         struct TestError: Error {}
         let input = TestError()
         let inputWrappedAsNetworkServiceFailure = expectation(
-            description: "Maps input NSError to a NetworkService.Failure")
+            description: "Maps input NSError to a NetworkService.Failure"
+        )
         Combine.Fail<Void, Error>(error: input)
             .mapToNetworkError()
             .sink(
                 receiveCompletion: { completion in
                     switch completion {
-                    case .failure(let failure):
+                    case let .failure(failure):
                         switch failure {
-                        case .cocoa(let error):
+                        case let .cocoa(error):
                             assert(error == (input as NSError), "Received error matches expected from input")
                             inputWrappedAsNetworkServiceFailure.fulfill()
                         default:
@@ -141,7 +141,7 @@ final class PublisherNetworkServiceTests: AsyncTestCase {
                     XCTFail("Unexpected successful value received")
                 }
             )
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
         wait(for: [inputWrappedAsNetworkServiceFailure], timeout: 0.1)
     }
 
@@ -160,7 +160,7 @@ final class PublisherNetworkServiceTests: AsyncTestCase {
             .sink(
                 receiveCompletion: { completion in
                     switch completion {
-                    case .failure(let failure):
+                    case let .failure(failure):
                         assert(failure == input, "Received error matches expected from input")
                         sameOutputAsInput.fulfill()
                     case .finished:
@@ -171,7 +171,7 @@ final class PublisherNetworkServiceTests: AsyncTestCase {
                     XCTFail("Unexpected successful value received")
                 }
             )
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
         wait(for: [sameOutputAsInput], timeout: 0.1)
     }
 
@@ -180,6 +180,6 @@ final class PublisherNetworkServiceTests: AsyncTestCase {
         ("testUnsuccessfulInput", testUnsuccessfulInput),
         ("testSuccessfulInput", testSuccessfulInput),
         ("testUnknownNSError", testUnknownNSError),
-        ("testNetworkServiceFailure", testNetworkServiceFailure)
+        ("testNetworkServiceFailure", testNetworkServiceFailure),
     ]
 }

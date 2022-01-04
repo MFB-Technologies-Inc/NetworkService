@@ -1,25 +1,22 @@
+// NetworkServiceTests.swift
+// NetworkService
 //
-//  NetworkServiceTests.swift
-//  NetworkServiceTests
+// Copyright © 2021 MFB Technologies, Inc. All rights reserved.
 //
-//  Created by Andrew Roan on 4/20/21.
-//  Copyright © 2021 MFB Technologies, Inc. All rights reserved.
-//
-//  This source code is licensed under the MIT license found in the
-//  LICENSE file in the root directory of this source tree.
-//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
-import Foundation
 import Combine
-import XCTest
+import Foundation
+import NetworkService
 import OHHTTPStubs
 import OHHTTPStubsSwift
-import NetworkService
+import XCTest
 
 final class NetworkServiceTests: NetworkTestCase {
     typealias Failure = NetworkService.Failure
 
-    struct Lyric: CustomCodable, Equatable {
+    struct Lyric: TopLevelCodable, Equatable {
         static var encoder: JSONEncoder { JSONEncoder() }
         static var decoder: JSONDecoder { JSONDecoder() }
 
@@ -31,7 +28,7 @@ final class NetworkServiceTests: NetworkTestCase {
             "Never gonna run around and desert you",
             "Never gonna make you cry",
             "Never gonna say goodbye",
-            "Never gonna tell a lie and hurt you"
+            "Never gonna tell a lie and hurt you",
         ])
     }
 
@@ -55,6 +52,6 @@ final class NetworkServiceTests: NetworkTestCase {
         ("testPostSuccess", testPostSuccess),
         ("testPostFailure", testPostFailure),
         ("testPutSuccess", testPutSuccess),
-        ("testPutFailure", testPutFailure)
+        ("testPutFailure", testPutFailure),
     ]
 }

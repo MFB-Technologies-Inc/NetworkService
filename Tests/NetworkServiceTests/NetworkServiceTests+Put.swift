@@ -1,24 +1,21 @@
+// NetworkServiceTests+Put.swift
+// NetworkService
 //
-//  NetworkServiceTests+Put.swift
-//  NetworkServiceTests
+// Copyright © 2021 MFB Technologies, Inc. All rights reserved.
 //
-//  Created by Andrew Roan on 4/22/21.
-//  Copyright © 2021 MFB Technologies, Inc. All rights reserved.
-//
-//  This source code is licensed under the MIT license found in the
-//  LICENSE file in the root directory of this source tree.
-//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
-import Foundation
 import Combine
-import XCTest
+import Foundation
+import NetworkService
 import OHHTTPStubs
 import OHHTTPStubsSwift
-import NetworkService
+import XCTest
 
 extension NetworkServiceTests {
-
     // MARK: Success
+
     func testPutSuccess() throws {
         let url = try destinationURL()
         let data = (try? responseBodyEncoded()) ?? Data()
@@ -28,7 +25,7 @@ extension NetworkServiceTests {
                 && isMethodPUT()
                 && hasBody(data)
         ) { _ in
-            return HTTPStubsResponse(
+            HTTPStubsResponse(
                 data: data,
                 statusCode: Int32(HTTPURLResponse.StatusCode.ok),
                 headers: [URLRequest.ContentType.key: URLRequest.ContentType.applicationJSON.value]
@@ -44,7 +41,7 @@ extension NetworkServiceTests {
             .sink(
                 receiveCompletion: { completion in
                     switch completion {
-                    case .failure(let error):
+                    case let .failure(error):
                         XCTFail("Unexpected failure: \(error)")
                     case .finished:
                         finished.fulfill()
@@ -55,11 +52,12 @@ extension NetworkServiceTests {
                     successfulResponse.fulfill()
                 }
             )
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
         wait(for: [successfulResponse, finished])
     }
 
     // MARK: Failure
+
     func testPutFailure() throws {
         let data = (try? responseBodyEncoded()) ?? Data()
         stub(
@@ -68,7 +66,7 @@ extension NetworkServiceTests {
                 && isMethodPUT()
                 && hasBody(data)
         ) { _ in
-            return HTTPStubsResponse(
+            HTTPStubsResponse(
                 data: data,
                 statusCode: Int32(HTTPURLResponse.StatusCode.badRequest),
                 headers: [URLRequest.ContentType.key: URLRequest.ContentType.applicationJSON.value]
@@ -84,9 +82,9 @@ extension NetworkServiceTests {
             .sink(
                 receiveCompletion: { completion in
                     switch completion {
-                    case .failure(let error):
+                    case let .failure(error):
                         switch error {
-                        case .http(let response):
+                        case let .http(response):
                             assert(response.isClientError)
                             errorResponse.fulfill()
                         default:
@@ -100,7 +98,7 @@ extension NetworkServiceTests {
                     XCTFail("Unexpected successful response")
                 }
             )
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
         wait(for: [errorResponse])
     }
 }
