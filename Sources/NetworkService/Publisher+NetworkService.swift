@@ -46,7 +46,7 @@ extension Publisher where Output == Data {
         decode(type: T.self, decoder: decoder)
     }
 
-    func decode<T: TopLevelDecodable>() -> Publishers.Decode<Self, T, T.Decoder> {
+    func decode<T: TopLevelDecodable>() -> Publishers.Decode<Self, T, T.AdoptedDecoder> {
         decode(type: T.self, decoder: T.decoder)
     }
 }
