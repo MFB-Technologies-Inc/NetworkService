@@ -1,19 +1,17 @@
+// NetworkServiceClient+Post.swift
+// NetworkService
 //
-//  NetworkServiceClient+Post.swift
-//  NetworkService
+// Copyright © 2022 MFB Technologies, Inc. All rights reserved.
 //
-//  Created by Andrew Roan on 4/27/21.
-//  Copyright © 2021 MFB Technologies, Inc. All rights reserved.
-//
-//  This source code is licensed under the MIT license found in the
-//  LICENSE file in the root directory of this source tree.
-//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
-import Foundation
 import Combine
+import Foundation
 
 extension NetworkServiceClient {
     // MARK: POST
+
     /// - Parameters:
     ///   - body: The body of the request as `Data`
     ///   - url: The destination for the request
@@ -43,9 +41,10 @@ extension NetworkServiceClient {
         headers: [HTTPHeader],
         encoder: Encoder
     ) -> AnyPublisher<Data, Failure>
-    where RequestBody: Encodable,
-    Encoder: TopLevelEncoder,
-    Encoder.Output == Data {
+        where RequestBody: Encodable,
+        Encoder: TopLevelEncoder,
+        Encoder.Output == Data
+    {
         do {
             let body = try encoder.encode(body)
             return post(body, to: url, headers: headers)
@@ -56,7 +55,7 @@ extension NetworkServiceClient {
     }
 
     /// - Parameters:
-    ///   - body: The body of the request as `CustomEncodable`
+    ///   - body: The body of the request as `TopLevelEnodable`
     ///   - url: The destination for the request
     ///   - headers: HTTP headers for the request
     /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
@@ -65,8 +64,8 @@ extension NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader]
     ) -> AnyPublisher<Data, Failure>
-    where RequestBody: CustomEncodable,
-          RequestBody.CustomEncoder.Output == Data {
+        where RequestBody: TopLevelEncodable
+    {
         do {
             let body = try RequestBody.encoder.encode(body)
             return post(body, to: url, headers: headers)
@@ -89,7 +88,8 @@ extension NetworkServiceClient {
         headers: [HTTPHeader] = [],
         decoder: Decoder
     ) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data {
+        where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
+    {
         var request = URLRequest(url: url)
         request.httpBody = body
         request.method = .POST
@@ -101,13 +101,14 @@ extension NetworkServiceClient {
     ///   - body: The body of the request as `Data`
     ///   - url: The destination for the request
     ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `CustomDecodable` output and `NetworkService`'s error domain for failure
+    /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
     public func post<ResponseBody>(
         _ body: Data,
         to url: URL,
         headers: [HTTPHeader] = []
     ) -> AnyPublisher<ResponseBody, Failure>
-    where ResponseBody: CustomDecodable, ResponseBody.CustomDecoder.Input == Data {
+        where ResponseBody: TopLevelDecodable
+    {
         post(body, to: url, headers: headers, decoder: ResponseBody.decoder)
     }
 
@@ -126,12 +127,13 @@ extension NetworkServiceClient {
         encoder: Encoder,
         decoder: Decoder
     ) -> AnyPublisher<ResponseBody, Failure>
-    where RequestBody: Encodable,
-          ResponseBody: Decodable,
-          Encoder: TopLevelEncoder,
-          Encoder.Output == Data,
-          Decoder: TopLevelDecoder,
-          Decoder.Input == Data {
+        where RequestBody: Encodable,
+        ResponseBody: Decodable,
+        Encoder: TopLevelEncoder,
+        Encoder.Output == Data,
+        Decoder: TopLevelDecoder,
+        Decoder.Input == Data
+    {
         do {
             let body = try encoder.encode(body)
             return post(body, to: url, headers: headers, decoder: decoder)
@@ -143,19 +145,18 @@ extension NetworkServiceClient {
 
     /// Send a post request to a `URL`
     /// - Parameters:
-    ///   - body: The body of the request as a `CustomEncodable` conforming type
+    ///   - body: The body of the request as a `TopLevelEnodable` conforming type
     ///   - url: The destination for the request
     ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `CustomDecodable` output and `NetworkService`'s error domain for failure
+    /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
     public func post<RequestBody, ResponseBody>(
         _ body: RequestBody,
         to url: URL,
         headers: [HTTPHeader] = []
     ) -> AnyPublisher<ResponseBody, Failure>
-    where RequestBody: CustomEncodable,
-          ResponseBody: CustomDecodable,
-          RequestBody.CustomEncoder.Output == Data,
-          ResponseBody.CustomDecoder.Input == Data {
+        where RequestBody: TopLevelEncodable,
+        ResponseBody: TopLevelDecodable
+    {
         post(body, to: url, headers: headers, encoder: RequestBody.encoder, decoder: ResponseBody.decoder)
     }
 }

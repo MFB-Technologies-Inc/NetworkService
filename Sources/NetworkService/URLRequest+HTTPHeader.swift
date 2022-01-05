@@ -1,18 +1,14 @@
+// URLRequest+HTTPHeader.swift
+// NetworkService
 //
-//  URLRequest+HTTPHeader.swift
-//  NetworkService
+// Copyright © 2022 MFB Technologies, Inc. All rights reserved.
 //
-//  Created by Andrew Roan on 4/22/21.
-//  Copyright © 2021 MFB Technologies, Inc. All rights reserved.
-//
-//  This source code is licensed under the MIT license found in the
-//  LICENSE file in the root directory of this source tree.
-//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
 import Foundation
 
 extension URLRequest {
-
     /// Add HTTP header values to a URLRequest with type safety, avoiding the use of raw strings
     /// - Parameter header: The HTTP header to be added
     public mutating func addValue(_ header: HTTPHeader) {
@@ -31,7 +27,7 @@ extension URLRequest {
 
 extension URLRequest.ContentType: HTTPHeader {
     public var key: String { Self.key }
-    public var value: String { self.rawValue }
+    public var value: String { rawValue }
 }
 
 /// Model for HTTP headers
