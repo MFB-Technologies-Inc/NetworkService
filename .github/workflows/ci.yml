@@ -20,6 +20,8 @@ jobs:
           - '13.2'
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # For SonarCloud analysis
       - name: Select Xcode ${{ matrix.xcode }}
         run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
       - name: Format lint
@@ -27,8 +29,16 @@ jobs:
       - name: Lint
         run: swiftlint .
       - name: Run Tests
-        run: swift test --enable-code-coverage
-      - name: Swift Coverage Report
-        uses: maxep/spm-lcov-action@0.3.1
-      - name: Code Coverage
-        run: bash <(curl -s https://codecov.io/bash) -X xcodellvm
+        run: xcodebuild \
+          -scheme NetworkService-Package \
+          -enableCodeCoverage YES \
+          -derivedDataPath output \
+          clean \
+          test
+      - name: Convert Coverage Report
+        run: xccov-to-sonarqube-generic.sh output/Logs/Test/*NetworkService-Package-*.xcresult > NetworkService-Package-sonarqube-generic-coverage.xml
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
