@@ -23,7 +23,7 @@ let foo = Foo(bar: 0)
 ```
 #### GET
 ```swift
-let publisher: AnyPublisher<Foo, Failuer> = networkService.get(url)
+let publisher: AnyPublisher<Foo, Failure> = networkService.get(url)
 let cancellable = publisher.assertNoFailure().sink { foo in
     print(foo.bar)
 }
@@ -31,7 +31,7 @@ let cancellable = publisher.assertNoFailure().sink { foo in
 
 #### POST
 ```swift
-let publisher: AnyPublisher<Foo, Failuer> = networkService.post(foo, to: url)
+let publisher: AnyPublisher<Foo, Failure> = networkService.post(foo, to: url)
 let cancellable = publisher.assertNoFailure().sink { foo in
     print(foo.bar)
 }
@@ -39,7 +39,7 @@ let cancellable = publisher.assertNoFailure().sink { foo in
 
 #### PUT
 ```swift
-let publisher: AnyPublisher<Foo, Failuer> = networkService.put(foo, to: url)
+let publisher: AnyPublisher<Foo, Failure> = networkService.put(foo, to: url)
 let cancellable = publisher.assertNoFailure().sink { foo in
     print(foo.bar)
 }
@@ -47,7 +47,7 @@ let cancellable = publisher.assertNoFailure().sink { foo in
 
 #### DELETE
 ```swift
-let publisher: AnyPublisher<Foo, Failuer> = networkService.get(url)
+let publisher: AnyPublisher<Foo, Failure> = networkService.get(url)
 let cancellable = publisher.assertNoFailure().sink { _ in }
 ```
 
@@ -55,7 +55,7 @@ let cancellable = publisher.assertNoFailure().sink { _ in }
 ```swift
 var request = URLRequest(url: url)
 request.method = .GET
-let publisher: AnyPublisher<Foo, Failuer> = networkService.start(request)
+let publisher: AnyPublisher<Foo, Failure> = networkService.start(request)
 let cancellable = publisher.assertNoFailure().sink { foo in
     print(foo.bar)
 }
