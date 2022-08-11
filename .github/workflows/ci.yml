@@ -29,12 +29,13 @@ jobs:
       - name: Lint
         run: swiftlint .
       - name: Run Tests
-        run: xcodebuild \
-          -scheme NetworkService-Package \
-          -enableCodeCoverage YES \
-          -derivedDataPath output \
-          clean \
-          test
+        run: |
+          xcodebuild \
+            -scheme NetworkService-Package \
+            -enableCodeCoverage YES \
+            -derivedDataPath output \
+            clean \
+            test
       - name: Convert Coverage Report
         run: xccov-to-sonarqube-generic.sh output/Logs/Test/*NetworkService-Package-*.xcresult > NetworkService-Package-sonarqube-generic-coverage.xml
       - name: SonarCloud Scan
