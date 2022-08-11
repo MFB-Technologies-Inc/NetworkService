@@ -143,3 +143,6 @@ iOSInjectionProject/
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swift,cocoapods,macos
+
+## Derived data path for CI builds
+output
