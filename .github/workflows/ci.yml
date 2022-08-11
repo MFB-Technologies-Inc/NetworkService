@@ -32,13 +32,12 @@ jobs:
         run: |
           xcodebuild \
             -scheme NetworkService-Package \
-            -destination platform='iOS Simulator',name='iPhone 11' \
+            -destination platform='macOS' \
             -enableCodeCoverage YES \
-            -derivedDataPath output \
             clean \
             test
       - name: Convert Coverage Report
-        run: xccov-to-sonarqube-generic.sh output/Logs/Test/*NetworkService-Package-*.xcresult > NetworkService-Package-sonarqube-generic-coverage.xml
+        run: ./xccov-to-sonarqube-generic.sh ~/Library/Developer/Xcode/DerivedData/NetworkService-*/Logs/Test/*NetworkService-Package-*.xcresult > NetworkService-Package-sonarqube-generic-coverage.xml
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
