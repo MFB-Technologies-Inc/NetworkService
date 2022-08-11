@@ -32,7 +32,7 @@ jobs:
         run: |
           xcodebuild \
             -scheme NetworkService-Package \
-            -destination platform='macOS' \
+            -destination platform='iOS Simulator',name='iPhone 11' \
             -enableCodeCoverage YES \
             -derivedDataPath output \
             clean \
