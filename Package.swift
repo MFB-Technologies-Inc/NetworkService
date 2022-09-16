@@ -45,7 +45,12 @@ let package = Package(
                 .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
             ]
         ),
-        .target(name: "NetworkServiceAsyncBeta"),
+        .target(
+            name: "NetworkServiceAsyncBeta",
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-warn-concurrency"])
+            ]
+        ),
         .testTarget(
             name: "NetworkServiceAsyncBetaTests",
             dependencies: [
@@ -56,7 +61,13 @@ let package = Package(
         ),
         .target(
             name: "NetworkServiceTestHelper",
-            dependencies: ["NetworkService", .product(name: "CombineSchedulers", package: "combine-schedulers")]
+            dependencies: [
+                "NetworkService",
+                .product(name: "CombineSchedulers", package: "combine-schedulers")
+            ],
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-warn-concurrency"])
+            ]
         ),
         .testTarget(
             name: "NetworkServiceTestHelperTests",
