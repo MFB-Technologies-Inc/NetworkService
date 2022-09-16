@@ -56,15 +56,13 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
         switch delay {
         case .infinite:
             return await Task {
-                // Using UInt64.max or close to it provides no delay.
-                // One order of magnitude lower and it works as expected.
-                try await Task.sleep(nanoseconds: 10_000_000_000_000_000)
+                try await scheduler.sleep(for: .seconds(.max))
                 return try next.output.get()
             }
             .result.mapToNetworkError()
         case .seconds:
             return await Task {
-                try await Task.sleep(nanoseconds: UInt64(delay.interval) * 1_000_000_000)
+                try await scheduler.sleep(for: .seconds(delay.interval))
                 return try next.output.get()
             }
             .result.mapToNetworkError()
