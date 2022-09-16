@@ -15,6 +15,14 @@ let package = Package(
             name: "NetworkServiceTestHelper",
             targets: ["NetworkServiceTestHelper"]
         ),
+        .library(
+            name: "NetworkServiceAsyncBeta",
+            targets: ["NetworkServiceAsyncBeta"]
+        ),
+        .library(
+            name: "NetworkServiceTestHelperAsyncBeta",
+            targets: ["NetworkServiceTestHelperAsyncBeta"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", from: "9.1.0"),
@@ -37,6 +45,15 @@ let package = Package(
                 .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
             ]
         ),
+        .target(name: "NetworkServiceAsyncBeta"),
+        .testTarget(
+            name: "NetworkServiceAsyncBetaTests",
+            dependencies: [
+                "NetworkServiceAsyncBeta",
+                .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
+                .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
+            ]
+        ),
         .target(
             name: "NetworkServiceTestHelper",
             dependencies: ["NetworkService", .product(name: "CombineSchedulers", package: "combine-schedulers")]
@@ -45,6 +62,17 @@ let package = Package(
             name: "NetworkServiceTestHelperTests",
             dependencies: [
                 "NetworkServiceTestHelper",
+                .product(name: "CombineSchedulers", package: "combine-schedulers"),
+            ]
+        ),
+        .target(
+            name: "NetworkServiceTestHelperAsyncBeta",
+            dependencies: ["NetworkServiceAsyncBeta", .product(name: "CombineSchedulers", package: "combine-schedulers")]
+        ),
+        .testTarget(
+            name: "NetworkServiceTestHelperAsyncBetaTests",
+            dependencies: [
+                "NetworkServiceTestHelperAsyncBeta",
                 .product(name: "CombineSchedulers", package: "combine-schedulers"),
             ]
         ),
