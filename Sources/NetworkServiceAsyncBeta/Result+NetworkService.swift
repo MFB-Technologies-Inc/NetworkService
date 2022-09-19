@@ -1,4 +1,4 @@
-// Publisher+NetworkService.swift
+// Result+NetworkService.swift
 // NetworkService
 //
 // Copyright © 2022 MFB Technologies, Inc. All rights reserved.
@@ -48,7 +48,9 @@ extension Result {
 }
 
 extension Result {
-    func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Result<T, Error> where Decoder.Input == Success {
+    func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Result<T, Error>
+        where Decoder.Input == Success
+    {
         mapError { $0 as Error }
             .flatMap { input in
                 Result<T, Error> {

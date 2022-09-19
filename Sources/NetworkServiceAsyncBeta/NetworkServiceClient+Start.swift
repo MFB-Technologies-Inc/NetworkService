@@ -75,7 +75,7 @@ extension NetworkServiceClient {
                             }
                             continuation.resume(returning: (data, urlResponse))
                         })
-                        
+
                         if shouldCancel {
                             task?.cancel()
                         } else {

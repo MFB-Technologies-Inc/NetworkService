@@ -1,4 +1,4 @@
-// Publisher+NetworkServiceTests.swift
+// Result+NetworkServiceTests.swift
 // NetworkService
 //
 // Copyright © 2022 MFB Technologies, Inc. All rights reserved.
@@ -65,7 +65,8 @@ final class ResultNetworkServiceTests: XCTestCase {
     // MARK: Publisher where Failure: Error, Failure == NetworkService.Failure
 
     func testUnknownNSError() async throws {
-        let result = Result<(Data, URLResponse), Error>.failure(NetworkService.Failure.urlError(URLError(.badServerResponse)))
+        let result = Result<(Data, URLResponse), Error>
+            .failure(NetworkService.Failure.urlError(URLError(.badServerResponse)))
             .httpMap()
         guard case let .failure(error) = result else {
             return XCTFail()

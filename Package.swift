@@ -48,7 +48,7 @@ let package = Package(
         .target(
             name: "NetworkServiceAsyncBeta",
             swiftSettings: [
-                .unsafeFlags(["-Xfrontend", "-warn-concurrency"])
+                .unsafeFlags(["-Xfrontend", "-warn-concurrency"]),
             ]
         ),
         .testTarget(
@@ -63,10 +63,10 @@ let package = Package(
             name: "NetworkServiceTestHelper",
             dependencies: [
                 "NetworkService",
-                .product(name: "CombineSchedulers", package: "combine-schedulers")
+                .product(name: "CombineSchedulers", package: "combine-schedulers"),
             ],
             swiftSettings: [
-                .unsafeFlags(["-Xfrontend", "-warn-concurrency"])
+                .unsafeFlags(["-Xfrontend", "-warn-concurrency"]),
             ]
         ),
         .testTarget(
@@ -78,7 +78,10 @@ let package = Package(
         ),
         .target(
             name: "NetworkServiceTestHelperAsyncBeta",
-            dependencies: ["NetworkServiceAsyncBeta", .product(name: "CombineSchedulers", package: "combine-schedulers")]
+            dependencies: [
+                "NetworkServiceAsyncBeta",
+                .product(name: "CombineSchedulers", package: "combine-schedulers"),
+            ]
         ),
         .testTarget(
             name: "NetworkServiceTestHelperAsyncBetaTests",
