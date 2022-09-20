@@ -160,7 +160,5 @@ extension NetworkServiceClient {
 }
 
 #if canImport(Combine)
-extension NetworkServiceClient {
-    
-}
+    extension NetworkServiceClient {}
 #endif

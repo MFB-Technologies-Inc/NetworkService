@@ -10,7 +10,6 @@ import Combine
 import Foundation
 
 extension NetworkServiceClient {
-
     /// Start a `URLRequest`
     /// - Parameter request: The request as a `URLRequest`
     /// - Returns: Type erased publisher with output as `Data` and `NetworkService`'s error domain for failure
@@ -65,28 +64,28 @@ extension NetworkServiceClient {
 }
 
 #if canImport(Combine)
-extension NetworkServiceClient {
-    /// Start a `URLRequest`
-    /// - Parameter request: The request as a `URLRequest`
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    public func start<ResponseBody, Decoder>(
-        _ request: URLRequest,
-        with decoder: Decoder
-    ) async -> Result<ResponseBody, Failure>
-        where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
-    {
-        await start(request)
-            .decode(with: decoder)
-            .mapToNetworkError()
-    }
+    extension NetworkServiceClient {
+        /// Start a `URLRequest`
+        /// - Parameter request: The request as a `URLRequest`
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        public func start<ResponseBody, Decoder>(
+            _ request: URLRequest,
+            with decoder: Decoder
+        ) async -> Result<ResponseBody, Failure>
+            where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
+        {
+            await start(request)
+                .decode(with: decoder)
+                .mapToNetworkError()
+        }
 
-    /// Start a `URLRequest`
-    /// - Parameter request: The request as a `URLRequest`
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    public func start<ResponseBody>(_ request: URLRequest) async -> Result<ResponseBody, Failure>
-        where ResponseBody: TopLevelDecodable
-    {
-        await start(request, with: ResponseBody.decoder)
+        /// Start a `URLRequest`
+        /// - Parameter request: The request as a `URLRequest`
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        public func start<ResponseBody>(_ request: URLRequest) async -> Result<ResponseBody, Failure>
+            where ResponseBody: TopLevelDecodable
+        {
+            await start(request, with: ResponseBody.decoder)
+        }
     }
-}
 #endif

@@ -1,14 +1,17 @@
+// URLRequest+Service.swift
+// NetworkService
 //
-//  File.swift
-//  
+// Copyright © 2022 MFB Technologies, Inc. All rights reserved.
 //
-//  Created by andrew on 9/20/22.
-//
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
 import Foundation
 
 extension URLRequest {
-    static func service<S>(url: URL, body: Data? = nil, headers: S, method: HTTPMethod) -> Self where S: Sequence, S.Element == HTTPHeader {
+    static func service<S>(url: URL, body: Data? = nil, headers: S, method: HTTPMethod) -> Self where S: Sequence,
+        S.Element == HTTPHeader
+    {
         var request = URLRequest(url: url)
         request.httpBody = body
         request.addValues(headers)

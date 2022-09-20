@@ -47,22 +47,22 @@ extension Result {
 }
 
 #if canImport(Combine)
-import Combine
+    import Combine
 
-extension Result {
-    func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Result<T, Error>
-        where Decoder.Input == Success
-    {
-        mapError { $0 as Error }
-            .flatMap { input in
-                Result<T, Error> {
-                    try decoder.decode(T.self, from: input)
+    extension Result {
+        func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Result<T, Error>
+            where Decoder.Input == Success
+        {
+            mapError { $0 as Error }
+                .flatMap { input in
+                    Result<T, Error> {
+                        try decoder.decode(T.self, from: input)
+                    }
                 }
-            }
-    }
+        }
 
-    func decode<T: TopLevelDecodable>() -> Result<T, Error> where T.AdoptedDecoder.Input == Success {
-        decode(with: T.decoder)
+        func decode<T: TopLevelDecodable>() -> Result<T, Error> where T.AdoptedDecoder.Input == Success {
+            decode(with: T.decoder)
+        }
     }
-}
 #endif
