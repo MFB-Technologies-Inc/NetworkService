@@ -15,6 +15,14 @@ extension URLRequest {
         addValue(header.value, forHTTPHeaderField: header.key)
     }
 
+    /// Add HTTP header values to a URLRequest with type safety, avoiding the use of raw strings
+    /// - Parameter header: The HTTP header to be added
+    public mutating func addValues<S>(_ headers: S) where S: Sequence, S.Element == HTTPHeader {
+        for header in headers {
+            addValue(header)
+        }
+    }
+
     /// Enumeration of all available HTTP ContentTypes
     public enum ContentType: String {
         public static let key = "Content-Type"
