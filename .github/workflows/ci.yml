@@ -10,7 +10,6 @@ on:
 
 jobs:
   library:
-    runs-on: macos-12
     environment: default
     strategy:
       matrix:
