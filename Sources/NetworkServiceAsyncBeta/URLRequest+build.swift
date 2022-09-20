@@ -1,4 +1,4 @@
-// URLRequest+Service.swift
+// URLRequest+build.swift
 // NetworkService
 //
 // Copyright © 2022 MFB Technologies, Inc. All rights reserved.
@@ -9,7 +9,7 @@
 import Foundation
 
 extension URLRequest {
-    static func service<S>(url: URL, body: Data? = nil, headers: S, method: HTTPMethod) -> Self where S: Sequence,
+    static func build<S>(url: URL, body: Data? = nil, headers: S, method: HTTPMethod) -> Self where S: Sequence,
         S.Element == HTTPHeader
     {
         var request = URLRequest(url: url)

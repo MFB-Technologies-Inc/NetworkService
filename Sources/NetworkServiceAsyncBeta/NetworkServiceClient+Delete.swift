@@ -19,7 +19,7 @@ extension NetworkServiceClient {
         _ url: URL,
         headers: [HTTPHeader] = []
     ) async -> Result<Data, Failure> {
-        let request = URLRequest.service(url: url, headers: headers, method: .DELETE)
+        let request = URLRequest.build(url: url, headers: headers, method: .DELETE)
         return await start(request)
     }
 }

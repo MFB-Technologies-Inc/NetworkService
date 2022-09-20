@@ -22,7 +22,7 @@ extension NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader] = []
     ) async -> Result<Data, Failure> {
-        let request = URLRequest.service(url: url, body: body, headers: headers, method: .POST)
+        let request = URLRequest.build(url: url, body: body, headers: headers, method: .POST)
         return await start(request)
     }
 
