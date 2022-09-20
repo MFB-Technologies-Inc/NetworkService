@@ -9,6 +9,7 @@
 import XCTest
 
 #if !canImport(ObjectiveC)
+    @available(swift 5.5)
     public func allTests() -> [XCTestCaseEntry] {
         [
             testCase(NetworkServiceTests.allTests),

@@ -32,6 +32,7 @@ func url() throws -> URL {
     try XCTUnwrap(URL(string: "/"))
 }
 
+@available(swift 5.5)
 final class NetworkServiceTestHelper: XCTestCase {
     typealias Failure = MockNetworkService<AnySchedulerOf<DispatchQueue>>.Failure
 

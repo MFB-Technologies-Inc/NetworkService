@@ -6,7 +6,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Combine
 import Foundation
 
 extension Result where Success == (Data, URLResponse), Failure == Error {
@@ -47,6 +46,9 @@ extension Result {
     }
 }
 
+#if canImport(Combine)
+import Combine
+
 extension Result {
     func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Result<T, Error>
         where Decoder.Input == Success
@@ -63,3 +65,4 @@ extension Result {
         decode(with: T.decoder)
     }
 }
+#endif

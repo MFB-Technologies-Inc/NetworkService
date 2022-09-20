@@ -13,6 +13,7 @@ import NetworkServiceAsyncBeta
 
 /// Convenience implementation of `NetworkServiceClient` for testing. Supports defining set output values for all network functions,
 /// repeating values, and delaying values.
+@available(swift 5.5)
 open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
     public var delay: Delay
     public var outputs: [MockOutput]
@@ -75,97 +76,5 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
 
     public enum Errors: Error, Equatable {
         case noOutputQueued
-    }
-}
-
-/// Represents the amount of async delay should be added to the mocked network functions. Consider replacing with `DispatchTimeInterval`.
-/// Although, there is no included case for zero/none.
-public enum Delay {
-    case infinite
-    case seconds(Int)
-    case none
-
-    /// The delay in `DispatchTimeInterval` for use in schedulars
-    var interval: Int {
-        switch self {
-        case .infinite:
-            return .max
-        case let .seconds(seconds):
-            return seconds
-        case .none:
-            return 0
-        }
-    }
-}
-
-/// Wraps a given output value to define how many times it should be repeated.
-public enum RepeatResponse: MockOutput {
-    case `repeat`(MockOutput, count: Int)
-    case repeatInfinite(MockOutput)
-
-    public var output: Result<Data, NetworkService.Failure> {
-        switch self {
-        case .repeat(let output, count: _), let .repeatInfinite(output):
-            return output.output
-        }
-    }
-}
-
-/// Wraps a provided error for use as output
-public struct FailureOutput<T>: MockOutput where T: Error {
-    public var output: Result<Data, NetworkService.Failure> {
-        if let networkFailure = error as? NetworkService.Failure {
-            return .failure(networkFailure)
-        }
-        return .failure(.unknown(error as NSError))
-    }
-
-    public let error: T
-
-    public init(error: T) {
-        self.error = error
-    }
-}
-
-/// Fundamental wrapper for output values so they can easily be handled by `MockNetworkService`
-public struct CodableOutput<Output: Codable, Encoder: TopLevelEncoder, Decoder: TopLevelDecoder>: MockOutput
-    where Encoder.Output == Data, Decoder.Input == Data
-{
-    public var output: Result<Data, NetworkService.Failure> {
-        // swiftlint:disable:next force_try
-        .success(try! encoder.encode(value))
-    }
-
-    let value: Output
-    let encoder: Encoder
-
-    public init(_ value: Output, encoder: Encoder) {
-        self.value = value
-        self.encoder = encoder
-    }
-}
-
-/// A type erasing protocol for `MockNetworkService`'s output queue. Allows a heterogenous array.
-public protocol MockOutput {
-    var output: Result<Data, NetworkService.Failure> { get }
-}
-
-extension MockOutput where Self: TopLevelEncodable {
-    public var output: Result<Data, NetworkService.Failure> {
-        // swiftlint:disable:next force_try
-        let data = try! Self.encoder.encode(self)
-        return .success(data)
-    }
-}
-
-extension Data: MockOutput {
-    public var output: Result<Data, NetworkService.Failure> {
-        .success(self)
-    }
-}
-
-extension NetworkService.Failure: MockOutput {
-    public var output: Result<Data, Self> {
-        .failure(self)
     }
 }

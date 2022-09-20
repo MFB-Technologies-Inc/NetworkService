@@ -10,6 +10,7 @@ import Combine
 import Foundation
 
 /// Dependency injection point for `NetworkService`
+@available(swift 5.5)
 public protocol NetworkServiceClient {
     /// `NetworkService`'s error domain
     typealias Failure = NetworkService.Failure

@@ -11,6 +11,7 @@ import Foundation
 import NetworkServiceAsyncBeta
 import XCTest
 
+@available(swift 5.5)
 final class ResultNetworkServiceTests: XCTestCase {
     // MARK: Publisher where Output == URLSession.DataTaskPublisher.Output
 

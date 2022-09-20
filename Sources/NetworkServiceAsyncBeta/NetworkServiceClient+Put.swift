@@ -22,10 +22,7 @@ extension NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader] = []
     ) async -> Result<Data, Failure> {
-        var request = URLRequest(url: url)
-        request.httpBody = body
-        request.method = .PUT
-        headers.forEach { request.addValue($0) }
+        let request = URLRequest.service(url: url, body: body, headers: headers, method: .PUT)
         return await start(request)
     }
 
@@ -161,3 +158,9 @@ extension NetworkServiceClient {
         await put(body, to: url, headers: headers, encoder: RequestBody.encoder, decoder: ResponseBody.decoder)
     }
 }
+
+#if canImport(Combine)
+extension NetworkServiceClient {
+    
+}
+#endif

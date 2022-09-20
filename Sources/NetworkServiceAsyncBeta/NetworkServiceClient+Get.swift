@@ -6,7 +6,6 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Combine
 import Foundation
 
 extension NetworkServiceClient {
@@ -20,12 +19,17 @@ extension NetworkServiceClient {
         _ url: URL,
         headers: [HTTPHeader] = []
     ) async -> Result<Data, Failure> {
-        var request = URLRequest(url: url)
-        request.method = .GET
-        headers.forEach { request.addValue($0) }
+        let request = URLRequest.service(url: url, headers: headers, method: .GET)
         return await start(request)
     }
 
+    
+    
+    
+}
+#if canImport(Combine)
+import Combine
+extension NetworkServiceClient {
     /// Send a get request to a `URL`
     /// - Parameters:
     ///   - url: The destination for the request
@@ -55,3 +59,4 @@ extension NetworkServiceClient {
         await get(url, headers: headers, decoder: ResponseBody.decoder)
     }
 }
+#endif

@@ -6,6 +6,7 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
+#if canImport(Combine)
 import Combine
 import Foundation
 
@@ -50,3 +51,5 @@ extension Set: TopLevelDecodable where Element: TopLevelDecodable {
 }
 
 extension Set: TopLevelCodable where Element: TopLevelCodable {}
+
+#endif
