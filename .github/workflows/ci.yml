@@ -33,6 +33,7 @@ jobs:
             xcode: '12.4'
           - os: macos-12
             xcode: '12.5.1'
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - name: Select Xcode ${{ matrix.xcode }}
