@@ -156,7 +156,7 @@ let package = Package(
             .package(
                 name: "combine-schedulers",
                 url: "https://github.com/pointfreeco/combine-schedulers.git",
-                exact: .upToNextMinor(from: "0.5.3")
+                .upToNextMinor(from: "0.5.3")
             ),
         ]
     }
