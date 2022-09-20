@@ -6,14 +6,7 @@ let package = Package(
     name: "NetworkService",
     platforms: [.iOS(.v13), .macOS(.v10_15), .tvOS(.v13), .watchOS(.v6)],
     products: Product.products,
-    dependencies: [
-        .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", from: "9.1.0"),
-        .package(
-            name: "combine-schedulers",
-            url: "https://github.com/pointfreeco/combine-schedulers.git",
-            .upToNextMajor(from: "0.5.0")
-        ),
-    ],
+    dependencies: Package.Dependency.dependencies,
     targets: Target.targets
 )
 
@@ -101,6 +94,17 @@ let package = Package(
         ]
     }
 
+    extension Package.Dependency {
+        static let dependencies: [Package.Dependency] = [
+            .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", from: "9.1.0"),
+            .package(
+                name: "combine-schedulers",
+                url: "https://github.com/pointfreeco/combine-schedulers.git",
+                .upToNextMajor(from: "0.6.0")
+            ),
+        ]
+    }
+
 #else
     extension Product {
         static let products: [Product] = [
@@ -142,6 +146,17 @@ let package = Package(
                     "NetworkServiceTestHelper",
                     .product(name: "CombineSchedulers", package: "combine-schedulers"),
                 ]
+            ),
+        ]
+    }
+
+    extension Package.Dependency {
+        static let dependencies: [Package.Dependency] = [
+            .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", from: "9.1.0"),
+            .package(
+                name: "combine-schedulers",
+                url: "https://github.com/pointfreeco/combine-schedulers.git",
+                exact: .upToNextMinor(from: "0.5.3")
             ),
         ]
     }
