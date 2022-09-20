@@ -134,9 +134,6 @@ let package = Package(
                 dependencies: [
                     "NetworkService",
                     .product(name: "CombineSchedulers", package: "combine-schedulers"),
-                ],
-                swiftSettings: [
-                    .unsafeFlags(["-Xfrontend", "-warn-concurrency"]),
                 ]
             ),
             .testTarget(
