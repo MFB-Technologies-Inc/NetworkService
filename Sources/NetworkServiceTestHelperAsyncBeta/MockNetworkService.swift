@@ -11,7 +11,8 @@ import CombineSchedulers
 import Foundation
 import NetworkServiceAsyncBeta
 
-/// Convenience implementation of `NetworkServiceClient` for testing. Supports defining set output values for all network functions,
+/// Convenience implementation of `NetworkServiceClient` for testing. Supports defining set output values for all
+/// network functions,
 /// repeating values, and delaying values.
 @available(swift 5.5)
 open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
@@ -45,7 +46,8 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
         return next
     }
 
-    /// Replaces default implementation from protocol. All `NetworkService` functions should eventually end up in this version of `start`.
+    /// Replaces default implementation from protocol. All `NetworkService` functions should eventually end up in this
+    /// version of `start`.
     /// Delay and repeat are handled here.
     public func start(_: URLRequest) async -> Result<Data, Failure> {
         let next: MockOutput

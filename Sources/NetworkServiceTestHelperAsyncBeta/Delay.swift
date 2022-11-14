@@ -8,7 +8,8 @@
 
 import Foundation
 
-/// Represents the amount of async delay should be added to the mocked network functions. Consider replacing with `DispatchTimeInterval`.
+/// Represents the amount of async delay should be added to the mocked network functions. Consider replacing with
+/// `DispatchTimeInterval`.
 /// Although, there is no included case for zero/none.
 public enum Delay {
     case infinite

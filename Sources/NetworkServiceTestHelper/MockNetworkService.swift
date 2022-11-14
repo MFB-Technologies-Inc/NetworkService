@@ -11,7 +11,8 @@ import CombineSchedulers
 import Foundation
 import NetworkService
 
-/// Convenience implementation of `NetworkServiceClient` for testing. Supports defining set output values for all network functions,
+/// Convenience implementation of `NetworkServiceClient` for testing. Supports defining set output values for all
+/// network functions,
 /// repeating values, and delaying values.
 open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
     public var delay: Delay
@@ -44,7 +45,8 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
         return next
     }
 
-    /// Replaces default implementation from protocol. All `NetworkService` functions should eventually end up in this version of `start`.
+    /// Replaces default implementation from protocol. All `NetworkService` functions should eventually end up in this
+    /// version of `start`.
     /// Delay and repeat are handled here.
     public func start(_: URLRequest) -> AnyPublisher<Data, Failure> {
         let next: MockOutput
@@ -75,7 +77,8 @@ open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
     }
 }
 
-/// Represents the amount of async delay should be added to the mocked network functions. Consider replacing with `DispatchTimeInterval`.
+/// Represents the amount of async delay should be added to the mocked network functions. Consider replacing with
+/// `DispatchTimeInterval`.
 /// Although, there is no included case for zero/none.
 public enum Delay {
     case infinite
