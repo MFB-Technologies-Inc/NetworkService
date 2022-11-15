@@ -27,7 +27,7 @@ final class ResultNetworkServiceTests: XCTestCase {
         let result = Result<(Data, URLResponse), Error>.success(input)
             .httpMap()
         guard case let .failure(error) = result else {
-            return XCTFail()
+            return XCTFail("Expecting failure but received success.")
         }
         XCTAssertEqual(error, NetworkService.Failure.urlResponse(response))
     }
@@ -44,7 +44,7 @@ final class ResultNetworkServiceTests: XCTestCase {
         let result = Result<(Data, URLResponse), Error>.success(input)
             .httpMap()
         guard case let .failure(error) = result else {
-            return XCTFail()
+            return XCTFail("Expecting failure but received success.")
         }
         XCTAssertEqual(error, NetworkService.Failure.httpResponse(response))
     }
@@ -70,7 +70,7 @@ final class ResultNetworkServiceTests: XCTestCase {
             .failure(NetworkService.Failure.urlError(URLError(.badServerResponse)))
             .httpMap()
         guard case let .failure(error) = result else {
-            return XCTFail()
+            return XCTFail("Expecting failure but received success.")
         }
         XCTAssertEqual(error, NetworkService.Failure.urlError(URLError(.badServerResponse)))
     }
@@ -86,7 +86,7 @@ final class ResultNetworkServiceTests: XCTestCase {
         let result = Result<(Data, URLResponse), Error>.failure(NetworkService.Failure.urlResponse(response))
             .httpMap()
         guard case let .failure(error) = result else {
-            return XCTFail()
+            return XCTFail("Expecting failure but received success.")
         }
         XCTAssertEqual(error, NetworkService.Failure.urlResponse(response))
     }
