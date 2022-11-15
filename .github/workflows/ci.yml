@@ -43,8 +43,9 @@ jobs:
       - name: Lint
         run: swiftlint .
       - name: Run Tests
-        run: swift test --enable-code-coverage
+        run: swift test --enable-code-coverage --parallel
       - name: Swift Coverage Report
-        uses: maxep/spm-lcov-action@0.3.1
-      - name: Code Coverage
-        run: bash <(curl -s https://codecov.io/bash) -X xcodellvm
+        run: xcrun llvm-cov export -format="lcov" .build/debug/NetworkServicePackageTests.xctest/Contents/MacOS//NetworkServicePackageTests -instr-profile .build/debug/codecov/default.profdata > coverage_report.lcov
+      - uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true # optional (default = false)

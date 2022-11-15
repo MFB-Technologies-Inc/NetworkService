@@ -16,8 +16,12 @@ import NetworkServiceAsyncBeta
         where Encoder.Output == Data, Decoder.Input == Data
     {
         public var output: Result<Data, NetworkService.Failure> {
-            // swiftlint:disable:next force_try
-            .success(try! encoder.encode(value))
+            Result {
+                try encoder.encode(value)
+            }
+            .mapError { error in
+                .unknown(error as NSError)
+            }
         }
 
         let value: Output

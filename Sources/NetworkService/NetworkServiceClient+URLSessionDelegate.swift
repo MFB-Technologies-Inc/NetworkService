@@ -10,7 +10,8 @@ import Combine
 import Foundation
 
 extension NetworkServiceClient where Self: URLSessionDelegate {
-    // `URLSessionDelegate` does not work with `URLSession.DataTaskPublisher` so wrapping a `URLSessionDataTask` in a publisher is required.
+    // `URLSessionDelegate` does not work with `URLSession.DataTaskPublisher` so wrapping a `URLSessionDataTask` in a
+    // publisher is required.
     public func start(_ request: URLRequest) -> AnyPublisher<Data, Failure> {
         let session = getSession()
         return Deferred { Future<(data: Data, response: URLResponse), Failure> { callback in

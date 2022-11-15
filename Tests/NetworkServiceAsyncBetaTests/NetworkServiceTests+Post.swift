@@ -58,7 +58,7 @@ extension NetworkServiceTests {
         let url = try destinationURL()
         let result: Result<Lyric, Failure> = await service.post(data, to: url)
         guard case let .failure(.httpResponse(response)) = result else {
-            return XCTFail()
+            return XCTFail("Expecting failure but received success.")
         }
         XCTAssert(response.isClientError)
     }

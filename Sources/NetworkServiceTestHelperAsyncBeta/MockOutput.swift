@@ -29,9 +29,12 @@ extension NetworkService.Failure: MockOutput {
 #if canImport(Combine)
     extension MockOutput where Self: TopLevelEncodable {
         public var output: Result<Data, NetworkService.Failure> {
-            // swiftlint:disable:next force_try
-            let data = try! Self.encoder.encode(self)
-            return .success(data)
+            Result {
+                try Self.encoder.encode(self)
+            }
+            .mapError { error in
+                .unknown(error as NSError)
+            }
         }
     }
 #endif
