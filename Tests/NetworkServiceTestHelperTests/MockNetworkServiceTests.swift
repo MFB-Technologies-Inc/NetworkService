@@ -14,11 +14,6 @@ import NetworkServiceTestHelper
 import XCTest
 
 struct MockingBird: TopLevelCodable, MockOutput, Equatable {
-    var output: Result<Data, NetworkService.Failure> {
-        // swiftlint:disable:next force_try
-        .success(try! Self.encoder.encode(self))
-    }
-
     let chirp: Bool
 
     static let encoder = JSONEncoder()
