@@ -28,38 +28,34 @@ extension NetworkServiceClient {
 
     private func response(_ request: URLRequest) async throws -> (Data, URLResponse) {
         let session = getSession()
-        if #available(iOS 15, watchOS 8, macOS 12, macCatalyst 15, tvOS 15, *) {
-            return try await session.data(for: request)
-        } else {
-            var task: URLSessionDataTask?
-            var shouldCancel: Bool = false
-            let onCancel = {
-                if let task = task {
-                    task.cancel()
-                } else {
-                    shouldCancel = true
-                }
+        var task: URLSessionDataTask?
+        var shouldCancel: Bool = false
+        let onCancel = {
+            if let task = task {
+                task.cancel()
+            } else {
+                shouldCancel = true
             }
-            return try await withTaskCancellationHandler(
-                handler: { onCancel() },
-                operation: {
-                    try await withCheckedThrowingContinuation { continuation in
-                        task = session.dataTask(with: request, completionHandler: { _data, _urlResponse, _error in
-                            guard let data = _data, let urlResponse = _urlResponse else {
-                                return continuation.resume(throwing: _error ?? URLError(.badServerResponse))
-                            }
-                            continuation.resume(returning: (data, urlResponse))
-                        })
-
-                        if shouldCancel {
-                            task?.cancel()
-                        } else {
-                            task?.resume()
+        }
+        return try await withTaskCancellationHandler(
+            handler: { onCancel() },
+            operation: {
+                try await withCheckedThrowingContinuation { continuation in
+                    task = session.dataTask(with: request, completionHandler: { _data, _urlResponse, _error in
+                        guard let data = _data, let urlResponse = _urlResponse else {
+                            return continuation.resume(throwing: _error ?? URLError(.badServerResponse))
                         }
+                        continuation.resume(returning: (data, urlResponse))
+                    })
+
+                    if shouldCancel {
+                        task?.cancel()
+                    } else {
+                        task?.resume()
                     }
                 }
-            )
-        }
+            }
+        )
     }
 }
 
