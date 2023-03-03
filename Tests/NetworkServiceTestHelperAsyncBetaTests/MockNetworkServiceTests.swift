@@ -42,7 +42,7 @@ final class NetworkServiceTestHelper: XCTestCase {
         let mock = MockNetworkService(scheduler: scheduler)
         mock.outputs = [RepeatResponse.repeatInfinite(MockingBird.chirp)]
         for _ in 0 ..< 5 {
-            let result: Result<MockingBird, NetworkService.Failure> = await mock.get(try url())
+            let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
             XCTAssertEqual(try result.get(), .chirp)
         }
         let queuedOutput = try XCTUnwrap(mock.outputs.first as? RepeatResponse)
@@ -58,7 +58,7 @@ final class NetworkServiceTestHelper: XCTestCase {
         let mock = MockNetworkService(scheduler: scheduler)
         mock.outputs = [RepeatResponse.repeat(MockingBird(chirp: true), count: 5)]
         for _ in 0 ..< 5 {
-            let result: Result<MockingBird, NetworkService.Failure> = await mock.get(try url())
+            let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
             XCTAssertEqual(try result.get(), .chirp)
         }
         XCTAssert(mock.outputs.isEmpty, "Output queue is empty after the specified number of repititions")
@@ -69,7 +69,7 @@ final class NetworkServiceTestHelper: XCTestCase {
         mock.delay = Delay.seconds(2)
         mock.outputs = [MockingBird.chirp]
         let startTime = Date()
-        let result: Result<MockingBird, NetworkService.Failure> = await mock.get(try url())
+        let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
         let endTime = Date()
         let duration = startTime.distance(to: endTime)
         XCTAssertGreaterThan(duration, 2)
@@ -84,7 +84,7 @@ final class NetworkServiceTestHelper: XCTestCase {
         let expectation = expectation(description: "Never receive a response")
         expectation.isInverted = true
         let task = Task {
-            let result: Result<MockingBird, NetworkService.Failure> = await mock.get(try url())
+            let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
             XCTAssertEqual(try result.get(), MockingBird.chirp)
             expectation.fulfill()
         }
