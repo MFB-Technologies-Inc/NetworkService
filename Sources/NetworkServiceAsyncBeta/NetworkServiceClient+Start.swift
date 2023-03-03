@@ -23,7 +23,6 @@ extension NetworkServiceClient {
         }
         return result
             .httpMap()
-            .mapToNetworkError()
     }
 
     private func response(_ request: URLRequest) async throws -> (Data, URLResponse) {

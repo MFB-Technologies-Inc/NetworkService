@@ -23,12 +23,7 @@ extension Result where Success == (Data, URLResponse), Failure == Error {
             }
             return .success(data)
         }
-        .mapError { error in
-            guard let failure = error as? NetworkService.Failure else {
-                return .unknown(error as NSError)
-            }
-            return failure
-        }
+        .mapToNetworkError()
     }
 }
 
@@ -38,10 +33,13 @@ extension Result {
     ///     - `Publishers.MapError<Self, NetworkService.Failure>`
     public func mapToNetworkError() -> Result<Success, NetworkService.Failure> {
         mapError { error in
-            guard let failure = error as? NetworkService.Failure else {
-                return NetworkService.Failure.unknown(error as NSError)
+            if let urlError = error as? URLError {
+                return .urlError(urlError)
+            } else if let failure = error as? NetworkService.Failure {
+                return failure
+            } else {
+                return .unknown(error as NSError)
             }
-            return failure
         }
     }
 }
