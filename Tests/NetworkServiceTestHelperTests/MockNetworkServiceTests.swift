@@ -18,8 +18,16 @@ struct MockingBird: TopLevelCodable, MockOutput, Equatable {
 
     static let encoder = JSONEncoder()
     static let decoder = JSONDecoder()
+
+    static let chirp: Self = MockingBird(chirp: true)
+    static let notChirp: Self = MockingBird(chirp: false)
 }
 
+func url() throws -> URL {
+    try XCTUnwrap(URL(string: "/"))
+}
+
+@available(swift 5.5)
 final class NetworkServiceTestHelper: XCTestCase {
     typealias Failure = MockNetworkService<AnySchedulerOf<DispatchQueue>>.Failure
 
@@ -30,92 +38,57 @@ final class NetworkServiceTestHelper: XCTestCase {
         cancellables.forEach { $0.cancel() }
     }
 
-    func testQueueInfiniteRepeat() throws {
+    func testQueueInfiniteRepeat() async throws {
         let mock = MockNetworkService(scheduler: scheduler)
-        mock.outputs = [RepeatResponse.repeatInfinite(MockingBird(chirp: true))]
+        mock.outputs = [RepeatResponse.repeatInfinite(MockingBird.chirp)]
         for _ in 0 ..< 5 {
-            let receiveOutput = expectation(description: "Async output received")
-            mock.start(URLRequest(url: URL(string: "/")!))
-                .decode(type: MockingBird.self, decoder: JSONDecoder())
-                .assertNoFailure()
-                .sink { output in
-                    assert(
-                        output == MockingBird(chirp: true),
-                        "Received output matches expected for very many interations"
-                    )
-                    receiveOutput.fulfill()
-                }
-                .store(in: &cancellables)
-            wait(for: [receiveOutput], timeout: 2)
+            let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
+            XCTAssertEqual(try result.get(), .chirp)
         }
-        assert(mock.outputs.count == 1, "Queued outputs should only be one element.")
         let queuedOutput = try XCTUnwrap(mock.outputs.first as? RepeatResponse)
         switch queuedOutput {
         case .repeat:
             XCTFail("Queued output is wrong value")
         case let .repeatInfinite(output):
-            assert(output as? MockingBird == MockingBird(chirp: true), "Queued output matches expectation")
+            XCTAssertEqual(output as? MockingBird, MockingBird.chirp, "Queued output matches expectation")
         }
     }
 
-    func testQueueFiniteRepeat() throws {
+    func testQueueFiniteRepeat() async throws {
         let mock = MockNetworkService(scheduler: scheduler)
         mock.outputs = [RepeatResponse.repeat(MockingBird(chirp: true), count: 5)]
         for _ in 0 ..< 5 {
-            let receiveOutput = expectation(description: "Async output received")
-            mock.start(URLRequest(url: URL(string: "/")!))
-                .decode(type: MockingBird.self, decoder: JSONDecoder())
-                .assertNoFailure()
-                .sink { output in
-                    assert(
-                        output == MockingBird(chirp: true),
-                        "Received output matches expected for very many iterations"
-                    )
-                    receiveOutput.fulfill()
-                }
-                .store(in: &cancellables)
-            wait(for: [receiveOutput], timeout: 2)
+            let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
+            XCTAssertEqual(try result.get(), .chirp)
         }
-        assert(mock.outputs.isEmpty, "Output queue is empty after the specified number of repititions")
+        XCTAssert(mock.outputs.isEmpty, "Output queue is empty after the specified number of repititions")
     }
 
-    func testFiniteDelay() throws {
+    func testFiniteDelay() async throws {
         let mock = MockNetworkService(scheduler: scheduler)
         mock.delay = Delay.seconds(2)
-        mock.outputs = [MockingBird(chirp: true)]
-        let receiveOutput = expectation(description: "Async output received")
+        mock.outputs = [MockingBird.chirp]
         let startTime = Date()
-        mock.start(URLRequest(url: URL(string: "/")!))
-            .decode(type: MockingBird.self, decoder: JSONDecoder())
-            .assertNoFailure()
-            .sink { output in
-                assert(output == MockingBird(chirp: true), "Received output matches expected for very many interations")
-                receiveOutput.fulfill()
-            }
-            .store(in: &cancellables)
-        wait(for: [receiveOutput], timeout: 5)
+        let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
         let endTime = Date()
         let duration = startTime.distance(to: endTime)
-        assert(
-            duration > 2 && duration < 3,
-            "Elapsed time is greater than the set delay with a margin of error of 1 second."
-        )
+        XCTAssertGreaterThan(duration, 2)
+        XCTAssertLessThan(duration, 3)
+        XCTAssertEqual(try result.get(), MockingBird.chirp)
     }
 
-    func testInfiniteDelay() throws {
+    func testInfiniteDelay() async throws {
         let mock = MockNetworkService(scheduler: scheduler)
         mock.delay = Delay.infinite
-        mock.outputs = [MockingBird(chirp: true)]
-        let receiveOutput = expectation(description: "Async output received")
-        receiveOutput.isInverted = true
-        mock.start(URLRequest(url: URL(string: "/")!))
-            .decode(type: MockingBird.self, decoder: JSONDecoder())
-            .assertNoFailure()
-            .sink { output in
-                assert(output == MockingBird(chirp: true), "Received output matches expected for very many interations")
-                receiveOutput.fulfill()
-            }
-            .store(in: &cancellables)
-        wait(for: [receiveOutput], timeout: 2)
+        mock.outputs = [MockingBird.chirp]
+        let expectation = expectation(description: "Never receive a response")
+        expectation.isInverted = true
+        let task = Task {
+            let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
+            XCTAssertEqual(try result.get(), MockingBird.chirp)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 2)
+        task.cancel()
     }
 }
