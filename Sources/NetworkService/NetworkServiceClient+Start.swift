@@ -32,7 +32,7 @@ extension NetworkServiceClient {
             operation: {
                 try await withCheckedThrowingContinuation { [session] continuation in
                     let task = session.dataTask(with: request, completionHandler: { data, urlResponse, error in
-                        guard let data, let urlResponse else {
+                        guard let data = data, let urlResponse = urlResponse else {
                             return continuation.resume(throwing: error ?? URLError(.badServerResponse))
                         }
                         continuation.resume(returning: (data, urlResponse))
