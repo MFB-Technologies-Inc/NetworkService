@@ -8,7 +8,7 @@
 
 import Combine
 import Foundation
-import NetworkServiceAsyncBeta
+import NetworkService
 import XCTest
 
 @available(swift 5.5)

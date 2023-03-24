@@ -7,9 +7,19 @@ on:
   pull_request:
     branches:
       - '*'
+  workflow_dispatch:
 
 jobs:
-  library:
+  lint:
+    runs-on: macos-latest
+    environment: default
+    steps:
+      - uses: actions/checkout@v3
+      - name: Format lint
+        run: swiftformat --lint .
+      - name: Lint
+        run: swiftlint .
+  macos-test:
     environment: default
     strategy:
       matrix:
@@ -17,8 +27,6 @@ jobs:
           - macos-11
           - macos-12
         xcode:
-          - '12.4'
-          - '12.5.1'
           - '13.2'
           - '13.4'
           - '14.0.1'
@@ -35,19 +43,11 @@ jobs:
             xcode: '14.1'
           - os: macos-11
             xcode: '14.2'
-          - os: macos-12
-            xcode: '12.4'
-          - os: macos-12
-            xcode: '12.5.1'
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Select Xcode ${{ matrix.xcode }}
         run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
-      - name: Format lint
-        run: swiftformat --lint .
-      - name: Lint
-        run: swiftlint .
       - name: Run Tests
         run: swift test --enable-code-coverage --parallel
       - name: Swift Coverage Report

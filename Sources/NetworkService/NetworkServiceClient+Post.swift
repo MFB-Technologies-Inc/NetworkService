@@ -21,12 +21,9 @@ extension NetworkServiceClient {
         _ body: Data,
         to url: URL,
         headers: [HTTPHeader] = []
-    ) -> AnyPublisher<Data, Failure> {
-        var request = URLRequest(url: url)
-        request.httpBody = body
-        request.method = .POST
-        headers.forEach { request.addValue($0) }
-        return start(request)
+    ) async -> Result<Data, Failure> {
+        let request = URLRequest.build(url: url, body: body, headers: headers, method: .POST)
+        return await start(request)
     }
 
     /// - Parameters:
@@ -40,17 +37,16 @@ extension NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader],
         encoder: Encoder
-    ) -> AnyPublisher<Data, Failure>
+    ) async -> Result<Data, Failure>
         where RequestBody: Encodable,
         Encoder: TopLevelEncoder,
         Encoder.Output == Data
     {
         do {
             let body = try encoder.encode(body)
-            return post(body, to: url, headers: headers)
+            return await post(body, to: url, headers: headers)
         } catch {
-            return Fail(error: Failure.cocoa(error as NSError))
-                .eraseToAnyPublisher()
+            return .failure(Failure.unknown(error as NSError))
         }
     }
 
@@ -63,15 +59,16 @@ extension NetworkServiceClient {
         _ body: RequestBody,
         to url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<Data, Failure>
+    ) async -> Result<Data, Failure>
         where RequestBody: TopLevelEncodable
     {
         do {
             let body = try RequestBody.encoder.encode(body)
-            return post(body, to: url, headers: headers)
+            return await post(body, to: url, headers: headers)
+        } catch let urlError as URLError {
+            return .failure(Failure.urlError(urlError))
         } catch {
-            return Fail(error: Failure.cocoa(error as NSError))
-                .eraseToAnyPublisher()
+            return .failure(Failure.unknown(error as NSError))
         }
     }
 
@@ -87,14 +84,14 @@ extension NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader] = [],
         decoder: Decoder
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
     {
         var request = URLRequest(url: url)
         request.httpBody = body
         request.method = .POST
         headers.forEach { request.addValue($0) }
-        return start(request, with: decoder)
+        return await start(request, with: decoder)
     }
 
     /// - Parameters:
@@ -106,10 +103,10 @@ extension NetworkServiceClient {
         _ body: Data,
         to url: URL,
         headers: [HTTPHeader] = []
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where ResponseBody: TopLevelDecodable
     {
-        post(body, to: url, headers: headers, decoder: ResponseBody.decoder)
+        await post(body, to: url, headers: headers, decoder: ResponseBody.decoder)
     }
 
     /// Send a post request to a `URL`
@@ -126,7 +123,7 @@ extension NetworkServiceClient {
         headers: [HTTPHeader] = [],
         encoder: Encoder,
         decoder: Decoder
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where RequestBody: Encodable,
         ResponseBody: Decodable,
         Encoder: TopLevelEncoder,
@@ -136,10 +133,11 @@ extension NetworkServiceClient {
     {
         do {
             let body = try encoder.encode(body)
-            return post(body, to: url, headers: headers, decoder: decoder)
+            return await post(body, to: url, headers: headers, decoder: decoder)
+        } catch let urlError as URLError {
+            return .failure(Failure.urlError(urlError))
         } catch {
-            return Fail(error: Failure.cocoa(error as NSError))
-                .eraseToAnyPublisher()
+            return .failure(Failure.unknown(error as NSError))
         }
     }
 
@@ -153,10 +151,14 @@ extension NetworkServiceClient {
         _ body: RequestBody,
         to url: URL,
         headers: [HTTPHeader] = []
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where RequestBody: TopLevelEncodable,
         ResponseBody: TopLevelDecodable
     {
-        post(body, to: url, headers: headers, encoder: RequestBody.encoder, decoder: ResponseBody.decoder)
+        await post(body, to: url, headers: headers, encoder: RequestBody.encoder, decoder: ResponseBody.decoder)
     }
 }
+
+#if canImport(Combine)
+    extension NetworkServiceClient {}
+#endif

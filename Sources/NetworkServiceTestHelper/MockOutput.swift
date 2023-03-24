@@ -7,7 +7,7 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
-import NetworkServiceAsyncBeta
+import NetworkService
 
 /// A type erasing protocol for `MockNetworkService`'s output queue. Allows a heterogenous array.
 public protocol MockOutput {

@@ -12,10 +12,11 @@ import Foundation
 /// Provides methods for making network requests and processing the resulting responses
 public final class NetworkService {
     /// `NetworkService`'s error domain
-    public enum Failure: Error, Hashable {
-        case url(URLResponse)
-        case http(HTTPURLResponse)
-        case cocoa(NSError)
+    public enum Failure: Error, Hashable, Sendable {
+        case urlResponse(URLResponse)
+        case httpResponse(HTTPURLResponse)
+        case urlError(URLError)
+        case unknown(NSError)
     }
 
     public init() {}
@@ -23,4 +24,5 @@ public final class NetworkService {
 
 // MARK: NetworkService+NetworkServiceClient
 
+@available(swift 5.5)
 extension NetworkService: NetworkServiceClient {}

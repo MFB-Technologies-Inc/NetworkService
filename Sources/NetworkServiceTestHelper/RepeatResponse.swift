@@ -7,7 +7,7 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
-import NetworkServiceAsyncBeta
+import NetworkService
 
 /// Wraps a given output value to define how many times it should be repeated.
 public enum RepeatResponse: MockOutput {

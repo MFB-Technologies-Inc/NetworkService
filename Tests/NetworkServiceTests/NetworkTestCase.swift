@@ -11,12 +11,8 @@ import Foundation
 import OHHTTPStubs
 import XCTest
 
-class NetworkTestCase: AsyncTestCase {
+class NetworkTestCase: XCTestCase {
     override func tearDown() {
         HTTPStubs.removeAllStubs()
-    }
-
-    func wait(for expectations: [XCTestExpectation]) {
-        wait(for: expectations, timeout: 1)
     }
 }

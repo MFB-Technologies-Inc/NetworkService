@@ -13,6 +13,7 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 import XCTest
 
+@available(swift 5.5)
 final class NetworkServiceTests: NetworkTestCase {
     typealias Failure = NetworkService.Failure
 

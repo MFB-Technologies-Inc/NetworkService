@@ -10,6 +10,7 @@ import Combine
 import Foundation
 
 /// Dependency injection point for `NetworkService`
+@available(swift 5.5)
 public protocol NetworkServiceClient {
     /// `NetworkService`'s error domain
     typealias Failure = NetworkService.Failure
@@ -28,7 +29,7 @@ public protocol NetworkServiceClient {
     func delete(
         _ url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<Data, Failure>
+    ) async -> Result<Data, Failure>
 
     /// Send a delete request to a `URL`
     /// - Parameters:
@@ -40,7 +41,7 @@ public protocol NetworkServiceClient {
         _ url: URL,
         headers: [HTTPHeader],
         decoder: Decoder
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
 
     /// Send a delete request to a `URL`
@@ -48,7 +49,7 @@ public protocol NetworkServiceClient {
     ///     - url: The destination for the request
     ///     - headers: HTTP headers for the request
     /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
-    func delete<ResponseBody>(_ url: URL, headers: [HTTPHeader]) -> AnyPublisher<ResponseBody, Failure>
+    func delete<ResponseBody>(_ url: URL, headers: [HTTPHeader]) async -> Result<ResponseBody, Failure>
         where ResponseBody: TopLevelDecodable
 
     // MARK: GET
@@ -60,7 +61,7 @@ public protocol NetworkServiceClient {
     func get(
         _ url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<Data, Failure>
+    ) async -> Result<Data, Failure>
 
     /// Send a get request to a `URL`
     /// - Parameters:
@@ -72,7 +73,7 @@ public protocol NetworkServiceClient {
         _ url: URL,
         headers: [HTTPHeader],
         decoder: Decoder
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
 
     /// Send a get request to a `URL`
@@ -80,7 +81,7 @@ public protocol NetworkServiceClient {
     ///     - url: The destination for the request
     ///     - headers: HTTP headers for the request
     /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
-    func get<ResponseBody>(_ url: URL, headers: [HTTPHeader]) -> AnyPublisher<ResponseBody, Failure>
+    func get<ResponseBody>(_ url: URL, headers: [HTTPHeader]) async -> Result<ResponseBody, Failure>
         where ResponseBody: TopLevelDecodable
 
     // MARK: POST
@@ -94,7 +95,7 @@ public protocol NetworkServiceClient {
         _ body: Data,
         to url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<Data, Failure>
+    ) async -> Result<Data, Failure>
 
     /// - Parameters:
     ///   - body: The body of the request as `Encodable`
@@ -107,7 +108,7 @@ public protocol NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader],
         encoder: Encoder
-    ) -> AnyPublisher<Data, Failure>
+    ) async -> Result<Data, Failure>
         where RequestBody: Encodable,
         Encoder: TopLevelEncoder,
         Encoder.Output == Data
@@ -121,7 +122,7 @@ public protocol NetworkServiceClient {
         _ body: RequestBody,
         to url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<Data, Failure>
+    ) async -> Result<Data, Failure>
         where RequestBody: TopLevelEncodable
 
     /// Send a post request to a `URL`
@@ -136,7 +137,7 @@ public protocol NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader],
         decoder: Decoder
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
 
     /// - Parameters:
@@ -148,7 +149,7 @@ public protocol NetworkServiceClient {
         _ body: Data,
         to url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where ResponseBody: TopLevelDecodable
 
     /// Send a post request to a `URL`
@@ -165,7 +166,7 @@ public protocol NetworkServiceClient {
         headers: [HTTPHeader],
         encoder: Encoder,
         decoder: Decoder
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where RequestBody: Encodable,
         ResponseBody: Decodable,
         Encoder: TopLevelEncoder,
@@ -183,7 +184,7 @@ public protocol NetworkServiceClient {
         _ body: RequestBody,
         to url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where RequestBody: TopLevelEncodable,
         ResponseBody: TopLevelDecodable
 
@@ -198,7 +199,7 @@ public protocol NetworkServiceClient {
         _ body: Data,
         to url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<Data, Failure>
+    ) async -> Result<Data, Failure>
 
     /// - Parameters:
     ///   - body: The body of the request as `Encodable`
@@ -211,7 +212,7 @@ public protocol NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader],
         encoder: Encoder
-    ) -> AnyPublisher<Data, Failure>
+    ) async -> Result<Data, Failure>
         where RequestBody: Encodable,
         Encoder: TopLevelEncoder,
         Encoder.Output == Data
@@ -225,7 +226,7 @@ public protocol NetworkServiceClient {
         _ body: RequestBody,
         to url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<Data, Failure>
+    ) async -> Result<Data, Failure>
         where RequestBody: TopLevelEncodable
 
     /// Send a put request to a `URL`
@@ -240,7 +241,7 @@ public protocol NetworkServiceClient {
         to url: URL,
         headers: [HTTPHeader],
         decoder: Decoder
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
 
     /// - Parameters:
@@ -252,7 +253,7 @@ public protocol NetworkServiceClient {
         _ body: Data,
         to url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where ResponseBody: TopLevelDecodable
 
     /// Send a put request to a `URL`
@@ -269,7 +270,7 @@ public protocol NetworkServiceClient {
         headers: [HTTPHeader],
         encoder: Encoder,
         decoder: Decoder
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where RequestBody: Encodable,
         ResponseBody: Decodable,
         Encoder: TopLevelEncoder,
@@ -287,7 +288,7 @@ public protocol NetworkServiceClient {
         _ body: RequestBody,
         to url: URL,
         headers: [HTTPHeader]
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where RequestBody: TopLevelEncodable,
         ResponseBody: TopLevelDecodable
 
@@ -299,17 +300,17 @@ public protocol NetworkServiceClient {
     func start<ResponseBody, Decoder>(
         _ request: URLRequest,
         with decoder: Decoder
-    ) -> AnyPublisher<ResponseBody, Failure>
+    ) async -> Result<ResponseBody, Failure>
         where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
 
     /// Start a `URLRequest`
     /// - Parameter request: The request as a `URLRequest`
     /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    func start<ResponseBody>(_ request: URLRequest) -> AnyPublisher<ResponseBody, Failure>
+    func start<ResponseBody>(_ request: URLRequest) async -> Result<ResponseBody, Failure>
         where ResponseBody: TopLevelDecodable
 
     /// Start a `URLRequest`
     /// - Parameter request: The request as a `URLRequest`
     /// - Returns: Type erased publisher with output as `Data` and `NetworkService`'s error domain for failure
-    func start(_ request: URLRequest) -> AnyPublisher<Data, Failure>
+    func start(_ request: URLRequest) async -> Result<Data, Failure>
 }

@@ -16,7 +16,7 @@ import XCTest
 extension NetworkServiceTests {
     // MARK: Success
 
-    func testPostSuccess() throws {
+    func testPostSuccess() async throws {
         let url = try destinationURL()
         let data = (try? responseBodyEncoded()) ?? Data()
         stub(
@@ -32,33 +32,14 @@ extension NetworkServiceTests {
             )
         }
 
-        let successfulResponse = expectation(description: "Receive a successful response")
-        let finished = expectation(description: "Publisher finished")
-
         let service = NetworkService()
-        let publisher: AnyPublisher<Lyric, Failure> = service.post(data, to: url)
-        publisher.receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { completion in
-                    switch completion {
-                    case let .failure(error):
-                        XCTFail("Unexpected failure: \(error)")
-                    case .finished:
-                        finished.fulfill()
-                    }
-                },
-                receiveValue: { value in
-                    assert(value == Lyric.test, "Response body equals expected value")
-                    successfulResponse.fulfill()
-                }
-            )
-            .store(in: &cancellables)
-        wait(for: [successfulResponse, finished])
+        let result: Result<Lyric, Failure> = await service.post(data, to: url)
+        XCTAssertEqual(try result.get(), Lyric.test)
     }
 
     // MARK: Failure
 
-    func testPostFailure() throws {
+    func testPostFailure() async throws {
         let data = (try? responseBodyEncoded()) ?? Data()
         stub(
             condition: isHost(host)
@@ -73,32 +54,12 @@ extension NetworkServiceTests {
             )
         }
 
-        let errorResponse = expectation(description: "Responded with error as expected")
-
         let service = NetworkService()
         let url = try destinationURL()
-        let publisher: AnyPublisher<Lyric, Failure> = service.post(data, to: url)
-        publisher.receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { completion in
-                    switch completion {
-                    case let .failure(error):
-                        switch error {
-                        case let .http(response):
-                            assert(response.isClientError)
-                            errorResponse.fulfill()
-                        default:
-                            XCTFail("Wrong error type when expecting a client failure: \(error)")
-                        }
-                    case .finished:
-                        XCTFail("Unexpected successful finish")
-                    }
-                },
-                receiveValue: { _ in
-                    XCTFail("Unexpected successful response")
-                }
-            )
-            .store(in: &cancellables)
-        wait(for: [errorResponse])
+        let result: Result<Lyric, Failure> = await service.post(data, to: url)
+        guard case let .failure(.httpResponse(response)) = result else {
+            return XCTFail("Expecting failure but received success.")
+        }
+        XCTAssert(response.isClientError)
     }
 }
