@@ -24,5 +24,4 @@ public final class NetworkService {
 
 // MARK: NetworkService+NetworkServiceClient
 
-@available(swift 5.5)
 extension NetworkService: NetworkServiceClient {}

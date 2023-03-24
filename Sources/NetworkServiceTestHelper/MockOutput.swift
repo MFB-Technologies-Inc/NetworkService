@@ -27,6 +27,7 @@ extension NetworkService.Failure: MockOutput {
 }
 
 #if canImport(Combine)
+    import Combine
     extension MockOutput where Self: TopLevelEncodable {
         public var output: Result<Data, NetworkService.Failure> {
             Result {
