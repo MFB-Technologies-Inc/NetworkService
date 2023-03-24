@@ -4,7 +4,7 @@
 [![CI](https://github.com/MFB-Technologies-Inc/NetworkService/actions/workflows/ci.yml/badge.svg)](https://github.com/MFB-Technologies-Inc/NetworkService/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/MFB-Technologies-Inc/NetworkService/branch/main/graph/badge.svg?token=3LpLfgAhq3)](https://codecov.io/gh/MFB-Technologies-Inc/NetworkService)
 
-Reactive wrapper for URLSession using Combine. At its core, the library consist of the `NetworkServiceClient` protocol along with a minimal implementation `NetworkService`.
+Async wrapper and dependency injection layer for URLSession. At its core, the library consist of the `NetworkServiceClient` protocol along with a minimal implementation `NetworkService`.
 
 ### TopLevelCodable
 A notable convenience the library provides is the `TopLevelCodable` protocol that enables easy encoding and decoding of conforming types. The protocol associates a `TopLevelEncoder` and `TopLevelDecoder` with a given type so that it is used by the library without explicitly passing it as a parameter. Additionally, `TopLevelEncodable` and `TopLevelDecodable` are included.
@@ -23,42 +23,39 @@ let foo = Foo(bar: 0)
 ```
 #### GET
 ```swift
-let publisher: AnyPublisher<Foo, Failuer> = networkService.get(url)
-let cancellable = publisher.assertNoFailure().sink { foo in
-    print(foo.bar)
-}
+let result: Result<Foo, NetworkService.Failure> = await networkService.get(url)
+let foo = try result.get()
+print(foo.bar)
 ```
 
 #### POST
 ```swift
-let publisher: AnyPublisher<Foo, Failuer> = networkService.post(foo, to: url)
-let cancellable = publisher.assertNoFailure().sink { foo in
-    print(foo.bar)
-}
+let result: Result<Foo, NetworkService.Failure> = await networkService.post(foo, to: url)
+let foo = try result.get()
+print(foo.bar)
 ```
 
 #### PUT
 ```swift
-let publisher: AnyPublisher<Foo, Failuer> = networkService.put(foo, to: url)
-let cancellable = publisher.assertNoFailure().sink { foo in
-    print(foo.bar)
-}
+let result: Result<Foo, NetworkService.Failure> = await networkService.put(foo, to: url)
+let foo = try result.get()
+print(foo.bar)
 ```
 
 #### DELETE
 ```swift
-let publisher: AnyPublisher<Foo, Failuer> = networkService.get(url)
-let cancellable = publisher.assertNoFailure().sink { _ in }
+let result: Result<Foo, NetworkService.Failure> = await networkService.get(url)
+let foo = try result.get()
+print(foo.bar)
 ```
 
 #### Start
 ```swift
 var request = URLRequest(url: url)
 request.method = .GET
-let publisher: AnyPublisher<Foo, Failuer> = networkService.start(request)
-let cancellable = publisher.assertNoFailure().sink { foo in
-    print(foo.bar)
-}
+let result = await networkService.start(request)
+let foo = try result.get()
+print(foo.bar)
 ```
 ## NetworkServiceTestHelper
 
