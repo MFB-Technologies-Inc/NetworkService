@@ -6,311 +6,382 @@
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
 
-import Combine
 import Foundation
 
-/// Dependency injection point for `NetworkService`
-@available(swift 5.5)
-public protocol NetworkServiceClient {
-    /// `NetworkService`'s error domain
-    typealias Failure = NetworkService.Failure
+#if canImport(Combine)
+    import Combine
 
-    // MARK: Get Session
+    /// Dependency injection point for `NetworkService`
+    public protocol NetworkServiceClient {
+        /// `NetworkService`'s error domain
+        typealias Failure = NetworkService.Failure
 
-    /// - Returns: Configured URLSession
-    func getSession() -> URLSession
+        // MARK: Get Session
 
-    // MARK: DELETE
+        /// - Returns: Configured URLSession
+        func getSession() -> URLSession
 
-    /// - Parameters:
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
-    func delete(
-        _ url: URL,
-        headers: [HTTPHeader]
-    ) async -> Result<Data, Failure>
+        // MARK: DELETE
 
-    /// Send a delete request to a `URL`
-    /// - Parameters:
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    ///   - decoder: `TopLevelDecoder` for decoding the response body
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    func delete<ResponseBody, Decoder>(
-        _ url: URL,
-        headers: [HTTPHeader],
-        decoder: Decoder
-    ) async -> Result<ResponseBody, Failure>
-        where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
+        /// - Parameters:
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func delete(
+            _ url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<Data, Failure>
 
-    /// Send a delete request to a `URL`
-    /// - Parameters:
-    ///     - url: The destination for the request
-    ///     - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
-    func delete<ResponseBody>(_ url: URL, headers: [HTTPHeader]) async -> Result<ResponseBody, Failure>
-        where ResponseBody: TopLevelDecodable
+        /// Send a delete request to a `URL`
+        /// - Parameters:
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        ///   - decoder: `TopLevelDecoder` for decoding the response body
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        func delete<ResponseBody, Decoder>(
+            _ url: URL,
+            headers: [HTTPHeader],
+            decoder: Decoder
+        ) async -> Result<ResponseBody, Failure>
+            where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
 
-    // MARK: GET
+        /// Send a delete request to a `URL`
+        /// - Parameters:
+        ///     - url: The destination for the request
+        ///     - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// failure
+        func delete<ResponseBody>(_ url: URL, headers: [HTTPHeader]) async -> Result<ResponseBody, Failure>
+            where ResponseBody: TopLevelDecodable
 
-    /// - Parameters:
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
-    func get(
-        _ url: URL,
-        headers: [HTTPHeader]
-    ) async -> Result<Data, Failure>
+        // MARK: GET
 
-    /// Send a get request to a `URL`
-    /// - Parameters:
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    ///   - decoder:`TopLevelDecoder` for decoding the response body
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    func get<ResponseBody, Decoder>(
-        _ url: URL,
-        headers: [HTTPHeader],
-        decoder: Decoder
-    ) async -> Result<ResponseBody, Failure>
-        where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
+        /// - Parameters:
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func get(
+            _ url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<Data, Failure>
 
-    /// Send a get request to a `URL`
-    /// - Parameters:
-    ///     - url: The destination for the request
-    ///     - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
-    func get<ResponseBody>(_ url: URL, headers: [HTTPHeader]) async -> Result<ResponseBody, Failure>
-        where ResponseBody: TopLevelDecodable
+        /// Send a get request to a `URL`
+        /// - Parameters:
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        ///   - decoder:`TopLevelDecoder` for decoding the response body
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        func get<ResponseBody, Decoder>(
+            _ url: URL,
+            headers: [HTTPHeader],
+            decoder: Decoder
+        ) async -> Result<ResponseBody, Failure>
+            where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
 
-    // MARK: POST
+        /// Send a get request to a `URL`
+        /// - Parameters:
+        ///     - url: The destination for the request
+        ///     - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// failure
+        func get<ResponseBody>(_ url: URL, headers: [HTTPHeader]) async -> Result<ResponseBody, Failure>
+            where ResponseBody: TopLevelDecodable
 
-    /// - Parameters:
-    ///   - body: The body of the request as `Data`
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
-    func post(
-        _ body: Data,
-        to url: URL,
-        headers: [HTTPHeader]
-    ) async -> Result<Data, Failure>
+        // MARK: POST
 
-    /// - Parameters:
-    ///   - body: The body of the request as `Encodable`
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    ///   - encoder: `TopLevelEncoder` for encoding the request body
-    /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
-    func post<RequestBody, Encoder>(
-        _ body: RequestBody,
-        to url: URL,
-        headers: [HTTPHeader],
-        encoder: Encoder
-    ) async -> Result<Data, Failure>
-        where RequestBody: Encodable,
-        Encoder: TopLevelEncoder,
-        Encoder.Output == Data
+        /// - Parameters:
+        ///   - body: The body of the request as `Data`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func post(
+            _ body: Data,
+            to url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<Data, Failure>
 
-    /// - Parameters:
-    ///   - body: The body of the request as `TopLevelEncodable`
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
-    func post<RequestBody>(
-        _ body: RequestBody,
-        to url: URL,
-        headers: [HTTPHeader]
-    ) async -> Result<Data, Failure>
-        where RequestBody: TopLevelEncodable
+        /// - Parameters:
+        ///   - body: The body of the request as `Encodable`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        ///   - encoder: `TopLevelEncoder` for encoding the request body
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func post<RequestBody, Encoder>(
+            _ body: RequestBody,
+            to url: URL,
+            headers: [HTTPHeader],
+            encoder: Encoder
+        ) async -> Result<Data, Failure>
+            where RequestBody: Encodable,
+            Encoder: TopLevelEncoder,
+            Encoder.Output == Data
 
-    /// Send a post request to a `URL`
-    /// - Parameters:
-    ///   - body: The body of the request as `Data`
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    ///   - decoder:`TopLevelDecoder` for decoding the response body
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    func post<ResponseBody, Decoder>(
-        _ body: Data,
-        to url: URL,
-        headers: [HTTPHeader],
-        decoder: Decoder
-    ) async -> Result<ResponseBody, Failure>
-        where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
+        /// - Parameters:
+        ///   - body: The body of the request as `TopLevelEncodable`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func post<RequestBody>(
+            _ body: RequestBody,
+            to url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<Data, Failure>
+            where RequestBody: TopLevelEncodable
 
-    /// - Parameters:
-    ///   - body: The body of the request as `Data`
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
-    func post<ResponseBody>(
-        _ body: Data,
-        to url: URL,
-        headers: [HTTPHeader]
-    ) async -> Result<ResponseBody, Failure>
-        where ResponseBody: TopLevelDecodable
+        /// Send a post request to a `URL`
+        /// - Parameters:
+        ///   - body: The body of the request as `Data`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        ///   - decoder:`TopLevelDecoder` for decoding the response body
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        func post<ResponseBody, Decoder>(
+            _ body: Data,
+            to url: URL,
+            headers: [HTTPHeader],
+            decoder: Decoder
+        ) async -> Result<ResponseBody, Failure>
+            where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
 
-    /// Send a post request to a `URL`
-    /// - Parameters:
-    ///   - body: The body of the request as a `Encodable` conforming type
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    ///   - encoder:`TopLevelEncoder` for encoding the request body
-    ///   - decoder:`TopLevelDecoder` for decoding the response body
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    func post<RequestBody, ResponseBody, Encoder, Decoder>(
-        _ body: RequestBody,
-        to url: URL,
-        headers: [HTTPHeader],
-        encoder: Encoder,
-        decoder: Decoder
-    ) async -> Result<ResponseBody, Failure>
-        where RequestBody: Encodable,
-        ResponseBody: Decodable,
-        Encoder: TopLevelEncoder,
-        Encoder.Output == Data,
-        Decoder: TopLevelDecoder,
-        Decoder.Input == Data
+        /// - Parameters:
+        ///   - body: The body of the request as `Data`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// failure
+        func post<ResponseBody>(
+            _ body: Data,
+            to url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<ResponseBody, Failure>
+            where ResponseBody: TopLevelDecodable
 
-    /// Send a post request to a `URL`
-    /// - Parameters:
-    ///   - body: The body of the request as a `TopLevelEncodable` conforming type
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
-    func post<RequestBody, ResponseBody>(
-        _ body: RequestBody,
-        to url: URL,
-        headers: [HTTPHeader]
-    ) async -> Result<ResponseBody, Failure>
-        where RequestBody: TopLevelEncodable,
-        ResponseBody: TopLevelDecodable
+        /// Send a post request to a `URL`
+        /// - Parameters:
+        ///   - body: The body of the request as a `Encodable` conforming type
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        ///   - encoder:`TopLevelEncoder` for encoding the request body
+        ///   - decoder:`TopLevelDecoder` for decoding the response body
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        func post<RequestBody, ResponseBody, Encoder, Decoder>(
+            _ body: RequestBody,
+            to url: URL,
+            headers: [HTTPHeader],
+            encoder: Encoder,
+            decoder: Decoder
+        ) async -> Result<ResponseBody, Failure>
+            where RequestBody: Encodable,
+            ResponseBody: Decodable,
+            Encoder: TopLevelEncoder,
+            Encoder.Output == Data,
+            Decoder: TopLevelDecoder,
+            Decoder.Input == Data
 
-    // MARK: PUT
+        /// Send a post request to a `URL`
+        /// - Parameters:
+        ///   - body: The body of the request as a `TopLevelEncodable` conforming type
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// failure
+        func post<RequestBody, ResponseBody>(
+            _ body: RequestBody,
+            to url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<ResponseBody, Failure>
+            where RequestBody: TopLevelEncodable,
+            ResponseBody: TopLevelDecodable
 
-    /// - Parameters:
-    ///   - body: The body of the request as `Data`
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
-    func put(
-        _ body: Data,
-        to url: URL,
-        headers: [HTTPHeader]
-    ) async -> Result<Data, Failure>
+        // MARK: PUT
 
-    /// - Parameters:
-    ///   - body: The body of the request as `Encodable`
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    ///   - encoder: `TopLevelEncoder` for encoding the request body
-    /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
-    func put<RequestBody, Encoder>(
-        _ body: RequestBody,
-        to url: URL,
-        headers: [HTTPHeader],
-        encoder: Encoder
-    ) async -> Result<Data, Failure>
-        where RequestBody: Encodable,
-        Encoder: TopLevelEncoder,
-        Encoder.Output == Data
+        /// - Parameters:
+        ///   - body: The body of the request as `Data`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func put(
+            _ body: Data,
+            to url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<Data, Failure>
 
-    /// - Parameters:
-    ///   - body: The body of the request as `TopLevelEncodable`
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
-    func put<RequestBody>(
-        _ body: RequestBody,
-        to url: URL,
-        headers: [HTTPHeader]
-    ) async -> Result<Data, Failure>
-        where RequestBody: TopLevelEncodable
+        /// - Parameters:
+        ///   - body: The body of the request as `Encodable`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        ///   - encoder: `TopLevelEncoder` for encoding the request body
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func put<RequestBody, Encoder>(
+            _ body: RequestBody,
+            to url: URL,
+            headers: [HTTPHeader],
+            encoder: Encoder
+        ) async -> Result<Data, Failure>
+            where RequestBody: Encodable,
+            Encoder: TopLevelEncoder,
+            Encoder.Output == Data
 
-    /// Send a put request to a `URL`
-    /// - Parameters:
-    ///   - body: The body of the request as `Data`
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    ///   - decoder:`TopLevelDecoder` for decoding the response body
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    func put<ResponseBody, Decoder>(
-        _ body: Data,
-        to url: URL,
-        headers: [HTTPHeader],
-        decoder: Decoder
-    ) async -> Result<ResponseBody, Failure>
-        where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
+        /// - Parameters:
+        ///   - body: The body of the request as `TopLevelEncodable`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func put<RequestBody>(
+            _ body: RequestBody,
+            to url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<Data, Failure>
+            where RequestBody: TopLevelEncodable
 
-    /// - Parameters:
-    ///   - body: The body of the request as `Data`
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for failure
-    func put<ResponseBody>(
-        _ body: Data,
-        to url: URL,
-        headers: [HTTPHeader]
-    ) async -> Result<ResponseBody, Failure>
-        where ResponseBody: TopLevelDecodable
+        /// Send a put request to a `URL`
+        /// - Parameters:
+        ///   - body: The body of the request as `Data`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        ///   - decoder:`TopLevelDecoder` for decoding the response body
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        func put<ResponseBody, Decoder>(
+            _ body: Data,
+            to url: URL,
+            headers: [HTTPHeader],
+            decoder: Decoder
+        ) async -> Result<ResponseBody, Failure>
+            where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
 
-    /// Send a put request to a `URL`
-    /// - Parameters:
-    ///   - body: The body of the request as a `Encodable` conforming type
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    ///   - encoder:`TopLevelEncoder` for encoding the request body
-    ///   - decoder:`TopLevelDecoder` for decoding the response body
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    func put<RequestBody, ResponseBody, Encoder, Decoder>(
-        _ body: RequestBody,
-        to url: URL,
-        headers: [HTTPHeader],
-        encoder: Encoder,
-        decoder: Decoder
-    ) async -> Result<ResponseBody, Failure>
-        where RequestBody: Encodable,
-        ResponseBody: Decodable,
-        Encoder: TopLevelEncoder,
-        Encoder.Output == Data,
-        Decoder: TopLevelDecoder,
-        Decoder.Input == Data
+        /// - Parameters:
+        ///   - body: The body of the request as `Data`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// failure
+        func put<ResponseBody>(
+            _ body: Data,
+            to url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<ResponseBody, Failure>
+            where ResponseBody: TopLevelDecodable
 
-    /// Send a put request to a `URL`
-    /// - Parameters:
-    ///   - body: The body of the request as a `Encodable` conforming type
-    ///   - url: The destination for the request
-    ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    func put<RequestBody, ResponseBody>(
-        _ body: RequestBody,
-        to url: URL,
-        headers: [HTTPHeader]
-    ) async -> Result<ResponseBody, Failure>
-        where RequestBody: TopLevelEncodable,
-        ResponseBody: TopLevelDecodable
+        /// Send a put request to a `URL`
+        /// - Parameters:
+        ///   - body: The body of the request as a `Encodable` conforming type
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        ///   - encoder:`TopLevelEncoder` for encoding the request body
+        ///   - decoder:`TopLevelDecoder` for decoding the response body
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        func put<RequestBody, ResponseBody, Encoder, Decoder>(
+            _ body: RequestBody,
+            to url: URL,
+            headers: [HTTPHeader],
+            encoder: Encoder,
+            decoder: Decoder
+        ) async -> Result<ResponseBody, Failure>
+            where RequestBody: Encodable,
+            ResponseBody: Decodable,
+            Encoder: TopLevelEncoder,
+            Encoder.Output == Data,
+            Decoder: TopLevelDecoder,
+            Decoder.Input == Data
 
-    // MARK: URLRequest
+        /// Send a put request to a `URL`
+        /// - Parameters:
+        ///   - body: The body of the request as a `Encodable` conforming type
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        func put<RequestBody, ResponseBody>(
+            _ body: RequestBody,
+            to url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<ResponseBody, Failure>
+            where RequestBody: TopLevelEncodable,
+            ResponseBody: TopLevelDecodable
 
-    /// Start a `URLRequest`
-    /// - Parameter request: The request as a `URLRequest`
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    func start<ResponseBody, Decoder>(
-        _ request: URLRequest,
-        with decoder: Decoder
-    ) async -> Result<ResponseBody, Failure>
-        where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
+        // MARK: URLRequest
 
-    /// Start a `URLRequest`
-    /// - Parameter request: The request as a `URLRequest`
-    /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-    func start<ResponseBody>(_ request: URLRequest) async -> Result<ResponseBody, Failure>
-        where ResponseBody: TopLevelDecodable
+        /// Start a `URLRequest`
+        /// - Parameter request: The request as a `URLRequest`
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        func start<ResponseBody, Decoder>(
+            _ request: URLRequest,
+            with decoder: Decoder
+        ) async -> Result<ResponseBody, Failure>
+            where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
 
-    /// Start a `URLRequest`
-    /// - Parameter request: The request as a `URLRequest`
-    /// - Returns: Type erased publisher with output as `Data` and `NetworkService`'s error domain for failure
-    func start(_ request: URLRequest) async -> Result<Data, Failure>
-}
+        /// Start a `URLRequest`
+        /// - Parameter request: The request as a `URLRequest`
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        func start<ResponseBody>(_ request: URLRequest) async -> Result<ResponseBody, Failure>
+            where ResponseBody: TopLevelDecodable
+
+        /// Start a `URLRequest`
+        /// - Parameter request: The request as a `URLRequest`
+        /// - Returns: Type erased publisher with output as `Data` and `NetworkService`'s error domain for failure
+        func start(_ request: URLRequest) async -> Result<Data, Failure>
+    }
+#else
+    /// Dependency injection point for `NetworkService`
+    public protocol NetworkServiceClient {
+        /// `NetworkService`'s error domain
+        typealias Failure = NetworkService.Failure
+
+        // MARK: Get Session
+
+        /// - Returns: Configured URLSession
+        func getSession() -> URLSession
+
+        // MARK: DELETE
+
+        /// - Parameters:
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func delete(
+            _ url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<Data, Failure>
+
+        // MARK: GET
+
+        /// - Parameters:
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func get(
+            _ url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<Data, Failure>
+
+        // MARK: POST
+
+        /// - Parameters:
+        ///   - body: The body of the request as `Data`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func post(
+            _ body: Data,
+            to url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<Data, Failure>
+
+        // MARK: PUT
+
+        /// - Parameters:
+        ///   - body: The body of the request as `Data`
+        ///   - url: The destination for the request
+        ///   - headers: HTTP headers for the request
+        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        func put(
+            _ body: Data,
+            to url: URL,
+            headers: [HTTPHeader]
+        ) async -> Result<Data, Failure>
+
+        /// Start a `URLRequest`
+        /// - Parameter request: The request as a `URLRequest`
+        /// - Returns: Type erased publisher with output as `Data` and `NetworkService`'s error domain for failure
+        func start(_ request: URLRequest) async -> Result<Data, Failure>
+    }
+#endif

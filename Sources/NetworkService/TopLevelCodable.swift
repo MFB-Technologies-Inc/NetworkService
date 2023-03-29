@@ -13,8 +13,6 @@
     /// Associates a default `TopLevelEncoder` type with a given type
     public protocol TopLevelEncodable: Encodable {
         associatedtype AdoptedEncoder: TopLevelEncoder where AdoptedEncoder.Output == Data
-        @available(*, unavailable, renamed: "AdoptedEncoder")
-        typealias CustomEncoder = Encoder
 
         /// The default `TopLevelEncoder` for the conforming type
         static var encoder: AdoptedEncoder { get }
