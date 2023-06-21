@@ -42,9 +42,9 @@ extension Array where Element: HTTPHeader {
     public var asDictionary: [String: String] {
         var dict = [String: String]()
         dict.reserveCapacity(count)
-        return reduce(into: dict, { (acc, next) in
+        return reduce(into: dict) { acc, next in
             acc[next.key] = next.value
-        })
+        }
     }
 }
 
