@@ -38,6 +38,16 @@ extension URLRequest.ContentType: HTTPHeader {
     public var value: String { rawValue }
 }
 
+extension Array where Element: HTTPHeader {
+    public var asDictionary: [String: String] {
+        var dict = [String: String]()
+        dict.reserveCapacity(count)
+        return reduce(into: dict) { acc, next in
+            acc[next.key] = next.value
+        }
+    }
+}
+
 /// Model for HTTP headers
 public protocol HTTPHeader {
     var key: String { get }

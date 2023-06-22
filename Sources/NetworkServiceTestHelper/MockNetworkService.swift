@@ -28,7 +28,7 @@
         }
 
         /// Manages the output queue and returns the new value for reach iteration.
-        private func queue() throws -> MockOutput {
+        open func queue() throws -> MockOutput {
             guard outputs.count > 0 else {
                 throw Errors.noOutputQueued
             }
@@ -50,7 +50,7 @@
         /// this
         /// version of `start`.
         /// Delay and repeat are handled here.
-        public func start(_: URLRequest) async -> Result<Data, Failure> {
+        open func start(_: URLRequest) async -> Result<Data, Failure> {
             let next: MockOutput
             do {
                 next = try queue()
