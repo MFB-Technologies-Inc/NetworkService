@@ -17,6 +17,19 @@ public final class NetworkService {
         case httpResponse(HTTPURLResponse)
         case urlError(URLError)
         case unknown(NSError)
+
+        public var localizedDescription: String {
+            switch self {
+            case let .urlResponse(urlResponse):
+                return urlResponse.description
+            case let .httpResponse(httpResponse):
+                return httpResponse.description
+            case let .urlError(urlError):
+                return urlError.localizedDescription
+            case let .unknown(nsError):
+                return nsError.localizedDescription
+            }
+        }
     }
 
     public init() {}
