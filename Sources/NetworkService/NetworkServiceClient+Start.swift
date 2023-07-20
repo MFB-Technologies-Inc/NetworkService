@@ -40,10 +40,6 @@ extension NetworkServiceClient {
                         continuation.resume(returning: (data, urlResponse))
                     })
                     taskIdBox.value = task.taskIdentifier
-                    guard !Task.isCancelled else {
-                        task.cancel()
-                        return continuation.resume(with: .failure(URLError(.cancelled)))
-                    }
                     task.resume()
                 }
             },
