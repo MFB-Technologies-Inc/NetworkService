@@ -31,13 +31,19 @@ extension NetworkServiceClient {
             operation: {
                 try await withCheckedThrowingContinuation { [session] continuation in
                     let task = session.dataTask(with: request, completionHandler: { data, urlResponse, error in
+                        guard !Task.isCancelled else {
+                            return continuation.resume(with: .failure(URLError(.cancelled)))
+                        }
                         guard let data = data, let urlResponse = urlResponse else {
                             return continuation.resume(throwing: error ?? URLError(.badServerResponse))
                         }
                         continuation.resume(returning: (data, urlResponse))
                     })
                     taskIdBox.value = task.taskIdentifier
-
+                    guard !Task.isCancelled else {
+                        task.cancel()
+                        return continuation.resume(with: .failure(URLError(.cancelled)))
+                    }
                     task.resume()
                 }
             },
