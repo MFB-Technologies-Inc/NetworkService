@@ -25,35 +25,18 @@ extension NetworkServiceClient {
     }
 
     private func response(_ request: URLRequest) async throws -> (Data, URLResponse) {
-        let session = getSession()
-        let taskIdBox = TaskIdBox()
-        return try await withTaskCancellationHandler(
-            operation: {
-                try await withCheckedThrowingContinuation { [session] continuation in
-                    let task = session.dataTask(with: request, completionHandler: { data, urlResponse, error in
-                        guard !Task.isCancelled else {
-                            return continuation.resume(with: .failure(URLError(.cancelled)))
-                        }
-                        guard let data = data, let urlResponse = urlResponse else {
-                            return continuation.resume(throwing: error ?? URLError(.badServerResponse))
-                        }
-                        continuation.resume(returning: (data, urlResponse))
-                    })
-                    taskIdBox.value = task.taskIdentifier
-                    task.resume()
+        try await withCheckedThrowingContinuation { [session = getSession()] continuation in
+            let task = session.dataTask(with: request, completionHandler: { data, urlResponse, error in
+                guard !Task.isCancelled else {
+                    return continuation.resume(with: .failure(URLError(.cancelled)))
                 }
-            },
-            onCancel: { [session, taskIdBox] in
-                guard let taskId = taskIdBox.value else {
-                    return
+                guard let data = data, let urlResponse = urlResponse else {
+                    return continuation.resume(throwing: error ?? URLError(.badServerResponse))
                 }
-                session.getAllTasks(completionHandler: { allTasks in
-                    if let task = allTasks.first(where: { $0.taskIdentifier == taskId }) {
-                        task.cancel()
-                    }
-                })
-            }
-        )
+                continuation.resume(returning: (data, urlResponse))
+            })
+            task.resume()
+        }
     }
 }
 
