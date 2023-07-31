@@ -60,7 +60,7 @@ extension Package.Dependency {
         .package(
             name: "combine-schedulers",
             url: "https://github.com/pointfreeco/combine-schedulers.git",
-            .upToNextMajor(from: "0.6.0")
+            from: "1.0.0"
         ),
     ]
 }
