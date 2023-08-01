@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 
 import PackageDescription
 
@@ -25,10 +25,7 @@ extension Product {
 
 extension Target {
     static let targets: [Target] = [
-        .target(
-            name: "NetworkService",
-            dependencies: []
-        ),
+        .target(name: "NetworkService"),
         .testTarget(
             name: "NetworkServiceTests",
             dependencies: [
@@ -58,9 +55,8 @@ extension Package.Dependency {
     static let dependencies: [Package.Dependency] = [
         .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", from: "9.1.0"),
         .package(
-            name: "combine-schedulers",
             url: "https://github.com/pointfreeco/combine-schedulers.git",
-            .upToNextMajor(from: "0.6.0")
+            from: "1.0.0"
         ),
     ]
 }
