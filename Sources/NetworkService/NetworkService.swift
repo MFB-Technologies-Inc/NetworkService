@@ -10,7 +10,7 @@ import Combine
 import Foundation
 
 /// Provides methods for making network requests and processing the resulting responses
-public final class NetworkService {
+public final class NetworkService: Sendable {
     /// `NetworkService`'s error domain
     public enum Failure: Error, Hashable, Sendable {
         case urlResponse(URLResponse)
