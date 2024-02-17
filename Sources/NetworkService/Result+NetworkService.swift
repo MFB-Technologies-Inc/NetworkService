@@ -7,19 +7,17 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
+import HTTPTypes
 
-extension Result where Success == (Data, URLResponse), Failure == Error {
+extension Result where Success == (Data, HTTPResponse), Failure == Error {
     /// Casts and unwraps a `URLSession.DataTaskPublisher.Output` while ensuring the
     /// response code indicates success.
     /// - Returns:
     ///     - `Publishers.TryMap<Self, Data>`
     public func httpMap() -> Result<Data, NetworkService.Failure> {
         flatMap { data, response in
-            guard let httpResponse = response as? HTTPURLResponse else {
-                return .failure(NetworkService.Failure.urlResponse(response))
-            }
-            guard httpResponse.isSuccessful else {
-                return .failure(NetworkService.Failure.httpResponse(httpResponse))
+            guard response.status.kind == .successful else {
+                return .failure(NetworkService.Failure.httpResponse(response))
             }
             return .success(data)
         }

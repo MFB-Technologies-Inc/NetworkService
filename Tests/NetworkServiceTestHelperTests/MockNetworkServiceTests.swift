@@ -13,6 +13,7 @@
     import NetworkService
     import NetworkServiceTestHelper
     import XCTest
+import CustomDump
 
     struct MockingBird: TopLevelCodable, MockOutput, Equatable {
         let chirp: Bool
@@ -25,7 +26,7 @@
     }
 
     func url() throws -> URL {
-        try XCTUnwrap(URL(string: "/"))
+        try XCTUnwrap(URL(string: "https://google.com"))
     }
 
     final class NetworkServiceTestHelper: XCTestCase {

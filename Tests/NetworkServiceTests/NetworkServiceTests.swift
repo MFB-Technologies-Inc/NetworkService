@@ -41,19 +41,12 @@
         let host = "rick.astley.com"
         let path = "/never/gonna/give/you/up"
 
-        func destinationURL() throws -> URL {
-            try XCTUnwrap(URL(string: path, relativeTo: URL(string: prefix + host)))
+        func destinationURLString() -> String {
+            prefix + host + path
         }
 
-        static var allTests = [
-            ("testDeleteSuccess", testDeleteSuccess),
-            ("testDeleteFailure", testDeleteFailure),
-            ("testGetSuccess", testGetSuccess),
-            ("testGetFailure", testGetFailure),
-            ("testPostSuccess", testPostSuccess),
-            ("testPostFailure", testPostFailure),
-            ("testPutSuccess", testPutSuccess),
-            ("testPutFailure", testPutFailure),
-        ]
+        func destinationURL() throws -> URL {
+            try XCTUnwrap(URL(string: destinationURLString()))
+        }
     }
 #endif
