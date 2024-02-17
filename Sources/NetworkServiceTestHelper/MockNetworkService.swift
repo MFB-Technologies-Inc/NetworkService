@@ -17,18 +17,18 @@
     /// repeating values, and delaying values.
     open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
         public var delay: Delay
-        public var outputs: [MockOutput]
-        var nextOutput: MockOutput?
+        public var outputs: [any MockOutput]
+        var nextOutput: (any MockOutput)?
         let scheduler: T
 
-        public init(outputs: [MockOutput] = [], delay: Delay = .none, scheduler: T) {
+        public init(outputs: [any MockOutput] = [], delay: Delay = .none, scheduler: T) {
             self.outputs = outputs
             self.delay = delay
             self.scheduler = scheduler
         }
 
         /// Manages the output queue and returns the new value for reach iteration.
-        open func queue() throws -> MockOutput {
+        open func queue() throws -> any MockOutput {
             guard outputs.count > 0 else {
                 throw Errors.noOutputQueued
             }
@@ -51,7 +51,7 @@
         /// version of `start`.
         /// Delay and repeat are handled here.
         open func start(_: URLRequest) async -> Result<Data, Failure> {
-            let next: MockOutput
+            let next: any MockOutput
             do {
                 next = try queue()
             } catch {

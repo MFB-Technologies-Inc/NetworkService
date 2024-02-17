@@ -11,13 +11,13 @@ import Foundation
 extension URLRequest {
     /// Add HTTP header values to a URLRequest with type safety, avoiding the use of raw strings
     /// - Parameter header: The HTTP header to be added
-    public mutating func addValue(_ header: HTTPHeader) {
+    public mutating func addValue(_ header: any HTTPHeader) {
         addValue(header.value, forHTTPHeaderField: header.key)
     }
 
     /// Add HTTP header values to a URLRequest with type safety, avoiding the use of raw strings
     /// - Parameter header: The HTTP header to be added
-    public mutating func addValues<S>(_ headers: S) where S: Sequence, S.Element == HTTPHeader {
+    public mutating func addValues<S>(_ headers: S) where S: Sequence, S.Element == any HTTPHeader {
         for header in headers {
             addValue(header)
         }

@@ -10,7 +10,7 @@ import Foundation
 
 extension URLRequest {
     static func build<S>(url: URL, body: Data? = nil, headers: S, method: HTTPMethod) -> Self where S: Sequence,
-        S.Element == HTTPHeader
+        S.Element == any HTTPHeader
     {
         var request = URLRequest(url: url)
         request.httpBody = body

@@ -11,8 +11,8 @@ import NetworkService
 
 /// Wraps a given output value to define how many times it should be repeated.
 public enum RepeatResponse: MockOutput {
-    case `repeat`(MockOutput, count: Int)
-    case repeatInfinite(MockOutput)
+    case `repeat`(any MockOutput, count: Int)
+    case repeatInfinite(any MockOutput)
 
     public var output: Result<Data, NetworkService.Failure> {
         switch self {

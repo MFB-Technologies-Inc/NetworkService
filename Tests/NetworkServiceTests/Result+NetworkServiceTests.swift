@@ -24,7 +24,7 @@
                 textEncodingName: nil
             )
             let input = (Data(), response)
-            let result = Result<(Data, URLResponse), Error>.success(input)
+            let result = Result<(Data, URLResponse), any Error>.success(input)
                 .httpMap()
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
@@ -41,7 +41,7 @@
                 headerFields: nil
             ))
             let input = (Data(), response)
-            let result = Result<(Data, URLResponse), Error>.success(input)
+            let result = Result<(Data, URLResponse), any Error>.success(input)
                 .httpMap()
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
@@ -58,7 +58,7 @@
                 headerFields: nil
             ))
             let input = (Data(), response)
-            let result = Result<(Data, URLResponse), Error>.success(input)
+            let result = Result<(Data, URLResponse), any Error>.success(input)
                 .httpMap()
             XCTAssertEqual(try result.get(), input.0)
         }
@@ -66,7 +66,7 @@
         // MARK: Publisher where Failure: Error, Failure == NetworkService.Failure
 
         func testUnknownNSError() async throws {
-            let result = Result<(Data, URLResponse), Error>
+            let result = Result<(Data, URLResponse), any Error>
                 .failure(NetworkService.Failure.urlError(URLError(.badServerResponse)))
                 .httpMap()
             guard case let .failure(error) = result else {
@@ -83,7 +83,7 @@
                 expectedContentLength: 0,
                 textEncodingName: nil
             )
-            let result = Result<(Data, URLResponse), Error>.failure(NetworkService.Failure.urlResponse(response))
+            let result = Result<(Data, URLResponse), any Error>.failure(NetworkService.Failure.urlResponse(response))
                 .httpMap()
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")

@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Result where Success == (Data, URLResponse), Failure == Error {
+extension Result where Success == (Data, URLResponse), Failure == any Error {
     /// Casts and unwraps a `URLSession.DataTaskPublisher.Output` while ensuring the
     /// response code indicates success.
     /// - Returns:
@@ -48,18 +48,18 @@ extension Result {
     import Combine
 
     extension Result {
-        func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Result<T, Error>
+        func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Result<T, any Error>
             where Decoder.Input == Success
         {
-            mapError { $0 as Error }
+            mapError { $0 as any Error }
                 .flatMap { input in
-                    Result<T, Error> {
+                    Result<T, any Error> {
                         try decoder.decode(T.self, from: input)
                     }
                 }
         }
 
-        func decode<T: TopLevelDecodable>() -> Result<T, Error> where T.AdoptedDecoder.Input == Success {
+        func decode<T: TopLevelDecodable>() -> Result<T, any Error> where T.AdoptedDecoder.Input == Success {
             decode(with: T.decoder)
         }
     }

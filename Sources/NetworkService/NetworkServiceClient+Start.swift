@@ -13,7 +13,7 @@ extension NetworkServiceClient {
     /// - Parameter request: The request as a `URLRequest`
     /// - Returns: Type erased publisher with output as `Data` and `NetworkService`'s error domain for failure
     public func start(_ request: URLRequest) async -> Result<Data, Failure> {
-        let result: Result<(Data, URLResponse), Error>
+        let result: Result<(Data, URLResponse), any Error>
         do {
             let response: (Data, URLResponse) = try await response(request)
             result = .success(response)
