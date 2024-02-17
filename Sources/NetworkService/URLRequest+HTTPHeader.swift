@@ -24,7 +24,7 @@ extension URLRequest {
     }
 
     /// Enumeration of all available HTTP ContentTypes
-    public enum ContentType: String {
+    public enum ContentType: String, Hashable, Sendable {
         public static let key = "Content-Type"
 
         case applicationJSON = "application/json"

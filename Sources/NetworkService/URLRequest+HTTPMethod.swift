@@ -10,7 +10,7 @@ import Foundation
 
 extension URLRequest {
     /// Type-safe enumeration of HTTP methods
-    public enum HTTPMethod: String {
+    public enum HTTPMethod: String, Hashable, Sendable {
         case GET, POST, PUT, DELETE
     }
 
