@@ -1,7 +1,7 @@
 // NetworkServiceClient+Get.swift
 // NetworkService
 //
-// Copyright © 2023 MFB Technologies, Inc. All rights reserved.
+// Copyright © 2024 MFB Technologies, Inc. All rights reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
@@ -26,6 +26,7 @@ extension NetworkServiceClient {
 
 #if canImport(Combine)
     import Combine
+
     extension NetworkServiceClient {
         /// Send a get request to a `URL`
         /// - Parameters:
