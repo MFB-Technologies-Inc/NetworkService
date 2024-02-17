@@ -8,11 +8,11 @@
 
 #if canImport(Combine)
     import Combine
+    import CustomDump
     import Foundation
     import HTTPTypes
     import NetworkService
     import XCTest
-import CustomDump
 
     final class ResultNetworkServiceTests: XCTestCase {
         // MARK: Publisher where Output == URLSession.DataTaskPublisher.Output

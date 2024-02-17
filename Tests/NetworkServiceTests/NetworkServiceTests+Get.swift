@@ -8,13 +8,13 @@
 
 #if canImport(Combine)
     import Combine
+    import CustomDump
     import Foundation
     import HTTPTypes
     import NetworkService
     import OHHTTPStubs
     import OHHTTPStubsSwift
     import XCTest
-import CustomDump
 
     extension NetworkServiceTests {
         // MARK: Success
