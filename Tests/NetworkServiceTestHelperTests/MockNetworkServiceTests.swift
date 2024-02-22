@@ -88,7 +88,11 @@
                 XCTAssertEqual(try result.get(), MockingBird.chirp)
                 expectation.fulfill()
             }
-            wait(for: [expectation], timeout: 2)
+            #if swift(>=5.8)
+                await fulfillment(of: [expectation], timeout: 2)
+            #else
+                wait(for: [expectation], timeout: 2)
+            #endif
             task.cancel()
         }
     }
