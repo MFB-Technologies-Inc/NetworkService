@@ -1,7 +1,7 @@
 // URLRequest+HTTPMethod.swift
 // NetworkService
 //
-// Copyright © 2023 MFB Technologies, Inc. All rights reserved.
+// Copyright © 2024 MFB Technologies, Inc. All rights reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
@@ -10,7 +10,7 @@ import Foundation
 
 extension URLRequest {
     /// Type-safe enumeration of HTTP methods
-    public enum HTTPMethod: String {
+    public enum HTTPMethod: String, Hashable, Sendable {
         case GET, POST, PUT, DELETE
     }
 

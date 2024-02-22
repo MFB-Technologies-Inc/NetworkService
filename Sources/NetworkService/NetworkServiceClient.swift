@@ -1,7 +1,7 @@
 // NetworkServiceClient.swift
 // NetworkService
 //
-// Copyright © 2023 MFB Technologies, Inc. All rights reserved.
+// Copyright © 2024 MFB Technologies, Inc. All rights reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
@@ -29,7 +29,7 @@ import Foundation
         /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
         func delete(
             _ url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
 
         /// Send a delete request to a `URL`
@@ -40,7 +40,7 @@ import Foundation
         /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
         func delete<ResponseBody, Decoder>(
             _ url: URL,
-            headers: [HTTPHeader],
+            headers: [any HTTPHeader],
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
@@ -51,7 +51,7 @@ import Foundation
         ///     - headers: HTTP headers for the request
         /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
-        func delete<ResponseBody>(_ url: URL, headers: [HTTPHeader]) async -> Result<ResponseBody, Failure>
+        func delete<ResponseBody>(_ url: URL, headers: [any HTTPHeader]) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
 
         // MARK: GET
@@ -62,7 +62,7 @@ import Foundation
         /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
         func get(
             _ url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
 
         /// Send a get request to a `URL`
@@ -73,7 +73,7 @@ import Foundation
         /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
         func get<ResponseBody, Decoder>(
             _ url: URL,
-            headers: [HTTPHeader],
+            headers: [any HTTPHeader],
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
@@ -84,7 +84,7 @@ import Foundation
         ///     - headers: HTTP headers for the request
         /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
-        func get<ResponseBody>(_ url: URL, headers: [HTTPHeader]) async -> Result<ResponseBody, Failure>
+        func get<ResponseBody>(_ url: URL, headers: [any HTTPHeader]) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
 
         // MARK: POST
@@ -97,7 +97,7 @@ import Foundation
         func post(
             _ body: Data,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
 
         /// - Parameters:
@@ -109,7 +109,7 @@ import Foundation
         func post<RequestBody, Encoder>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader],
+            headers: [any HTTPHeader],
             encoder: Encoder
         ) async -> Result<Data, Failure>
             where RequestBody: Encodable,
@@ -124,7 +124,7 @@ import Foundation
         func post<RequestBody>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
             where RequestBody: TopLevelEncodable
 
@@ -138,7 +138,7 @@ import Foundation
         func post<ResponseBody, Decoder>(
             _ body: Data,
             to url: URL,
-            headers: [HTTPHeader],
+            headers: [any HTTPHeader],
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
@@ -152,7 +152,7 @@ import Foundation
         func post<ResponseBody>(
             _ body: Data,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
 
@@ -167,7 +167,7 @@ import Foundation
         func post<RequestBody, ResponseBody, Encoder, Decoder>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader],
+            headers: [any HTTPHeader],
             encoder: Encoder,
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
@@ -188,7 +188,7 @@ import Foundation
         func post<RequestBody, ResponseBody>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<ResponseBody, Failure>
             where RequestBody: TopLevelEncodable,
             ResponseBody: TopLevelDecodable
@@ -203,7 +203,7 @@ import Foundation
         func put(
             _ body: Data,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
 
         /// - Parameters:
@@ -215,7 +215,7 @@ import Foundation
         func put<RequestBody, Encoder>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader],
+            headers: [any HTTPHeader],
             encoder: Encoder
         ) async -> Result<Data, Failure>
             where RequestBody: Encodable,
@@ -230,7 +230,7 @@ import Foundation
         func put<RequestBody>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
             where RequestBody: TopLevelEncodable
 
@@ -244,7 +244,7 @@ import Foundation
         func put<ResponseBody, Decoder>(
             _ body: Data,
             to url: URL,
-            headers: [HTTPHeader],
+            headers: [any HTTPHeader],
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
@@ -258,7 +258,7 @@ import Foundation
         func put<ResponseBody>(
             _ body: Data,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
 
@@ -273,7 +273,7 @@ import Foundation
         func put<RequestBody, ResponseBody, Encoder, Decoder>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader],
+            headers: [any HTTPHeader],
             encoder: Encoder,
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
@@ -293,7 +293,7 @@ import Foundation
         func put<RequestBody, ResponseBody>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<ResponseBody, Failure>
             where RequestBody: TopLevelEncodable,
             ResponseBody: TopLevelDecodable
@@ -339,7 +339,7 @@ import Foundation
         /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
         func delete(
             _ url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
 
         // MARK: GET
@@ -350,7 +350,7 @@ import Foundation
         /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
         func get(
             _ url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
 
         // MARK: POST
@@ -363,7 +363,7 @@ import Foundation
         func post(
             _ body: Data,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
 
         // MARK: PUT
@@ -376,7 +376,7 @@ import Foundation
         func put(
             _ body: Data,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
 
         /// Start a `URLRequest`

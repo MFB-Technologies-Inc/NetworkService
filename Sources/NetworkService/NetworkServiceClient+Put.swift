@@ -1,7 +1,7 @@
 // NetworkServiceClient+Put.swift
 // NetworkService
 //
-// Copyright © 2023 MFB Technologies, Inc. All rights reserved.
+// Copyright © 2024 MFB Technologies, Inc. All rights reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
@@ -19,7 +19,7 @@ extension NetworkServiceClient {
     public func put(
         _ body: Data,
         to url: URL,
-        headers: [HTTPHeader] = []
+        headers: [any HTTPHeader] = []
     ) async -> Result<Data, Failure> {
         let request = URLRequest.build(url: url, body: body, headers: headers, method: .PUT)
         return await start(request)
@@ -28,6 +28,7 @@ extension NetworkServiceClient {
 
 #if canImport(Combine)
     import Combine
+
     extension NetworkServiceClient {
         /// - Parameters:
         ///   - body: The body of the request as `Encodable`
@@ -38,7 +39,7 @@ extension NetworkServiceClient {
         public func put<RequestBody, Encoder>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader],
+            headers: [any HTTPHeader],
             encoder: Encoder
         ) async -> Result<Data, Failure>
             where RequestBody: Encodable,
@@ -63,7 +64,7 @@ extension NetworkServiceClient {
         public func put<RequestBody>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader]
+            headers: [any HTTPHeader]
         ) async -> Result<Data, Failure>
             where RequestBody: TopLevelEncodable
         {
@@ -87,7 +88,7 @@ extension NetworkServiceClient {
         public func put<ResponseBody, Decoder>(
             _ body: Data,
             to url: URL,
-            headers: [HTTPHeader] = [],
+            headers: [any HTTPHeader] = [],
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
@@ -106,7 +107,7 @@ extension NetworkServiceClient {
         public func put<ResponseBody>(
             _ body: Data,
             to url: URL,
-            headers: [HTTPHeader] = []
+            headers: [any HTTPHeader] = []
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
         {
@@ -124,7 +125,7 @@ extension NetworkServiceClient {
         public func put<RequestBody, ResponseBody, Encoder, Decoder>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader] = [],
+            headers: [any HTTPHeader] = [],
             encoder: Encoder,
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
@@ -154,7 +155,7 @@ extension NetworkServiceClient {
         public func put<RequestBody, ResponseBody>(
             _ body: RequestBody,
             to url: URL,
-            headers: [HTTPHeader] = []
+            headers: [any HTTPHeader] = []
         ) async -> Result<ResponseBody, Failure>
             where RequestBody: TopLevelEncodable,
             ResponseBody: TopLevelDecodable
