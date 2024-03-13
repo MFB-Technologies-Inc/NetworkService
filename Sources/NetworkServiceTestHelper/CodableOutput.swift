@@ -1,7 +1,7 @@
 // CodableOutput.swift
 // NetworkService
 //
-// Copyright © 2023 MFB Technologies, Inc. All rights reserved.
+// Copyright © 2024 MFB Technologies, Inc. All rights reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
@@ -11,6 +11,7 @@ import NetworkService
 
 #if canImport(Combine)
     import Combine
+
     /// Fundamental wrapper for output values so they can easily be handled by `MockNetworkService`
     public struct CodableOutput<Output: Codable, Encoder: TopLevelEncoder, Decoder: TopLevelDecoder>: MockOutput
         where Encoder.Output == Data, Decoder.Input == Data

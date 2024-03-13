@@ -39,14 +39,16 @@ extension Target {
                 "NetworkService",
                 .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
                 .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
-            ]
+            ],
+            swiftSettings: .swiftSix
         ),
         .target(
             name: "NetworkServiceTestHelper",
             dependencies: [
                 "NetworkService",
                 .product(name: "CombineSchedulers", package: "combine-schedulers"),
-            ]
+            ],
+            swiftSettings: .swiftSix
         ),
         .testTarget(
             name: "NetworkServiceTestHelperTests",
@@ -59,15 +61,20 @@ extension Target {
     ]
 }
 
-package.targets.strictConcurrency()
-
-extension Array where Element == Target {
-    func strictConcurrency() {
-        forEach { target in
-            target.swiftSettings = (target.swiftSettings ?? [])
-                + [.enableUpcomingFeature("StrictConcurrency")]
-        }
-    }
+extension [SwiftSetting] {
+    static let swiftSix: [SwiftSetting] = [
+        .enableUpcomingFeature("BareSlashRegexLiterals"),
+        .enableUpcomingFeature("ConciseMagicFile"),
+        .enableUpcomingFeature("DisableOutwardActorInference"),
+        .enableUpcomingFeature("ExistentialAny"),
+        .enableUpcomingFeature("ForwardTrailingClosures"),
+        .enableUpcomingFeature("FullTypedThrows"),
+        .enableUpcomingFeature("ImplicitOpenExistentials"),
+        .enableUpcomingFeature("ImportObjcForwardDeclarations"),
+        .enableUpcomingFeature("InternalImportsByDefault"),
+        .enableUpcomingFeature("IsolatedDefaultValues"),
+        .enableUpcomingFeature("StrictConcurrency"),
+    ]
 }
 
 extension Package.Dependency {

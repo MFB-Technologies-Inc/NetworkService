@@ -1,7 +1,7 @@
 // Result+NetworkService.swift
 // NetworkService
 //
-// Copyright © 2023 MFB Technologies, Inc. All rights reserved.
+// Copyright © 2024 MFB Technologies, Inc. All rights reserved.
 //
 // This source code is licensed under the MIT license found in the
 // LICENSE file in the root directory of this source tree.
@@ -46,18 +46,18 @@ extension Result {
     import Combine
 
     extension Result {
-        func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Result<T, Error>
+        func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Result<T, any Error>
             where Decoder.Input == Success
         {
-            mapError { $0 as Error }
+            mapError { $0 as any Error }
                 .flatMap { input in
-                    Result<T, Error> {
+                    Result<T, any Error> {
                         try decoder.decode(T.self, from: input)
                     }
                 }
         }
 
-        func decode<T: TopLevelDecodable>() -> Result<T, Error> where T.AdoptedDecoder.Input == Success {
+        func decode<T: TopLevelDecodable>() -> Result<T, any Error> where T.AdoptedDecoder.Input == Success {
             decode(with: T.decoder)
         }
     }
