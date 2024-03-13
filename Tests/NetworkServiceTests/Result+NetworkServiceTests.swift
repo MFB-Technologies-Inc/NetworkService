@@ -37,7 +37,7 @@
                 headerFields: nil
             ))
             let input = try (Data(), XCTUnwrap(response.httpResponse))
-            let result = Result<(Data, HTTPResponse), Error>.success(input)
+            let result = Result<(Data, HTTPResponse), any Error>.success(input)
                 .httpMap()
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
@@ -54,7 +54,7 @@
                 headerFields: nil
             ))
             let input = try (Data(), XCTUnwrap(response.httpResponse))
-            let result = Result<(Data, HTTPResponse), Error>.success(input)
+            let result = Result<(Data, HTTPResponse), any Error>.success(input)
                 .httpMap()
             XCTAssertNoDifference(try result.get(), input.0)
         }
@@ -62,7 +62,7 @@
         // MARK: Publisher where Failure: Error, Failure == NetworkService.Failure
 
         func testUnknownNSError() async throws {
-            let result = Result<(Data, HTTPResponse), Error>
+            let result = Result<(Data, HTTPResponse), any Error>
                 .failure(NetworkService.Failure.urlError(URLError(.badServerResponse)))
                 .httpMap()
             guard case let .failure(error) = result else {
@@ -79,7 +79,7 @@
                 expectedContentLength: 0,
                 textEncodingName: nil
             )
-            let result = Result<(Data, HTTPResponse), Error>.failure(NetworkService.Failure.urlResponse(response))
+            let result = Result<(Data, HTTPResponse), any Error>.failure(NetworkService.Failure.urlResponse(response))
                 .httpMap()
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")

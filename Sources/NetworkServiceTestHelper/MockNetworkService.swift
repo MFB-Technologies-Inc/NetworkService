@@ -52,7 +52,7 @@
         /// version of `start`.
         /// Delay and repeat are handled here.
         open func start(_: HTTPRequest, body _: Data?) async -> Result<Data, Failure> {
-            let next: MockOutput
+            let next: any MockOutput
             do {
                 next = try queue()
             } catch {
