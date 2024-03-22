@@ -19,7 +19,7 @@
 
         func testDeleteSuccess() async throws {
             let url = try destinationURL()
-            let data = (try? responseBodyEncoded()) ?? Data()
+            let data = try responseBodyEncoded()
             stub(condition: isHost(host) && isPath(path) && isMethodDELETE()) { _ in
                 HTTPStubsResponse(
                     data: data,
@@ -36,7 +36,7 @@
         // MARK: Failure
 
         func testDeleteFailure() async throws {
-            let data = (try? responseBodyEncoded()) ?? Data()
+            let data = try responseBodyEncoded()
             stub(condition: isHost(host) && isPath(path) && isMethodDELETE()) { _ in
                 HTTPStubsResponse(
                     data: data,
