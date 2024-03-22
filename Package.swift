@@ -73,6 +73,6 @@ extension Package.Dependency {
             url: "https://github.com/apple/swift-http-types.git",
             .upToNextMinor(from: "1.0.0")
         ),
-        .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "1.0.0")
+        .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "1.0.0"),
     ]
 }

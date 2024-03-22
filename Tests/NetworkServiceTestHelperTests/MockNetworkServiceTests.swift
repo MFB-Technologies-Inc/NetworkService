@@ -9,11 +9,11 @@
 #if canImport(Combine)
     import Combine
     import CombineSchedulers
+    import CustomDump
     import Foundation
     import NetworkService
     import NetworkServiceTestHelper
     import XCTest
-import CustomDump
 
     struct MockingBird: TopLevelCodable, MockOutput, Equatable {
         let chirp: Bool

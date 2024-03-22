@@ -15,7 +15,7 @@ extension NetworkServiceClient {
     /// - Parameter request: The request as a `HTTPRequest`
     /// - Returns: `Result` with output as `Data` and `NetworkService`'s error domain for failure
     public func start(_ request: HTTPRequest, body: Data?) async -> Result<Data, Failure> {
-        let result: Result<(Data, HTTPResponse), Error>
+        let result: Result<(Data, HTTPResponse), any Error>
         do {
             let response: (Data, HTTPResponse) = try await response(request, body: body)
 
@@ -47,8 +47,7 @@ extension NetworkServiceClient {
                             }
                             continuation.resume(returning: (data, httpResponse))
                         }
-                        continuation.resume(returning: (data, urlResponse))
-                    })
+                    )
 
                     if Task.isCancelled {
                         task.cancel()
@@ -138,7 +137,7 @@ private final class DataTaskBox: @unchecked Sendable {
                     .decode(with: decoder)
                     .mapToNetworkError()
             } catch {
-                return Result<ResponseBody, Error>.failure(error)
+                return Result<ResponseBody, any Error>.failure(error)
                     .mapToNetworkError()
             }
         }

@@ -9,7 +9,7 @@
 import Foundation
 import HTTPTypes
 
-extension Result where Success == (Data, HTTPResponse), Failure == Error {
+extension Result where Success == (Data, HTTPResponse), Failure == any Error {
     /// Casts and unwraps a `URLSession.DataTaskPublisher.Output` while ensuring the
     /// response code indicates success.
     /// - Returns:
