@@ -69,7 +69,7 @@ private final class TaskIdBox {
     extension NetworkServiceClient {
         /// Start a `URLRequest`
         /// - Parameter request: The request as a `URLRequest`
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         public func start<ResponseBody, Decoder>(
             _ request: URLRequest,
             with decoder: Decoder
@@ -83,7 +83,7 @@ private final class TaskIdBox {
 
         /// Start a `URLRequest`
         /// - Parameter request: The request as a `URLRequest`
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         public func start<ResponseBody>(_ request: URLRequest) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
         {
