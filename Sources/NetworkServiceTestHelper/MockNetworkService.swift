@@ -57,23 +57,31 @@
             } catch {
                 return .failure(Failure.unknown(error as NSError))
             }
+            let output = next.output
             switch delay {
             case .infinite:
-                return await Task {
-                    try await scheduler.sleep(for: .seconds(.max))
-                    return try next.output.get()
-                }
-                .result.mapToNetworkError()
+
+                return await Task { [scheduler] in
+                    do {
+                        try await scheduler.sleep(for: .seconds(.max))
+                    } catch {
+                        return Result<Data, any Error>.failure(error)
+                            .mapToNetworkError()
+                    }
+                    return output
+                }.value
             case .seconds:
-                return await Task {
-                    try await scheduler.sleep(for: .seconds(delay.interval))
-                    return try next.output.get()
-                }
-                .result.mapToNetworkError()
+                return await Task { [delay, scheduler] in
+                    do {
+                        try await scheduler.sleep(for: .seconds(delay.interval))
+                    } catch {
+                        return Result<Data, any Error>.failure(error)
+                            .mapToNetworkError()
+                    }
+                    return output
+                }.value
             case .none:
-                // Setting the delay publisher to zero seconds was buggy.
-                // It works better to not add delay for `none`.
-                return next.output
+                return output
             }
         }
 
