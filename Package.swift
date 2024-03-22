@@ -63,7 +63,7 @@ extension Package.Dependency {
     static let dependencies: [Package.Dependency] = [
         .package(
             url: "https://github.com/AliSoftware/OHHTTPStubs.git",
-            .upToNextMajor(from: "9.1.0")
+            from: "9.1.0"
         ),
         .package(
             url: "https://github.com/pointfreeco/combine-schedulers.git",
@@ -71,7 +71,7 @@ extension Package.Dependency {
         ),
         .package(
             url: "https://github.com/apple/swift-http-types.git",
-            .upToNextMinor(from: "1.0.0")
+            from: "1.0.0"
         ),
         .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "1.0.0"),
     ]
