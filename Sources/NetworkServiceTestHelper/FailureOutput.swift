@@ -10,7 +10,9 @@ import Foundation
 import NetworkService
 
 /// Wraps a provided error for use as output
+@available(*, deprecated, message: "To be removed in next major version")
 public struct FailureOutput<T>: MockOutput where T: Error {
+    @available(*, deprecated, message: "To be removed in next major version")
     public var output: Result<Data, NetworkService.Failure> {
         if let networkFailure = error as? NetworkService.Failure {
             return .failure(networkFailure)
@@ -18,8 +20,10 @@ public struct FailureOutput<T>: MockOutput where T: Error {
         return .failure(.unknown(error as NSError))
     }
 
+    @available(*, deprecated, message: "To be removed in next major version")
     public let error: T
 
+    @available(*, deprecated, message: "To be removed in next major version")
     public init(error: T) {
         self.error = error
     }
