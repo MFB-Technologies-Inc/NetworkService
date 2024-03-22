@@ -44,16 +44,5 @@
         func destinationURL() throws -> URL {
             try XCTUnwrap(URL(string: path, relativeTo: URL(string: prefix + host)))
         }
-
-        static var allTests = [
-            ("testDeleteSuccess", testDeleteSuccess),
-            ("testDeleteFailure", testDeleteFailure),
-            ("testGetSuccess", testGetSuccess),
-            ("testGetFailure", testGetFailure),
-            ("testPostSuccess", testPostSuccess),
-            ("testPostFailure", testPostFailure),
-            ("testPutSuccess", testPutSuccess),
-            ("testPutFailure", testPutFailure),
-        ]
     }
 #endif
