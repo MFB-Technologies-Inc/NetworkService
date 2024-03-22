@@ -34,7 +34,10 @@ extension NetworkServiceClient {
         return try await withTaskCancellationHandler(
             operation: {
                 try await withCheckedThrowingContinuation { [session] continuation in
-                    var urlRequest = URLRequest(httpRequest: request)!
+                    guard var urlRequest = URLRequest(httpRequest: request) else {
+                        continuation.resume(throwing: NetworkServiceError.invalidRequest(request))
+                        return
+                    }
                     urlRequest.httpBody = body
                     let task = session.dataTask(
                         with: urlRequest,

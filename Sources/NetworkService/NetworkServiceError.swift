@@ -15,17 +15,20 @@ public enum NetworkServiceError: Error, Hashable, Sendable {
     case httpResponse(HTTPResponse)
     case urlError(URLError)
     case unknown(NSError)
+    case invalidRequest(HTTPRequest)
 
     public var localizedDescription: String {
         switch self {
         case let .urlResponse(urlResponse):
-            return urlResponse.description
+            urlResponse.description
         case let .httpResponse(httpResponse):
-            return httpResponse.status.reasonPhrase
+            httpResponse.status.reasonPhrase
         case let .urlError(urlError):
-            return urlError.localizedDescription
+            urlError.localizedDescription
         case let .unknown(nsError):
-            return nsError.localizedDescription
+            nsError.localizedDescription
+        case let .invalidRequest(request):
+            "Failed to form a URLRequest from the HTTPRequest: \(request.debugDescription)"
         }
     }
 }

@@ -26,7 +26,7 @@
     }
 
     func url() throws -> URL {
-        try XCTUnwrap(URL(string: "https://google.com"))
+        try XCTUnwrap(URL(string: "https://example.com"))
     }
 
     final class NetworkServiceTestHelper: XCTestCase {
