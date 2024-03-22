@@ -57,11 +57,3 @@
         }
     }
 #endif
-
-extension HTTPFields {
-    func asDictionary() -> [String: String] {
-        reduce(into: [:]) { acc, next in
-            acc[next.name.description] = next.value
-        }
-    }
-}

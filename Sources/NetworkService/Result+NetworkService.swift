@@ -10,10 +10,9 @@ import Foundation
 import HTTPTypes
 
 extension Result where Success == (Data, HTTPResponse), Failure == any Error {
-    /// Casts and unwraps a `URLSession.DataTaskPublisher.Output` while ensuring the
-    /// response code indicates success.
+    /// Checks if the response status is successful and fails if not
     /// - Returns:
-    ///     - `Publishers.TryMap<Self, Data>`
+    ///     - `Result<Data, NetworkService.Failure>`
     public func httpMap() -> Result<Data, NetworkService.Failure> {
         flatMap { data, response in
             guard response.status.kind == .successful else {
@@ -28,7 +27,7 @@ extension Result where Success == (Data, HTTPResponse), Failure == any Error {
 extension Result {
     /// Convenience method for mapping errors to `NetworkService.Failure`
     /// - Returns:
-    ///     - `Publishers.MapError<Self, NetworkService.Failure>`
+    ///     - `Result<Success, NetworkService.Failure>`
     public func mapToNetworkError() -> Result<Success, NetworkService.Failure> {
         mapError { error in
             if let urlError = error as? URLError {
