@@ -13,7 +13,7 @@ import HTTPTypesFoundation
 extension NetworkServiceClient {
     /// Start a `HTTPRequest`
     /// - Parameter request: The request as a `HTTPRequest`
-    /// - Returns: Type erased publisher with output as `Data` and `NetworkService`'s error domain for failure
+    /// - Returns: `Result` with output as `Data` and `NetworkService`'s error domain for failure
     public func start(_ request: HTTPRequest, body: Data?) async -> Result<Data, Failure> {
         let result: Result<(Data, HTTPResponse), Error>
         do {
@@ -30,7 +30,7 @@ extension NetworkServiceClient {
 
     private func response(_ request: HTTPRequest, body: Data?) async throws -> (Data, HTTPResponse) {
         let session = getSession()
-        let taskIdBox = TaskIdBox()
+        let dataTaskBox = DataTaskBox()
         return try await withTaskCancellationHandler(
             operation: {
                 try await withCheckedThrowingContinuation { [session] continuation in
@@ -47,31 +47,48 @@ extension NetworkServiceClient {
                             }
                             continuation.resume(returning: (data, httpResponse))
                         }
-                    )
-                    taskIdBox.value = task.taskIdentifier
+                        continuation.resume(returning: (data, urlResponse))
+                    })
+
+                    if Task.isCancelled {
+                        task.cancel()
+                        return
+                    }
+
+                    dataTaskBox.task = task
 
                     task.resume()
                 }
             },
-            onCancel: { [session, taskIdBox] in
-                guard let taskId = taskIdBox.value else {
+            onCancel: { [dataTaskBox] in
+                guard let task = dataTaskBox.task else {
                     return
                 }
-                session.getAllTasks(completionHandler: { allTasks in
-                    if let task = allTasks.first(where: { $0.taskIdentifier == taskId }) {
-                        task.cancel()
-                    }
-                })
+                task.cancel()
             }
         )
     }
 }
 
-private final class TaskIdBox {
-    var value: Int?
+/// While not truly `Sendable`, this type has a very narrow use that should always be safe.
+/// It can be mutated in two places and there isn't a data race risk with either.
+///
+/// The `task` property may be set in the `withCheckedThrowingContinuation` of the `withTaskCancellation`'s `operation`
+/// closure.
+/// Therefore it may be set only once.
+///
+/// The `task` property may be accessed in the `withTaskCancellation`'s  `onCancel` closure. If `task` is `nil` when
+/// accessed, there is no
+/// side effect.
+///
+/// If the `withTaskCancellation`'s  `onCancel` closure is called before `task` is set, the `URLSessionDataTask` would
+/// still get cancelled
+/// when `Task.isCancelled` is checked before trying to resume it.
+private final class DataTaskBox: @unchecked Sendable {
+    var task: URLSessionDataTask?
 
-    init(_ value: Int? = nil) {
-        self.value = value
+    init(_ task: URLSessionDataTask? = nil) {
+        self.task = task
     }
 }
 
@@ -81,7 +98,7 @@ private final class TaskIdBox {
     extension NetworkServiceClient {
         /// Start a `HTTPRequest`
         /// - Parameter request: The request as a `HTTPRequest`
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         public func start<ResponseBody, Decoder>(
             _ request: HTTPRequest,
             body: Data?,
@@ -96,7 +113,7 @@ private final class TaskIdBox {
 
         /// Start a `HTTPRequest`
         /// - Parameter request: The request as a `HTTPRequest`
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         public func start<ResponseBody>(_ request: HTTPRequest, body: Data?) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
         {

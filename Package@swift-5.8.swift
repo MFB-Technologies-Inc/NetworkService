@@ -30,7 +30,8 @@ extension Target {
             dependencies: [
                 .product(name: "HTTPTypes", package: "swift-http-types"),
                 .product(name: "HTTPTypesFoundation", package: "swift-http-types"),
-            ]
+            ],
+            swiftSettings: .shared
         ),
         .testTarget(
             name: "NetworkServiceTests",
@@ -40,7 +41,7 @@ extension Target {
                 .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
                 .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
             ],
-            swiftSettings: .swiftSix
+            swiftSettings: .shared
         ),
         .target(
             name: "NetworkServiceTestHelper",
@@ -48,7 +49,7 @@ extension Target {
                 "NetworkService",
                 .product(name: "CombineSchedulers", package: "combine-schedulers"),
             ],
-            swiftSettings: .swiftSix
+            swiftSettings: .shared
         ),
         .testTarget(
             name: "NetworkServiceTestHelperTests",
@@ -56,24 +57,16 @@ extension Target {
                 "NetworkServiceTestHelper",
                 .product(name: "CombineSchedulers", package: "combine-schedulers"),
                 .product(name: "CustomDump", package: "swift-custom-dump"),
-            ]
+            ],
+            swiftSettings: .shared
         ),
     ]
 }
 
 extension [SwiftSetting] {
-    static let swiftSix: [SwiftSetting] = [
-        .enableUpcomingFeature("BareSlashRegexLiterals"),
-        .enableUpcomingFeature("ConciseMagicFile"),
-        .enableUpcomingFeature("DisableOutwardActorInference"),
+    static let shared: [SwiftSetting] = [
         .enableUpcomingFeature("ExistentialAny"),
-        .enableUpcomingFeature("ForwardTrailingClosures"),
-        .enableUpcomingFeature("FullTypedThrows"),
-        .enableUpcomingFeature("ImplicitOpenExistentials"),
-        .enableUpcomingFeature("ImportObjcForwardDeclarations"),
-        .enableUpcomingFeature("InternalImportsByDefault"),
-        .enableUpcomingFeature("IsolatedDefaultValues"),
-        .enableUpcomingFeature("StrictConcurrency"),
+        .enableExperimentalFeature("StrictConcurrency"),
     ]
 }
 

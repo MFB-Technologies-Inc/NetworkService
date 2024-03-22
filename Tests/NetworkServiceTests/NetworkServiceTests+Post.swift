@@ -21,7 +21,7 @@
         @available(iOS 16, *)
         func testPostSuccess() async throws {
             let url = try destinationURL()
-            let data = (try? responseBodyEncoded()) ?? Data()
+            let data = try responseBodyEncoded()
             stub(
                 condition: isHost(host)
                     && isPath(path)
@@ -43,7 +43,7 @@
         // MARK: Failure
 
         func testPostFailure() async throws {
-            let data = (try? responseBodyEncoded()) ?? Data()
+            let data = try responseBodyEncoded()
             stub(
                 condition: isHost(host)
                     && isPath(path)

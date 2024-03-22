@@ -46,6 +46,7 @@
         }
 
         func destinationURL() throws -> URL {
+            try XCTUnwrap(URL(string: path, relativeTo: URL(string: prefix + host)))
             try XCTUnwrap(URL(string: destinationURLString()))
         }
     }
