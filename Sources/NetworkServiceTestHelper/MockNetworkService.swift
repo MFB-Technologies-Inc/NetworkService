@@ -77,7 +77,7 @@
             }
         }
 
-        public enum Errors: Error, Equatable {
+        public enum Errors: Error, Hashable, Sendable {
             case noOutputQueued
         }
     }
