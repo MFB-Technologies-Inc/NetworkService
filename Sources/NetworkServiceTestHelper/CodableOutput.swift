@@ -13,9 +13,11 @@ import NetworkService
     import Combine
 
     /// Fundamental wrapper for output values so they can easily be handled by `MockNetworkService`
+    @available(*, deprecated, message: "To be removed in next major version")
     public struct CodableOutput<Output: Codable, Encoder: TopLevelEncoder, Decoder: TopLevelDecoder>: MockOutput
         where Encoder.Output == Data, Decoder.Input == Data
     {
+        @available(*, deprecated, message: "To be removed in next major version")
         public var output: Result<Data, NetworkService.Failure> {
             Result {
                 try encoder.encode(value)
@@ -28,6 +30,7 @@ import NetworkService
         let value: Output
         let encoder: Encoder
 
+        @available(*, deprecated, message: "To be removed in next major version")
         public init(_ value: Output, encoder: Encoder) {
             self.value = value
             self.encoder = encoder
