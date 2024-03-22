@@ -11,7 +11,7 @@ import Foundation
 /// Represents the amount of async delay should be added to the mocked network functions. Consider replacing with
 /// `DispatchTimeInterval`.
 /// Although, there is no included case for zero/none.
-public enum Delay {
+public enum Delay: Hashable, Sendable, Codable {
     case infinite
     case seconds(Int)
     case none

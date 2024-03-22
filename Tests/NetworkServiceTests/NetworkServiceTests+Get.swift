@@ -19,7 +19,7 @@
 
         func testGetSuccess() async throws {
             let url = try destinationURL()
-            let data = (try? responseBodyEncoded()) ?? Data()
+            let data = try responseBodyEncoded()
             stub(condition: isHost(host) && isPath(path) && isMethodGET()) { _ in
                 HTTPStubsResponse(
                     data: data,
@@ -36,7 +36,7 @@
         // MARK: Failure
 
         func testGetFailure() async throws {
-            let data = (try? responseBodyEncoded()) ?? Data()
+            let data = try responseBodyEncoded()
             stub(condition: isHost(host) && isPath(path) && isMethodGET()) { _ in
                 HTTPStubsResponse(
                     data: data,

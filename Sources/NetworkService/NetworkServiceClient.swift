@@ -26,7 +26,7 @@ import Foundation
         /// - Parameters:
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func delete(
             _ url: URL,
             headers: [any HTTPHeader]
@@ -37,7 +37,7 @@ import Foundation
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         ///   - decoder: `TopLevelDecoder` for decoding the response body
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         func delete<ResponseBody, Decoder>(
             _ url: URL,
             headers: [any HTTPHeader],
@@ -49,7 +49,7 @@ import Foundation
         /// - Parameters:
         ///     - url: The destination for the request
         ///     - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// - Returns: `Result` with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
         func delete<ResponseBody>(_ url: URL, headers: [any HTTPHeader]) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
@@ -59,7 +59,7 @@ import Foundation
         /// - Parameters:
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func get(
             _ url: URL,
             headers: [any HTTPHeader]
@@ -70,7 +70,7 @@ import Foundation
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         ///   - decoder:`TopLevelDecoder` for decoding the response body
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         func get<ResponseBody, Decoder>(
             _ url: URL,
             headers: [any HTTPHeader],
@@ -82,7 +82,7 @@ import Foundation
         /// - Parameters:
         ///     - url: The destination for the request
         ///     - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// - Returns: `Result` with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
         func get<ResponseBody>(_ url: URL, headers: [any HTTPHeader]) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
@@ -93,7 +93,7 @@ import Foundation
         ///   - body: The body of the request as `Data`
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func post(
             _ body: Data,
             to url: URL,
@@ -105,7 +105,7 @@ import Foundation
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         ///   - encoder: `TopLevelEncoder` for encoding the request body
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func post<RequestBody, Encoder>(
             _ body: RequestBody,
             to url: URL,
@@ -120,7 +120,7 @@ import Foundation
         ///   - body: The body of the request as `TopLevelEncodable`
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func post<RequestBody>(
             _ body: RequestBody,
             to url: URL,
@@ -134,7 +134,7 @@ import Foundation
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         ///   - decoder:`TopLevelDecoder` for decoding the response body
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         func post<ResponseBody, Decoder>(
             _ body: Data,
             to url: URL,
@@ -147,7 +147,7 @@ import Foundation
         ///   - body: The body of the request as `Data`
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// - Returns: `Result` with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
         func post<ResponseBody>(
             _ body: Data,
@@ -163,7 +163,7 @@ import Foundation
         ///   - headers: HTTP headers for the request
         ///   - encoder:`TopLevelEncoder` for encoding the request body
         ///   - decoder:`TopLevelDecoder` for decoding the response body
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         func post<RequestBody, ResponseBody, Encoder, Decoder>(
             _ body: RequestBody,
             to url: URL,
@@ -183,7 +183,7 @@ import Foundation
         ///   - body: The body of the request as a `TopLevelEncodable` conforming type
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// - Returns: `Result` with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
         func post<RequestBody, ResponseBody>(
             _ body: RequestBody,
@@ -199,7 +199,7 @@ import Foundation
         ///   - body: The body of the request as `Data`
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func put(
             _ body: Data,
             to url: URL,
@@ -211,7 +211,7 @@ import Foundation
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         ///   - encoder: `TopLevelEncoder` for encoding the request body
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func put<RequestBody, Encoder>(
             _ body: RequestBody,
             to url: URL,
@@ -226,7 +226,7 @@ import Foundation
         ///   - body: The body of the request as `TopLevelEncodable`
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func put<RequestBody>(
             _ body: RequestBody,
             to url: URL,
@@ -240,7 +240,7 @@ import Foundation
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         ///   - decoder:`TopLevelDecoder` for decoding the response body
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         func put<ResponseBody, Decoder>(
             _ body: Data,
             to url: URL,
@@ -253,7 +253,7 @@ import Foundation
         ///   - body: The body of the request as `Data`
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// - Returns: `Result` with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
         func put<ResponseBody>(
             _ body: Data,
@@ -269,7 +269,7 @@ import Foundation
         ///   - headers: HTTP headers for the request
         ///   - encoder:`TopLevelEncoder` for encoding the request body
         ///   - decoder:`TopLevelDecoder` for decoding the response body
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         func put<RequestBody, ResponseBody, Encoder, Decoder>(
             _ body: RequestBody,
             to url: URL,
@@ -289,7 +289,7 @@ import Foundation
         ///   - body: The body of the request as a `Encodable` conforming type
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         func put<RequestBody, ResponseBody>(
             _ body: RequestBody,
             to url: URL,
@@ -302,7 +302,7 @@ import Foundation
 
         /// Start a `URLRequest`
         /// - Parameter request: The request as a `URLRequest`
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         func start<ResponseBody, Decoder>(
             _ request: URLRequest,
             with decoder: Decoder
@@ -311,13 +311,13 @@ import Foundation
 
         /// Start a `URLRequest`
         /// - Parameter request: The request as a `URLRequest`
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         func start<ResponseBody>(_ request: URLRequest) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
 
         /// Start a `URLRequest`
         /// - Parameter request: The request as a `URLRequest`
-        /// - Returns: Type erased publisher with output as `Data` and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with output as `Data` and `NetworkService`'s error domain for failure
         func start(_ request: URLRequest) async -> Result<Data, Failure>
     }
 #else
@@ -336,7 +336,7 @@ import Foundation
         /// - Parameters:
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func delete(
             _ url: URL,
             headers: [any HTTPHeader]
@@ -347,7 +347,7 @@ import Foundation
         /// - Parameters:
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func get(
             _ url: URL,
             headers: [any HTTPHeader]
@@ -359,7 +359,7 @@ import Foundation
         ///   - body: The body of the request as `Data`
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func post(
             _ body: Data,
             to url: URL,
@@ -372,7 +372,7 @@ import Foundation
         ///   - body: The body of the request as `Data`
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         func put(
             _ body: Data,
             to url: URL,
@@ -381,7 +381,7 @@ import Foundation
 
         /// Start a `URLRequest`
         /// - Parameter request: The request as a `URLRequest`
-        /// - Returns: Type erased publisher with output as `Data` and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with output as `Data` and `NetworkService`'s error domain for failure
         func start(_ request: URLRequest) async -> Result<Data, Failure>
     }
 #endif

@@ -14,7 +14,7 @@ extension NetworkServiceClient {
     /// - Parameters:
     ///   - url: The destination for the request
     ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+    /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
     public func get(
         _ url: URL,
         headers: [any HTTPHeader] = []
@@ -33,7 +33,7 @@ extension NetworkServiceClient {
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         ///   - decoder:`TopLevelDecoder` for decoding the response body
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         public func get<ResponseBody, Decoder>(
             _ url: URL,
             headers: [any HTTPHeader] = [],
@@ -50,7 +50,7 @@ extension NetworkServiceClient {
         /// - Parameters:
         ///     - url: The destination for the request
         ///     - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// - Returns: `Result` with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
         public func get<ResponseBody>(_ url: URL, headers: [any HTTPHeader] = []) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable

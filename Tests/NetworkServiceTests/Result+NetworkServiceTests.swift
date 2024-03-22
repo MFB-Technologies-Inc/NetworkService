@@ -90,13 +90,5 @@
             }
             XCTAssertEqual(error, NetworkService.Failure.urlResponse(response))
         }
-
-        static var allTests = [
-            ("testInvalidInput", testInvalidInput),
-            ("testUnsuccessfulInput", testUnsuccessfulInput),
-            ("testSuccessfulInput", testSuccessfulInput),
-            ("testUnknownNSError", testUnknownNSError),
-            ("testNetworkServiceFailure", testNetworkServiceFailure),
-        ]
     }
 #endif
