@@ -9,6 +9,7 @@
 #if canImport(Combine)
     import Combine
     import CombineSchedulers
+    import CustomDump
     import Foundation
     import NetworkService
     import NetworkServiceTestHelper
@@ -25,7 +26,7 @@
     }
 
     func url() throws -> URL {
-        try XCTUnwrap(URL(string: "/"))
+        try XCTUnwrap(URL(string: "https://example.com"))
     }
 
     final class NetworkServiceTestHelper: XCTestCase {

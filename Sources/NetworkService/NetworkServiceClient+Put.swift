@@ -7,6 +7,7 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
+import HTTPTypes
 
 extension NetworkServiceClient {
     // MARK: PUT
@@ -19,10 +20,10 @@ extension NetworkServiceClient {
     public func put(
         _ body: Data,
         to url: URL,
-        headers: [any HTTPHeader] = []
+        headers: HTTPFields = HTTPFields()
     ) async -> Result<Data, Failure> {
-        let request = URLRequest.build(url: url, body: body, headers: headers, method: .PUT)
-        return await start(request)
+        let request = HTTPRequest(method: .put, url: url, headerFields: headers)
+        return await start(request, body: body)
     }
 }
 
@@ -39,7 +40,7 @@ extension NetworkServiceClient {
         public func put<RequestBody, Encoder>(
             _ body: RequestBody,
             to url: URL,
-            headers: [any HTTPHeader],
+            headers: HTTPFields,
             encoder: Encoder
         ) async -> Result<Data, Failure>
             where RequestBody: Encodable,
@@ -64,7 +65,7 @@ extension NetworkServiceClient {
         public func put<RequestBody>(
             _ body: RequestBody,
             to url: URL,
-            headers: [any HTTPHeader]
+            headers: HTTPFields
         ) async -> Result<Data, Failure>
             where RequestBody: TopLevelEncodable
         {
@@ -88,7 +89,7 @@ extension NetworkServiceClient {
         public func put<ResponseBody, Decoder>(
             _ body: Data,
             to url: URL,
-            headers: [any HTTPHeader] = [],
+            headers: HTTPFields = HTTPFields(),
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
@@ -107,7 +108,7 @@ extension NetworkServiceClient {
         public func put<ResponseBody>(
             _ body: Data,
             to url: URL,
-            headers: [any HTTPHeader] = []
+            headers: HTTPFields = HTTPFields()
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
         {
@@ -125,7 +126,7 @@ extension NetworkServiceClient {
         public func put<RequestBody, ResponseBody, Encoder, Decoder>(
             _ body: RequestBody,
             to url: URL,
-            headers: [any HTTPHeader] = [],
+            headers: HTTPFields = HTTPFields(),
             encoder: Encoder,
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
@@ -155,7 +156,7 @@ extension NetworkServiceClient {
         public func put<RequestBody, ResponseBody>(
             _ body: RequestBody,
             to url: URL,
-            headers: [any HTTPHeader] = []
+            headers: HTTPFields = HTTPFields()
         ) async -> Result<ResponseBody, Failure>
             where RequestBody: TopLevelEncodable,
             ResponseBody: TopLevelDecodable

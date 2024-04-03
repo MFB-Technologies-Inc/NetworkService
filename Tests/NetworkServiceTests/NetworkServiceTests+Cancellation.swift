@@ -9,6 +9,7 @@
 #if canImport(Combine)
     import Combine
     import Foundation
+    import HTTPTypes
     import NetworkService
     import OHHTTPStubs
     import OHHTTPStubsSwift
@@ -23,8 +24,8 @@
             stub(condition: isHost(host) && isPath(path) && isMethodGET()) { _ in
                 HTTPStubsResponse(
                     data: data,
-                    statusCode: Int32(HTTPURLResponse.StatusCode.ok),
-                    headers: [URLRequest.ContentType.key: URLRequest.ContentType.applicationJSON.value]
+                    statusCode: Int32(HTTPResponse.Status.ok.code),
+                    headers: HTTPFields([HTTPField(name: .contentType, value: "application/json")]).asDictionary()
                 )
             }
 
@@ -54,8 +55,8 @@
                 Thread.sleep(forTimeInterval: 0.5)
                 return HTTPStubsResponse(
                     data: data,
-                    statusCode: Int32(HTTPURLResponse.StatusCode.ok),
-                    headers: [URLRequest.ContentType.key: URLRequest.ContentType.applicationJSON.value]
+                    statusCode: Int32(HTTPResponse.Status.ok.code),
+                    headers: HTTPFields([HTTPField(name: .contentType, value: "application/json")]).asDictionary()
                 )
             }
 

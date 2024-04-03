@@ -25,10 +25,17 @@ extension Product {
 
 extension Target {
     static let targets: [Target] = [
-        .target(name: "NetworkService"),
+        .target(
+            name: "NetworkService",
+            dependencies: [
+                .product(name: "HTTPTypes", package: "swift-http-types"),
+                .product(name: "HTTPTypesFoundation", package: "swift-http-types"),
+            ]
+        ),
         .testTarget(
             name: "NetworkServiceTests",
             dependencies: [
+                .product(name: "CustomDump", package: "swift-custom-dump"),
                 "NetworkService",
                 .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
                 .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
@@ -46,6 +53,7 @@ extension Target {
             dependencies: [
                 "NetworkServiceTestHelper",
                 .product(name: "CombineSchedulers", package: "combine-schedulers"),
+                .product(name: "CustomDump", package: "swift-custom-dump"),
             ]
         ),
     ]
@@ -53,10 +61,18 @@ extension Target {
 
 extension Package.Dependency {
     static let dependencies: [Package.Dependency] = [
-        .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", from: "9.1.0"),
+        .package(
+            url: "https://github.com/AliSoftware/OHHTTPStubs.git",
+            from: "9.1.0"
+        ),
         .package(
             url: "https://github.com/pointfreeco/combine-schedulers.git",
             from: "1.0.0"
         ),
+        .package(
+            url: "https://github.com/apple/swift-http-types.git",
+            from: "1.0.0"
+        ),
+        .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "1.0.0"),
     ]
 }
