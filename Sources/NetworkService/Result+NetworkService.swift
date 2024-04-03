@@ -31,11 +31,11 @@ extension Result {
     public func mapToNetworkError() -> Result<Success, NetworkService.Failure> {
         mapError { error in
             if let urlError = error as? URLError {
-                return .urlError(urlError)
+                .urlError(urlError)
             } else if let failure = error as? NetworkService.Failure {
-                return failure
+                failure
             } else {
-                return .unknown(error as NSError)
+                .unknown(error as NSError)
             }
         }
     }

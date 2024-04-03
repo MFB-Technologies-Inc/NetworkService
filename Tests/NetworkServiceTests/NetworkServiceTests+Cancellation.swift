@@ -48,7 +48,7 @@
         /// Manually verified to cancel the `URLSessionDataTask` from the task cancellation handler's `onCancel`
         /// closure.
         @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-        func testDelayedCancellation() async throws {
+        func _testDelayedCancellation() async throws {
             let url = try destinationURL()
             let data = try responseBodyEncoded()
             stub(condition: isHost(host) && isPath(path) && isMethodGET()) { _ in

@@ -44,7 +44,7 @@ extension NetworkServiceClient {
                     let task = session.dataTask(
                         with: urlRequest,
                         completionHandler: { data, urlResponse, error in
-                            guard let data = data, let urlResponse = urlResponse,
+                            guard let data, let urlResponse,
                                   let httpUrlResponse = urlResponse as? HTTPURLResponse,
                                   let httpResponse = httpUrlResponse.httpResponse
                             else {
@@ -127,13 +127,13 @@ private final class DataTaskBox: @unchecked Sendable {
         /// Start a `HTTPRequest`
         /// - Parameter request: The request as a `HTTPRequest`
         /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
-        public func start<RequestBody, Encoder, ResponseBody, Decoder>(
+        public func start<Encoder, ResponseBody, Decoder>(
             _ request: HTTPRequest,
-            body: RequestBody?,
+            body: (some Encodable)?,
             encoder: Encoder,
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
-            where RequestBody: Encodable, Encoder: TopLevelEncoder, Encoder.Output == Data, ResponseBody: Decodable,
+            where Encoder: TopLevelEncoder, Encoder.Output == Data, ResponseBody: Decodable,
             Decoder: TopLevelDecoder, Decoder.Input == Data
         {
             do {

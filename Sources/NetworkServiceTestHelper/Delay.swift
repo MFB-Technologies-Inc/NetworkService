@@ -20,11 +20,11 @@ public enum Delay: Hashable, Sendable, Codable {
     var interval: Int {
         switch self {
         case .infinite:
-            return .max
+            .max
         case let .seconds(seconds):
-            return seconds
+            seconds
         case .none:
-            return 0
+            0
         }
     }
 }

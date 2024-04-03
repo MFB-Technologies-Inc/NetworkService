@@ -38,14 +38,13 @@ extension NetworkServiceClient {
         ///   - headers: HTTP headers for the request
         ///   - encoder: `TopLevelEncoder` for encoding the request body
         /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
-        public func post<RequestBody, Encoder>(
-            _ body: RequestBody,
+        public func post<Encoder>(
+            _ body: some Encodable,
             to url: URL,
             headers: HTTPFields,
             encoder: Encoder
         ) async -> Result<Data, Failure>
-            where RequestBody: Encodable,
-            Encoder: TopLevelEncoder,
+            where Encoder: TopLevelEncoder,
             Encoder.Output == Data
         {
             do {
@@ -122,15 +121,14 @@ extension NetworkServiceClient {
         ///   - encoder:`TopLevelEncoder` for encoding the request body
         ///   - decoder:`TopLevelDecoder` for decoding the response body
         /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
-        public func post<RequestBody, ResponseBody, Encoder, Decoder>(
-            _ body: RequestBody,
+        public func post<ResponseBody, Encoder, Decoder>(
+            _ body: some Encodable,
             to url: URL,
             headers: HTTPFields = HTTPFields(),
             encoder: Encoder,
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
-            where RequestBody: Encodable,
-            ResponseBody: Decodable,
+            where ResponseBody: Decodable,
             Encoder: TopLevelEncoder,
             Encoder.Output == Data,
             Decoder: TopLevelDecoder,

@@ -1,4 +1,4 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.10
 
 import PackageDescription
 
@@ -30,7 +30,8 @@ extension Target {
             dependencies: [
                 .product(name: "HTTPTypes", package: "swift-http-types"),
                 .product(name: "HTTPTypesFoundation", package: "swift-http-types"),
-            ]
+            ],
+            swiftSettings: .shared
         ),
         .testTarget(
             name: "NetworkServiceTests",
@@ -39,14 +40,16 @@ extension Target {
                 "NetworkService",
                 .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
                 .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
-            ]
+            ],
+            swiftSettings: .shared
         ),
         .target(
             name: "NetworkServiceTestHelper",
             dependencies: [
                 "NetworkService",
                 .product(name: "CombineSchedulers", package: "combine-schedulers"),
-            ]
+            ],
+            swiftSettings: .shared
         ),
         .testTarget(
             name: "NetworkServiceTestHelperTests",
@@ -54,8 +57,16 @@ extension Target {
                 "NetworkServiceTestHelper",
                 .product(name: "CombineSchedulers", package: "combine-schedulers"),
                 .product(name: "CustomDump", package: "swift-custom-dump"),
-            ]
+            ],
+            swiftSettings: .shared
         ),
+    ]
+}
+
+extension [SwiftSetting] {
+    static let shared: [SwiftSetting] = [
+        .enableUpcomingFeature("ExistentialAny"),
+        .enableExperimentalFeature("StrictConcurrency"),
     ]
 }
 
