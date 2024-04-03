@@ -15,7 +15,7 @@ extension NetworkServiceClient {
     ///   - body: The body of the request as `Data`
     ///   - url: The destination for the request
     ///   - headers: HTTP headers for the request
-    /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+    /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
     public func post(
         _ body: Data,
         to url: URL,
@@ -35,7 +35,7 @@ extension NetworkServiceClient {
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         ///   - encoder: `TopLevelEncoder` for encoding the request body
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         public func post<RequestBody, Encoder>(
             _ body: RequestBody,
             to url: URL,
@@ -58,7 +58,7 @@ extension NetworkServiceClient {
         ///   - body: The body of the request as `TopLevelEnodable`
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `Data` output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
         public func post<RequestBody>(
             _ body: RequestBody,
             to url: URL,
@@ -82,7 +82,7 @@ extension NetworkServiceClient {
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         ///   - decoder:`TopLevelDecoder` for decoding the response body
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         public func post<ResponseBody, Decoder>(
             _ body: Data,
             to url: URL,
@@ -102,7 +102,7 @@ extension NetworkServiceClient {
         ///   - body: The body of the request as `Data`
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// - Returns: `Result` with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
         public func post<ResponseBody>(
             _ body: Data,
@@ -121,7 +121,7 @@ extension NetworkServiceClient {
         ///   - headers: HTTP headers for the request
         ///   - encoder:`TopLevelEncoder` for encoding the request body
         ///   - decoder:`TopLevelDecoder` for decoding the response body
-        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         public func post<RequestBody, ResponseBody, Encoder, Decoder>(
             _ body: RequestBody,
             to url: URL,
@@ -151,7 +151,7 @@ extension NetworkServiceClient {
         ///   - body: The body of the request as a `TopLevelEnodable` conforming type
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
-        /// - Returns: Type erased publisher with `TopLevelDecodable` output and `NetworkService`'s error domain for
+        /// - Returns: `Result` with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
         public func post<RequestBody, ResponseBody>(
             _ body: RequestBody,
