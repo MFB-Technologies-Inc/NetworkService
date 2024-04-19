@@ -41,8 +41,12 @@
         let host = "rick.astley.com"
         let path = "/never/gonna/give/you/up"
 
+        func destinationURLString() -> String {
+            prefix + host + path
+        }
+
         func destinationURL() throws -> URL {
-            try XCTUnwrap(URL(string: path, relativeTo: URL(string: prefix + host)))
+            try XCTUnwrap(URL(string: destinationURLString()))
         }
     }
 #endif

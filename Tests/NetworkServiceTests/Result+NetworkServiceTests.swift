@@ -8,7 +8,9 @@
 
 #if canImport(Combine)
     import Combine
+    import CustomDump
     import Foundation
+    import HTTPTypes
     import NetworkService
     import XCTest
 
@@ -23,56 +25,50 @@
                 expectedContentLength: 0,
                 textEncodingName: nil
             )
-            let input = (Data(), response)
-            let result = Result<(Data, URLResponse), any Error>.success(input)
-                .httpMap()
-            guard case let .failure(error) = result else {
-                return XCTFail("Expecting failure but received success.")
-            }
-            XCTAssertEqual(error, NetworkService.Failure.urlResponse(response))
+            XCTAssertNil((response as? HTTPURLResponse)?.httpResponse)
         }
 
         func testUnsuccessfulInput() async throws {
             let url = try XCTUnwrap(URL(string: "test.com"))
             let response = try XCTUnwrap(HTTPURLResponse(
                 url: url,
-                statusCode: HTTPURLResponse.StatusCode.badRequest,
+                statusCode: HTTPResponse.Status.badRequest.code,
                 httpVersion: "2.0",
                 headerFields: nil
             ))
-            let input = (Data(), response)
-            let result = Result<(Data, URLResponse), any Error>.success(input)
+            let input = try (Data(), XCTUnwrap(response.httpResponse))
+            let result = Result<(Data, HTTPResponse), any Error>.success(input)
                 .httpMap()
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
             }
-            XCTAssertEqual(error, NetworkService.Failure.httpResponse(response))
+            XCTAssertNoDifference(error, try NetworkService.Failure.httpResponse(XCTUnwrap(response.httpResponse)))
         }
 
         func testSuccessfulInput() async throws {
             let url = try XCTUnwrap(URL(string: "test.com"))
             let response = try XCTUnwrap(HTTPURLResponse(
                 url: url,
-                statusCode: HTTPURLResponse.StatusCode.ok,
+                statusCode: HTTPResponse.Status.ok.code,
                 httpVersion: "2.0",
                 headerFields: nil
             ))
-            let input = (Data(), response)
-            let result = Result<(Data, URLResponse), any Error>.success(input)
+            let input = try (Data(), XCTUnwrap(response.httpResponse))
+            let result = Result<(Data, HTTPResponse), any Error>.success(input)
                 .httpMap()
-            XCTAssertEqual(try result.get(), input.0)
+            XCTAssertNoDifference(try result.get(), input.0)
         }
 
         // MARK: Publisher where Failure: Error, Failure == NetworkService.Failure
 
         func testUnknownNSError() async throws {
-            let result = Result<(Data, URLResponse), any Error>
+            let result = Result<(Data, HTTPResponse), any Error>
                 .failure(NetworkService.Failure.urlError(URLError(.badServerResponse)))
                 .httpMap()
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
             }
-            XCTAssertEqual(error, NetworkService.Failure.urlError(URLError(.badServerResponse)))
+            XCTAssertNoDifference(error, NetworkService.Failure.urlError(URLError(.badServerResponse)))
         }
 
         func testNetworkServiceFailure() async throws {
@@ -83,12 +79,12 @@
                 expectedContentLength: 0,
                 textEncodingName: nil
             )
-            let result = Result<(Data, URLResponse), any Error>.failure(NetworkService.Failure.urlResponse(response))
+            let result = Result<(Data, HTTPResponse), any Error>.failure(NetworkService.Failure.urlResponse(response))
                 .httpMap()
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
             }
-            XCTAssertEqual(error, NetworkService.Failure.urlResponse(response))
+            XCTAssertNoDifference(error, NetworkService.Failure.urlResponse(response))
         }
     }
 #endif

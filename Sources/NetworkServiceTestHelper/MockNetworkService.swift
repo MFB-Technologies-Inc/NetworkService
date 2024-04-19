@@ -10,6 +10,7 @@
     import Combine
     import CombineSchedulers
     import Foundation
+    import HTTPTypes
     import NetworkService
 
     /// Convenience implementation of `NetworkServiceClient` for testing. Supports defining set output values for all
@@ -50,7 +51,7 @@
         /// this
         /// version of `start`.
         /// Delay and repeat are handled here.
-        open func start(_: URLRequest) async -> Result<Data, Failure> {
+        open func start(_: HTTPRequest, body _: Data?) async -> Result<Data, Failure> {
             let next: any MockOutput
             do {
                 next = try queue()

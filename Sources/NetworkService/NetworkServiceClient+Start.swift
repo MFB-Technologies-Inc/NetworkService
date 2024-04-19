@@ -7,35 +7,52 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
+import HTTPTypes
+import HTTPTypesFoundation
 
 extension NetworkServiceClient {
-    /// Start a `URLRequest`
-    /// - Parameter request: The request as a `URLRequest`
+    /// Start a `HTTPRequest`
+    /// - Parameter request: The request as a `HTTPRequest`
     /// - Returns: `Result` with output as `Data` and `NetworkService`'s error domain for failure
-    public func start(_ request: URLRequest) async -> Result<Data, Failure> {
-        let result: Result<(Data, URLResponse), any Error>
+    public func start(_ request: HTTPRequest, body: Data?) async -> Result<Data, Failure> {
+        let result: Result<(Data, HTTPResponse), any Error>
         do {
-            let response: (Data, URLResponse) = try await response(request)
+            let response: (Data, HTTPResponse) = try await response(request, body: body)
+
             result = .success(response)
         } catch {
             result = .failure(error)
         }
         return result
             .httpMap()
+            .mapToNetworkError()
     }
 
-    private func response(_ request: URLRequest) async throws -> (Data, URLResponse) {
+    /// Starting the `HTTPRequest` directly via the `HTTPTypesFoundation` API is breaking tests in unexpected ways.
+    /// Sticking with this implementation for now until it can be sorted out.
+    private func response(_ request: HTTPRequest, body: Data?) async throws -> (Data, HTTPResponse) {
         let session = getSession()
         let dataTaskBox = DataTaskBox()
         return try await withTaskCancellationHandler(
             operation: {
                 try await withCheckedThrowingContinuation { [session] continuation in
-                    let task = session.dataTask(with: request, completionHandler: { data, urlResponse, error in
-                        guard let data = data, let urlResponse = urlResponse else {
-                            return continuation.resume(throwing: error ?? URLError(.badServerResponse))
+                    guard var urlRequest = URLRequest(httpRequest: request) else {
+                        continuation.resume(throwing: NetworkServiceError.invalidRequest(request))
+                        return
+                    }
+                    urlRequest.httpBody = body
+                    let task = session.dataTask(
+                        with: urlRequest,
+                        completionHandler: { data, urlResponse, error in
+                            guard let data, let urlResponse,
+                                  let httpUrlResponse = urlResponse as? HTTPURLResponse,
+                                  let httpResponse = httpUrlResponse.httpResponse
+                            else {
+                                return continuation.resume(throwing: error ?? URLError(.badServerResponse))
+                            }
+                            continuation.resume(returning: (data, httpResponse))
                         }
-                        continuation.resume(returning: (data, urlResponse))
-                    })
+                    )
 
                     if Task.isCancelled {
                         task.cancel()
@@ -83,27 +100,61 @@ private final class DataTaskBox: @unchecked Sendable {
     import Combine
 
     extension NetworkServiceClient {
-        /// Start a `URLRequest`
-        /// - Parameter request: The request as a `URLRequest`
+        /// Start a `HTTPRequest`
+        /// - Parameter request: The request as a `HTTPRequest`
         /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
         public func start<ResponseBody, Decoder>(
-            _ request: URLRequest,
+            _ request: HTTPRequest,
+            body: Data?,
             with decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
         {
-            await start(request)
+            await start(request, body: body)
                 .decode(with: decoder)
                 .mapToNetworkError()
         }
 
-        /// Start a `URLRequest`
-        /// - Parameter request: The request as a `URLRequest`
+        /// Start a `HTTPRequest`
+        /// - Parameter request: The request as a `HTTPRequest`
         /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
-        public func start<ResponseBody>(_ request: URLRequest) async -> Result<ResponseBody, Failure>
+        public func start<ResponseBody>(_ request: HTTPRequest, body: Data?) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
         {
-            await start(request, with: ResponseBody.decoder)
+            await start(request, body: body, with: ResponseBody.decoder)
+        }
+
+        /// Start a `HTTPRequest`
+        /// - Parameter request: The request as a `HTTPRequest`
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        public func start<Encoder, ResponseBody, Decoder>(
+            _ request: HTTPRequest,
+            body: (some Encodable)?,
+            encoder: Encoder,
+            decoder: Decoder
+        ) async -> Result<ResponseBody, Failure>
+            where Encoder: TopLevelEncoder, Encoder.Output == Data, ResponseBody: Decodable,
+            Decoder: TopLevelDecoder, Decoder.Input == Data
+        {
+            do {
+                let encodedBody: Data? = try encoder.encode(body)
+                return await start(request, body: encodedBody)
+                    .decode(with: decoder)
+                    .mapToNetworkError()
+            } catch {
+                return Result<ResponseBody, any Error>.failure(error)
+                    .mapToNetworkError()
+            }
+        }
+
+        /// Start a `HTTPRequest`
+        /// - Parameter request: The request as a `HTTPRequest`
+        /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        public func start<RequestBody, ResponseBody>(_ request: HTTPRequest,
+                                                     body: RequestBody?) async -> Result<ResponseBody, Failure>
+            where RequestBody: TopLevelEncodable, ResponseBody: TopLevelDecodable
+        {
+            await start(request, body: body, encoder: RequestBody.encoder, decoder: ResponseBody.decoder)
         }
     }
 #endif

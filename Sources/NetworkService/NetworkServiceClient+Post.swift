@@ -7,6 +7,8 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
+import HTTPTypes
+import HTTPTypesFoundation
 
 extension NetworkServiceClient {
     // MARK: POST
@@ -19,10 +21,10 @@ extension NetworkServiceClient {
     public func post(
         _ body: Data,
         to url: URL,
-        headers: [any HTTPHeader] = []
+        headers: HTTPFields = HTTPFields()
     ) async -> Result<Data, Failure> {
-        let request = URLRequest.build(url: url, body: body, headers: headers, method: .POST)
-        return await start(request)
+        let request = HTTPRequest(method: .post, url: url, headerFields: headers)
+        return await start(request, body: body)
     }
 }
 
@@ -36,14 +38,13 @@ extension NetworkServiceClient {
         ///   - headers: HTTP headers for the request
         ///   - encoder: `TopLevelEncoder` for encoding the request body
         /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
-        public func post<RequestBody, Encoder>(
-            _ body: RequestBody,
+        public func post<Encoder>(
+            _ body: some Encodable,
             to url: URL,
-            headers: [any HTTPHeader],
+            headers: HTTPFields,
             encoder: Encoder
         ) async -> Result<Data, Failure>
-            where RequestBody: Encodable,
-            Encoder: TopLevelEncoder,
+            where Encoder: TopLevelEncoder,
             Encoder.Output == Data
         {
             do {
@@ -62,7 +63,7 @@ extension NetworkServiceClient {
         public func post<RequestBody>(
             _ body: RequestBody,
             to url: URL,
-            headers: [any HTTPHeader]
+            headers: HTTPFields
         ) async -> Result<Data, Failure>
             where RequestBody: TopLevelEncodable
         {
@@ -86,16 +87,14 @@ extension NetworkServiceClient {
         public func post<ResponseBody, Decoder>(
             _ body: Data,
             to url: URL,
-            headers: [any HTTPHeader] = [],
+            headers: HTTPFields = HTTPFields(),
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: Decodable, Decoder: TopLevelDecoder, Decoder.Input == Data
         {
-            var request = URLRequest(url: url)
-            request.httpBody = body
-            request.method = .POST
-            headers.forEach { request.addValue($0) }
-            return await start(request, with: decoder)
+            await post(body, to: url, headers: headers)
+                .decode(with: decoder)
+                .mapToNetworkError()
         }
 
         /// - Parameters:
@@ -107,7 +106,7 @@ extension NetworkServiceClient {
         public func post<ResponseBody>(
             _ body: Data,
             to url: URL,
-            headers: [any HTTPHeader] = []
+            headers: HTTPFields = HTTPFields()
         ) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
         {
@@ -122,15 +121,14 @@ extension NetworkServiceClient {
         ///   - encoder:`TopLevelEncoder` for encoding the request body
         ///   - decoder:`TopLevelDecoder` for decoding the response body
         /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
-        public func post<RequestBody, ResponseBody, Encoder, Decoder>(
-            _ body: RequestBody,
+        public func post<ResponseBody, Encoder, Decoder>(
+            _ body: some Encodable,
             to url: URL,
-            headers: [any HTTPHeader] = [],
+            headers: HTTPFields = HTTPFields(),
             encoder: Encoder,
             decoder: Decoder
         ) async -> Result<ResponseBody, Failure>
-            where RequestBody: Encodable,
-            ResponseBody: Decodable,
+            where ResponseBody: Decodable,
             Encoder: TopLevelEncoder,
             Encoder.Output == Data,
             Decoder: TopLevelDecoder,
@@ -156,7 +154,7 @@ extension NetworkServiceClient {
         public func post<RequestBody, ResponseBody>(
             _ body: RequestBody,
             to url: URL,
-            headers: [any HTTPHeader] = []
+            headers: HTTPFields = HTTPFields()
         ) async -> Result<ResponseBody, Failure>
             where RequestBody: TopLevelEncodable,
             ResponseBody: TopLevelDecodable

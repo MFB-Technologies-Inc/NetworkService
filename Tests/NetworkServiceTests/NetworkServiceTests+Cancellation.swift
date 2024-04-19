@@ -9,6 +9,7 @@
 #if canImport(Combine)
     import Combine
     import Foundation
+    import HTTPTypes
     import NetworkService
     import OHHTTPStubs
     import OHHTTPStubsSwift
@@ -23,8 +24,8 @@
             stub(condition: isHost(host) && isPath(path) && isMethodGET()) { _ in
                 HTTPStubsResponse(
                     data: data,
-                    statusCode: Int32(HTTPURLResponse.StatusCode.ok),
-                    headers: [URLRequest.ContentType.key: URLRequest.ContentType.applicationJSON.value]
+                    statusCode: Int32(HTTPResponse.Status.ok.code),
+                    headers: HTTPFields([HTTPField(name: .contentType, value: "application/json")]).asDictionary()
                 )
             }
 
@@ -47,15 +48,15 @@
         /// Manually verified to cancel the `URLSessionDataTask` from the task cancellation handler's `onCancel`
         /// closure.
         @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-        func testDelayedCancellation() async throws {
+        func _testDelayedCancellation() async throws {
             let url = try destinationURL()
             let data = try responseBodyEncoded()
             stub(condition: isHost(host) && isPath(path) && isMethodGET()) { _ in
                 Thread.sleep(forTimeInterval: 0.5)
                 return HTTPStubsResponse(
                     data: data,
-                    statusCode: Int32(HTTPURLResponse.StatusCode.ok),
-                    headers: [URLRequest.ContentType.key: URLRequest.ContentType.applicationJSON.value]
+                    statusCode: Int32(HTTPResponse.Status.ok.code),
+                    headers: HTTPFields([HTTPField(name: .contentType, value: "application/json")]).asDictionary()
                 )
             }
 

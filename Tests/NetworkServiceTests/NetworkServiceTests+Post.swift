@@ -8,7 +8,9 @@
 
 #if canImport(Combine)
     import Combine
+    import CustomDump
     import Foundation
+    import HTTPTypes
     import NetworkService
     import OHHTTPStubs
     import OHHTTPStubsSwift
@@ -28,14 +30,14 @@
             ) { _ in
                 HTTPStubsResponse(
                     data: data,
-                    statusCode: Int32(HTTPURLResponse.StatusCode.ok),
-                    headers: [URLRequest.ContentType.key: URLRequest.ContentType.applicationJSON.value]
+                    statusCode: Int32(HTTPResponse.Status.ok.code),
+                    headers: HTTPFields([HTTPField(name: .contentType, value: "application/json")]).asDictionary()
                 )
             }
 
             let service = NetworkService()
             let result: Result<Lyric, Failure> = await service.post(data, to: url)
-            XCTAssertEqual(try result.get(), Lyric.test)
+            XCTAssertNoDifference(try result.get(), Lyric.test)
         }
 
         // MARK: Failure
@@ -50,8 +52,8 @@
             ) { _ in
                 HTTPStubsResponse(
                     data: data,
-                    statusCode: Int32(HTTPURLResponse.StatusCode.badRequest),
-                    headers: [URLRequest.ContentType.key: URLRequest.ContentType.applicationJSON.value]
+                    statusCode: Int32(HTTPResponse.Status.badRequest.code),
+                    headers: HTTPFields([HTTPField(name: .contentType, value: "application/json")]).asDictionary()
                 )
             }
 
@@ -61,7 +63,7 @@
             guard case let .failure(.httpResponse(response)) = result else {
                 return XCTFail("Expecting failure but received success.")
             }
-            XCTAssert(response.isClientError)
+            XCTAssert(response.status.kind == .clientError)
         }
     }
 #endif
