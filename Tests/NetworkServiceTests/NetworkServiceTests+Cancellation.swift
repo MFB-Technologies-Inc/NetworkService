@@ -30,8 +30,8 @@
             }
 
             let resultTask = Task {
-                let service = NetworkService()
-                let result: Result<Lyric, NetworkService.Failure> = await service.get(url)
+                let service = NetworkServiceClient()
+                let result: Result<Lyric, NetworkServiceError> = await service.get(url)
                 return result
             }
 
@@ -61,8 +61,8 @@
             }
 
             let resultTask = Task {
-                let service = NetworkService()
-                let result: Result<Lyric, NetworkService.Failure> = await service.get(url)
+                let service = NetworkServiceClient()
+                let result: Result<Lyric, NetworkServiceError> = await service.get(url)
                 return result
             }
             try await Task.sleep(for: .milliseconds(250))

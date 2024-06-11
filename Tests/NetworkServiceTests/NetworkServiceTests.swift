@@ -15,7 +15,7 @@
     import XCTest
 
     final class NetworkServiceTests: NetworkTestCase {
-        typealias Failure = NetworkService.Failure
+        typealias Failure = NetworkServiceError
 
         struct Lyric: TopLevelCodable, Equatable {
             static var encoder: JSONEncoder { JSONEncoder() }

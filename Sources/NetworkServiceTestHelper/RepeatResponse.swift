@@ -14,7 +14,7 @@ public enum RepeatResponse: MockOutput {
     case `repeat`(any MockOutput, count: Int)
     case repeatInfinite(any MockOutput)
 
-    public var output: Result<Data, NetworkService.Failure> {
+    public var output: Result<Data, NetworkServiceError> {
         switch self {
         case .repeat(let output, count: _), let .repeatInfinite(output):
             output.output

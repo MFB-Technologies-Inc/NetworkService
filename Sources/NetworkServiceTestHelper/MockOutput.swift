@@ -15,12 +15,12 @@ public protocol MockOutput: Sendable {
 }
 
 extension Data: MockOutput {
-    public var output: Result<Data, NetworkService.Failure> {
+    public var output: Result<Data, NetworkServiceError> {
         .success(self)
     }
 }
 
-extension NetworkService.Failure: MockOutput {
+extension NetworkServiceError: MockOutput {
     public var output: Result<Data, Self> {
         .failure(self)
     }
@@ -30,7 +30,7 @@ extension NetworkService.Failure: MockOutput {
     import Combine
 
     extension MockOutput where Self: TopLevelEncodable {
-        public var output: Result<Data, NetworkService.Failure> {
+        public var output: Result<Data, NetworkServiceError> {
             Result {
                 try Self.encoder.encode(self)
             }

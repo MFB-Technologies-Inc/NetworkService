@@ -14,10 +14,12 @@ extension NetworkServiceClient {
     /// Start a `HTTPRequest`
     /// - Parameter request: The request as a `HTTPRequest`
     /// - Returns: `Result` with output as `Data` and `NetworkService`'s error domain for failure
-    public func start(_ request: HTTPRequest, body: Data?) async -> Result<Data, Failure> {
+    @Sendable
+    @inlinable
+    public static func defaultStart(_ request: HTTPRequest, body: Data?, session: URLSession) async -> Result<Data, Failure> {
         let result: Result<(Data, HTTPResponse), any Error>
         do {
-            let response: (Data, HTTPResponse) = try await response(request, body: body)
+            let response: (Data, HTTPResponse) = try await response(request, body: body, session: session)
 
             result = .success(response)
         } catch {
@@ -30,8 +32,8 @@ extension NetworkServiceClient {
 
     /// Starting the `HTTPRequest` directly via the `HTTPTypesFoundation` API is breaking tests in unexpected ways.
     /// Sticking with this implementation for now until it can be sorted out.
-    private func response(_ request: HTTPRequest, body: Data?) async throws -> (Data, HTTPResponse) {
-        let session = getSession()
+    @usableFromInline
+    static func response(_ request: HTTPRequest, body: Data?, session: URLSession) async throws -> (Data, HTTPResponse) {
         let dataTaskBox = DataTaskBox()
         return try await withTaskCancellationHandler(
             operation: {

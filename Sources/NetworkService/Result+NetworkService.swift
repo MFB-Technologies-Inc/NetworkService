@@ -12,11 +12,11 @@ import HTTPTypes
 extension Result where Success == (Data, HTTPResponse), Failure == any Error {
     /// Checks if the response status is successful and fails if not
     /// - Returns:
-    ///     - `Result<Data, NetworkService.Failure>`
-    public func httpMap() -> Result<Data, NetworkService.Failure> {
+    ///     - `Result<Data, NetworkServiceError>`
+    public func httpMap() -> Result<Data, NetworkServiceError> {
         flatMap { data, response in
             guard response.status.kind == .successful else {
-                return .failure(NetworkService.Failure.httpResponse(response))
+                return .failure(NetworkServiceError.httpResponse(response))
             }
             return .success(data)
         }
@@ -25,14 +25,14 @@ extension Result where Success == (Data, HTTPResponse), Failure == any Error {
 }
 
 extension Result {
-    /// Convenience method for mapping errors to `NetworkService.Failure`
+    /// Convenience method for mapping errors to `NetworkServiceError`
     /// - Returns:
-    ///     - `Result<Success, NetworkService.Failure>`
-    public func mapToNetworkError() -> Result<Success, NetworkService.Failure> {
+    ///     - `Result<Success, NetworkServiceError>`
+    public func mapToNetworkError() -> Result<Success, NetworkServiceError> {
         mapError { error in
             if let urlError = error as? URLError {
                 .urlError(urlError)
-            } else if let failure = error as? NetworkService.Failure {
+            } else if let failure = error as? NetworkServiceError {
                 failure
             } else {
                 .unknown(error as NSError)

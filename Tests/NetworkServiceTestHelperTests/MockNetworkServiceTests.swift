@@ -9,6 +9,7 @@
 #if canImport(Combine)
     import Combine
     import CombineSchedulers
+    import ConcurrencyExtras
     import CustomDump
     import Foundation
     import NetworkService
@@ -30,20 +31,21 @@
     }
 
     final class NetworkServiceTestHelper: XCTestCase {
-        typealias Failure = MockNetworkService<AnySchedulerOf<DispatchQueue>>.Failure
 
         var cancellables = [AnyCancellable]()
-        let scheduler: AnySchedulerOf<DispatchQueue> = DispatchQueue.global(qos: .userInteractive).eraseToAnyScheduler()
+        func scheduler() -> AnySchedulerOf<DispatchQueue> {
+            DispatchQueue.global(qos: .userInteractive).eraseToAnyScheduler()
+        }
 
         override func tearDown() {
             cancellables.forEach { $0.cancel() }
         }
 
         func testQueueInfiniteRepeat() async throws {
-            let mock = MockNetworkService(scheduler: scheduler)
+            let mock = MockNetworkService(scheduler: scheduler())
             mock.outputs = [RepeatResponse.repeatInfinite(MockingBird.chirp)]
             for _ in 0 ..< 5 {
-                let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
+                let result: Result<MockingBird, NetworkServiceError> = try await mock.get(url())
                 XCTAssertEqual(try result.get(), .chirp)
             }
             let queuedOutput = try XCTUnwrap(mock.outputs.first as? RepeatResponse)
@@ -56,21 +58,21 @@
         }
 
         func testQueueFiniteRepeat() async throws {
-            let mock = MockNetworkService(scheduler: scheduler)
+            let mock = MockNetworkService(scheduler: scheduler())
             mock.outputs = [RepeatResponse.repeat(MockingBird(chirp: true), count: 5)]
             for _ in 0 ..< 5 {
-                let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
+                let result: Result<MockingBird, NetworkServiceError> = try await mock.get(url())
                 XCTAssertEqual(try result.get(), .chirp)
             }
             XCTAssert(mock.outputs.isEmpty, "Output queue is empty after the specified number of repititions")
         }
 
         func testFiniteDelay() async throws {
-            let mock = MockNetworkService(scheduler: scheduler)
+            let mock = MockNetworkService(scheduler: scheduler())
             mock.delay = Delay.seconds(2)
             mock.outputs = [MockingBird.chirp]
             let startTime = Date()
-            let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
+            let result: Result<MockingBird, NetworkServiceError> = try await mock.get(url())
             let endTime = Date()
             let duration = startTime.distance(to: endTime)
             XCTAssertGreaterThan(duration, 2)
@@ -79,13 +81,16 @@
         }
 
         func testInfiniteDelay() async throws {
-            let mock = MockNetworkService(scheduler: scheduler)
-            mock.delay = Delay.infinite
-            mock.outputs = [MockingBird.chirp]
+            let scheduler = scheduler()
+            let mock = ActorIsolated(MockNetworkService(scheduler: scheduler))
+            await mock.withValue { mock in
+                mock.delay = Delay.infinite
+                mock.outputs = [MockingBird.chirp]
+            }
             let expectation = expectation(description: "Never receive a response")
             expectation.isInverted = true
             let task = Task {
-                let result: Result<MockingBird, NetworkService.Failure> = try await mock.get(url())
+                let result: Result<MockingBird, NetworkServiceError> = try await mock.value.get(url())
                 XCTAssertEqual(try result.get(), MockingBird.chirp)
                 expectation.fulfill()
             }

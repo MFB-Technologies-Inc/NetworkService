@@ -30,7 +30,7 @@
                 )
             }
 
-            let service = NetworkService()
+            let service = NetworkServiceClient()
             let result: Result<Lyric, Failure> = await service.get(url)
             XCTAssertNoDifference(try result.get(), Lyric.test)
         }
@@ -47,7 +47,7 @@
                 )
             }
 
-            let service = NetworkService()
+            let service = NetworkServiceClient()
             let url = try destinationURL()
             let result: Result<Lyric, Failure> = await service.get(url)
             guard case let .failure(.httpResponse(response)) = result else {

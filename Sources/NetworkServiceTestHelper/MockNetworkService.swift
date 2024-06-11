@@ -12,24 +12,43 @@
     import Foundation
     import HTTPTypes
     import NetworkService
+import ConcurrencyExtras
 
     /// Convenience implementation of `NetworkServiceClient` for testing. Supports defining set output values for all
     /// network functions,
     /// repeating values, and delaying values.
-    open class MockNetworkService<T: Scheduler>: NetworkServiceClient {
-        public var delay: Delay
-        public var outputs: [any MockOutput]
-        var nextOutput: (any MockOutput)?
+    final class MockNetworkService<T>: Sendable where T: Scheduler, T: Sendable {
+        private let state: LockIsolated<State>
+        public var delay: Delay {
+            get {
+                state.delay
+            }
+            set {
+                state.withValue({ $0.delay = newValue })
+            }
+        }
+        public var outputs: [any MockOutput] {
+            get {
+                state.outputs
+            }
+            set {
+                state.withValue({ $0.outputs = newValue })
+            }
+        }
         let scheduler: T
+            
+            private struct State {
+                var delay: Delay
+                var outputs: [any MockOutput]
+                var nextOutput: (any MockOutput)?
+            }
 
         public init(outputs: [any MockOutput] = [], delay: Delay = .none, scheduler: T) {
-            self.outputs = outputs
-            self.delay = delay
-            self.scheduler = scheduler
+            self.state = LockIsolated(State(delay: delay, outputs: outputs, nextOutput: nil))
         }
 
         /// Manages the output queue and returns the new value for reach iteration.
-        open func queue() throws -> any MockOutput {
+        public func queue() throws -> any MockOutput {
             guard outputs.count > 0 else {
                 throw Errors.noOutputQueued
             }
@@ -51,12 +70,12 @@
         /// this
         /// version of `start`.
         /// Delay and repeat are handled here.
-        open func start(_: HTTPRequest, body _: Data?) async -> Result<Data, Failure> {
+        public func start(_: HTTPRequest, body _: Data?) async -> Result<Data, NetworkServiceError> {
             let next: any MockOutput
             do {
                 next = try queue()
             } catch {
-                return .failure(Failure.unknown(error as NSError))
+                return .failure(.unknown(error as NSError))
             }
             let output = next.output
             switch delay {
