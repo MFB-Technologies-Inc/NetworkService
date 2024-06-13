@@ -49,7 +49,7 @@ extension Array where Element: HTTPHeader {
 }
 
 /// Model for HTTP headers
-public protocol HTTPHeader {
+public protocol HTTPHeader: Sendable {
     var key: String { get }
     var value: String { get }
 }

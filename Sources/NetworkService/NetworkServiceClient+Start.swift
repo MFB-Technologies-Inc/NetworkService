@@ -55,7 +55,7 @@ extension NetworkServiceClient {
     }
 }
 
-private final class TaskIdBox {
+private final class TaskIdBox: @unchecked Sendable {
     var value: Int?
 
     init(_ value: Int? = nil) {
