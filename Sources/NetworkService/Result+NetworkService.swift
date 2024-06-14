@@ -13,6 +13,7 @@ extension Result where Success == (Data, HTTPResponse), Failure == any Error {
     /// Checks if the response status is successful and fails if not
     /// - Returns:
     ///     - `Result<Data, NetworkServiceError>`
+    @inlinable
     public func httpMap() -> Result<Data, NetworkServiceError> {
         flatMap { data, response in
             guard response.status.kind == .successful else {
@@ -28,6 +29,7 @@ extension Result {
     /// Convenience method for mapping errors to `NetworkServiceError`
     /// - Returns:
     ///     - `Result<Success, NetworkServiceError>`
+    @inlinable
     public func mapToNetworkError() -> Result<Success, NetworkServiceError> {
         mapError { error in
             if let urlError = error as? URLError {
@@ -45,6 +47,7 @@ extension Result {
     import Combine
 
     extension Result {
+        @usableFromInline
         func decode<T: Decodable, Decoder: TopLevelDecoder>(with decoder: Decoder) -> Result<T, any Error>
             where Decoder.Input == Success
         {
@@ -56,6 +59,7 @@ extension Result {
                 }
         }
 
+        @usableFromInline
         func decode<T: TopLevelDecodable>() -> Result<T, any Error> where T.AdoptedDecoder.Input == Success {
             decode(with: T.decoder)
         }

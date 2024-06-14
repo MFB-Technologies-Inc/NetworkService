@@ -11,7 +11,7 @@ import NetworkService
 
 /// A type erasing protocol for `MockNetworkService`'s output queue. Allows a heterogenous array.
 public protocol MockOutput: Sendable {
-    var output: Result<Data, NetworkService.Failure> { get }
+    var output: Result<Data, NetworkServiceError> { get }
 }
 
 extension Data: MockOutput {

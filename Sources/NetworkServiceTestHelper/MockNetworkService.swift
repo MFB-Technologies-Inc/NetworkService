@@ -12,39 +12,33 @@
     import Foundation
     import HTTPTypes
     import NetworkService
-import ConcurrencyExtras
 
     /// Convenience implementation of `NetworkServiceClient` for testing. Supports defining set output values for all
     /// network functions,
     /// repeating values, and delaying values.
-    final class MockNetworkService<T>: Sendable where T: Scheduler, T: Sendable {
-        private let state: LockIsolated<State>
-        public var delay: Delay {
-            get {
-                state.delay
-            }
-            set {
-                state.withValue({ $0.delay = newValue })
-            }
-        }
-        public var outputs: [any MockOutput] {
-            get {
-                state.outputs
-            }
-            set {
-                state.withValue({ $0.outputs = newValue })
-            }
-        }
-        let scheduler: T
-            
-            private struct State {
-                var delay: Delay
-                var outputs: [any MockOutput]
-                var nextOutput: (any MockOutput)?
-            }
+    public actor MockNetworkService<T>: Sendable where T: Scheduler, T: Sendable {
+        public var delay: Delay
+        public var outputs: [any MockOutput]
+        public var nextOutput: (any MockOutput)?
+        public let scheduler: T
 
-        public init(outputs: [any MockOutput] = [], delay: Delay = .none, scheduler: T) {
-            self.state = LockIsolated(State(delay: delay, outputs: outputs, nextOutput: nil))
+        public func set(delay: Delay) {
+            self.delay = delay
+        }
+
+        public func set(outputs: [any MockOutput]) {
+            self.outputs = outputs
+        }
+
+        public func set(nextOutput: (any MockOutput)?) {
+            self.nextOutput = nextOutput
+        }
+
+        public init(delay: Delay = .none, outputs: [any MockOutput] = [], scheduler: T) {
+            self.delay = delay
+            nextOutput = nil
+            self.outputs = outputs
+            self.scheduler = scheduler
         }
 
         /// Manages the output queue and returns the new value for reach iteration.

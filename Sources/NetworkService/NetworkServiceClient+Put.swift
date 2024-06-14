@@ -8,6 +8,7 @@
 
 import Foundation
 import HTTPTypes
+import HTTPTypesFoundation
 
 extension NetworkServiceClient {
     // MARK: PUT
@@ -17,6 +18,8 @@ extension NetworkServiceClient {
     ///   - url: The destination for the request
     ///   - headers: HTTP headers for the request
     /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
+    @Sendable
+    @inlinable
     public func put(
         _ body: Data,
         to url: URL,
@@ -37,6 +40,8 @@ extension NetworkServiceClient {
         ///   - headers: HTTP headers for the request
         ///   - encoder: `TopLevelEncoder` for encoding the request body
         /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
+        @Sendable
+        @inlinable
         public func put<Encoder>(
             _ body: some Encodable,
             to url: URL,
@@ -61,6 +66,8 @@ extension NetworkServiceClient {
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
+        @Sendable
+        @inlinable
         public func put<RequestBody>(
             _ body: RequestBody,
             to url: URL,
@@ -85,6 +92,8 @@ extension NetworkServiceClient {
         ///   - headers: HTTP headers for the request
         ///   - decoder:`TopLevelDecoder` for decoding the response body
         /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
+        @Sendable
+        @inlinable
         public func put<ResponseBody, Decoder>(
             _ body: Data,
             to url: URL,
@@ -104,6 +113,8 @@ extension NetworkServiceClient {
         ///   - headers: HTTP headers for the request
         /// - Returns: `Result` with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
+        @Sendable
+        @inlinable
         public func put<ResponseBody>(
             _ body: Data,
             to url: URL,
@@ -122,6 +133,8 @@ extension NetworkServiceClient {
         ///   - encoder:`TopLevelEncoder` for encoding the request body
         ///   - decoder:`TopLevelDecoder` for decoding the response body
         /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
+        @Sendable
+        @inlinable
         public func put<ResponseBody, Encoder, Decoder>(
             _ body: some Encodable,
             to url: URL,
@@ -151,6 +164,8 @@ extension NetworkServiceClient {
         ///   - url: The destination for the request
         ///   - headers: HTTP headers for the request
         /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
+        @Sendable
+        @inlinable
         public func put<RequestBody, ResponseBody>(
             _ body: RequestBody,
             to url: URL,

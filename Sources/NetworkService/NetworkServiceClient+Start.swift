@@ -16,7 +16,9 @@ extension NetworkServiceClient {
     /// - Returns: `Result` with output as `Data` and `NetworkService`'s error domain for failure
     @Sendable
     @inlinable
-    public static func defaultStart(_ request: HTTPRequest, body: Data?, session: URLSession) async -> Result<Data, Failure> {
+    public static func defaultStart(_ request: HTTPRequest, body: Data?,
+                                    session: URLSession) async -> Result<Data, Failure>
+    {
         let result: Result<(Data, HTTPResponse), any Error>
         do {
             let response: (Data, HTTPResponse) = try await response(request, body: body, session: session)
@@ -32,8 +34,11 @@ extension NetworkServiceClient {
 
     /// Starting the `HTTPRequest` directly via the `HTTPTypesFoundation` API is breaking tests in unexpected ways.
     /// Sticking with this implementation for now until it can be sorted out.
+    @Sendable
     @usableFromInline
-    static func response(_ request: HTTPRequest, body: Data?, session: URLSession) async throws -> (Data, HTTPResponse) {
+    static func response(_ request: HTTPRequest, body: Data?,
+                         session: URLSession) async throws -> (Data, HTTPResponse)
+    {
         let dataTaskBox = DataTaskBox()
         return try await withTaskCancellationHandler(
             operation: {
@@ -105,6 +110,8 @@ private final class DataTaskBox: @unchecked Sendable {
         /// Start a `HTTPRequest`
         /// - Parameter request: The request as a `HTTPRequest`
         /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
+        @Sendable
+        @inlinable
         public func start<ResponseBody, Decoder>(
             _ request: HTTPRequest,
             body: Data?,
@@ -120,6 +127,8 @@ private final class DataTaskBox: @unchecked Sendable {
         /// Start a `HTTPRequest`
         /// - Parameter request: The request as a `HTTPRequest`
         /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
+        @Sendable
+        @inlinable
         public func start<ResponseBody>(_ request: HTTPRequest, body: Data?) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable
         {
@@ -129,6 +138,8 @@ private final class DataTaskBox: @unchecked Sendable {
         /// Start a `HTTPRequest`
         /// - Parameter request: The request as a `HTTPRequest`
         /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        @Sendable
+        @inlinable
         public func start<Encoder, ResponseBody, Decoder>(
             _ request: HTTPRequest,
             body: (some Encodable)?,
@@ -152,6 +163,8 @@ private final class DataTaskBox: @unchecked Sendable {
         /// Start a `HTTPRequest`
         /// - Parameter request: The request as a `HTTPRequest`
         /// - Returns: Type erased publisher with decoded output and `NetworkService`'s error domain for failure
+        @Sendable
+        @inlinable
         public func start<RequestBody, ResponseBody>(_ request: HTTPRequest,
                                                      body: RequestBody?) async -> Result<ResponseBody, Failure>
             where RequestBody: TopLevelEncodable, ResponseBody: TopLevelDecodable

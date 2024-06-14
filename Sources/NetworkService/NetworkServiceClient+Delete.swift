@@ -8,6 +8,7 @@
 
 import Foundation
 import HTTPTypes
+import HTTPTypesFoundation
 
 extension NetworkServiceClient {
     // MARK: DELETE
@@ -16,6 +17,7 @@ extension NetworkServiceClient {
     ///   - url: The destination for the request
     ///   - headers: HTTP headers for the request
     /// - Returns: `Result` with `Data` output and `NetworkService`'s error domain for failure
+    @inlinable
     public func delete(
         _ url: URL,
         headers: HTTPFields = HTTPFields()
@@ -35,6 +37,8 @@ extension NetworkServiceClient {
         ///   - headers: HTTP headers for the request
         ///   - decoder: `TopLevelDecoder` for decoding the response body
         /// - Returns: `Result` with decoded output and `NetworkService`'s error domain for failure
+        @Sendable
+        @inlinable
         public func delete<ResponseBody, Decoder>(
             _ url: URL,
             headers: HTTPFields = HTTPFields(),
@@ -53,6 +57,8 @@ extension NetworkServiceClient {
         ///     - headers: HTTP headers for the request
         /// - Returns: `Result` with `TopLevelDecodable` output and `NetworkService`'s error domain for
         /// failure
+        @Sendable
+        @inlinable
         public func delete<ResponseBody>(_ url: URL,
                                          headers: HTTPFields = HTTPFields()) async -> Result<ResponseBody, Failure>
             where ResponseBody: TopLevelDecodable

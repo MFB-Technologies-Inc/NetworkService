@@ -30,8 +30,7 @@
         try XCTUnwrap(URL(string: "https://example.com"))
     }
 
-    final class NetworkServiceTestHelper: XCTestCase {
-
+    final class NetworkServiceTestHelperTests: XCTestCase {
         var cancellables = [AnyCancellable]()
         func scheduler() -> AnySchedulerOf<DispatchQueue> {
             DispatchQueue.global(qos: .userInteractive).eraseToAnyScheduler()
@@ -43,12 +42,14 @@
 
         func testQueueInfiniteRepeat() async throws {
             let mock = MockNetworkService(scheduler: scheduler())
-            mock.outputs = [RepeatResponse.repeatInfinite(MockingBird.chirp)]
+            let client = NetworkServiceClient.mock(mock)
+            await mock.set(outputs: [RepeatResponse.repeatInfinite(MockingBird.chirp)])
             for _ in 0 ..< 5 {
-                let result: Result<MockingBird, NetworkServiceError> = try await mock.get(url())
+                let result: Result<MockingBird, NetworkServiceError> = try await client.get(url())
                 XCTAssertEqual(try result.get(), .chirp)
             }
-            let queuedOutput = try XCTUnwrap(mock.outputs.first as? RepeatResponse)
+            let firstOutput = await mock.outputs.first
+            let queuedOutput = try XCTUnwrap(firstOutput as? RepeatResponse)
             switch queuedOutput {
             case .repeat:
                 XCTFail("Queued output is wrong value")
@@ -59,20 +60,23 @@
 
         func testQueueFiniteRepeat() async throws {
             let mock = MockNetworkService(scheduler: scheduler())
-            mock.outputs = [RepeatResponse.repeat(MockingBird(chirp: true), count: 5)]
+            let client = NetworkServiceClient.mock(mock)
+            await mock.set(outputs: [RepeatResponse.repeat(MockingBird(chirp: true), count: 5)])
             for _ in 0 ..< 5 {
-                let result: Result<MockingBird, NetworkServiceError> = try await mock.get(url())
+                let result: Result<MockingBird, NetworkServiceError> = try await client.get(url())
                 XCTAssertEqual(try result.get(), .chirp)
             }
-            XCTAssert(mock.outputs.isEmpty, "Output queue is empty after the specified number of repititions")
+            let isOutputsEmpty = await mock.outputs.isEmpty
+            XCTAssert(isOutputsEmpty, "Output queue is empty after the specified number of repititions")
         }
 
         func testFiniteDelay() async throws {
             let mock = MockNetworkService(scheduler: scheduler())
-            mock.delay = Delay.seconds(2)
-            mock.outputs = [MockingBird.chirp]
+            let client = NetworkServiceClient.mock(mock)
+            await mock.set(delay: .seconds(2))
+            await mock.set(outputs: [MockingBird.chirp])
             let startTime = Date()
-            let result: Result<MockingBird, NetworkServiceError> = try await mock.get(url())
+            let result: Result<MockingBird, NetworkServiceError> = try await client.get(url())
             let endTime = Date()
             let duration = startTime.distance(to: endTime)
             XCTAssertGreaterThan(duration, 2)
@@ -82,15 +86,14 @@
 
         func testInfiniteDelay() async throws {
             let scheduler = scheduler()
-            let mock = ActorIsolated(MockNetworkService(scheduler: scheduler))
-            await mock.withValue { mock in
-                mock.delay = Delay.infinite
-                mock.outputs = [MockingBird.chirp]
-            }
+            let mock = MockNetworkService(scheduler: scheduler)
+            let client = NetworkServiceClient.mock(mock)
+            await mock.set(delay: .infinite)
+            await mock.set(outputs: [MockingBird.chirp])
             let expectation = expectation(description: "Never receive a response")
             expectation.isInverted = true
             let task = Task {
-                let result: Result<MockingBird, NetworkServiceError> = try await mock.value.get(url())
+                let result: Result<MockingBird, NetworkServiceError> = try await client.get(url())
                 XCTAssertEqual(try result.get(), MockingBird.chirp)
                 expectation.fulfill()
             }

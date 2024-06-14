@@ -17,6 +17,7 @@ public enum NetworkServiceError: Error, Hashable, Sendable {
     case unknown(NSError)
     case invalidRequest(HTTPRequest)
 
+    @inlinable
     public var localizedDescription: String {
         switch self {
         case let .urlResponse(urlResponse):

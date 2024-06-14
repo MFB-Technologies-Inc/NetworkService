@@ -1,4 +1,4 @@
-// NetworkService.swift
+// NetworkServiceClient.swift
 // NetworkService
 //
 // Copyright © 2024 MFB Technologies, Inc. All rights reserved.
@@ -13,20 +13,20 @@ import HTTPTypes
 /// Dependency injection point for `NetworkService`
 public struct NetworkServiceClient: Sendable {
     public typealias Failure = NetworkServiceError
-    
+
     @usableFromInline
     let _getSession: @Sendable () -> URLSession
-    
+
     @usableFromInline
     let _start: @Sendable (_ request: HTTPRequest, _ body: Data?, _ session: URLSession) async -> Result<Data, Failure>
-    
+
     /// - Returns: Configured URLSession
     @Sendable
     @inlinable
     public func getSession() -> URLSession {
         _getSession()
     }
-    
+
     /// Start a `HTTPRequest` as a `HTTPRequest`
     /// - Parameters:
     ///     - request: The request as a `HTTPRequest`
@@ -37,7 +37,7 @@ public struct NetworkServiceClient: Sendable {
     public func start(_ request: HTTPRequest, body: Data?) async -> Result<Data, Failure> {
         await _start(request, body, getSession())
     }
-    
+
     /// Default implementation of `getSession` that returns the `shared` instance
     @Sendable
     @inlinable
@@ -45,9 +45,14 @@ public struct NetworkServiceClient: Sendable {
         URLSession.shared
     }
 
+    @Sendable
+    @inlinable
     public init(
         getSession: @escaping @Sendable () -> URLSession = Self.defaultGetSession,
-        start: @escaping @Sendable (_ request: HTTPRequest, _ body: Data?, _ session: URLSession) async -> Result<Data, Failure> = Self.defaultStart(_:body:session:)
+        start: @escaping @Sendable (_ request: HTTPRequest, _ body: Data?, _ session: URLSession) async -> Result<
+            Data,
+            Failure
+        > = Self.defaultStart(_:body:session:)
     ) {
         _getSession = getSession
         _start = start
