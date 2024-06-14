@@ -11,12 +11,14 @@ on:
 
 jobs:
   lint:
-    runs-on: macos-latest
+    runs-on: macos-14
     environment: default
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Format lint
         run: swiftformat --lint .
+      - name: Install swiftlint
+        run: brew update && brew install swiftlint
       - name: Lint
         run: swiftlint .
   macos-test:
@@ -28,13 +30,14 @@ jobs:
             xcode: '15.3' # Swift 5.10
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Select Xcode ${{ matrix.xcode }}
         run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
       - name: Run Tests
         run: swift test --enable-code-coverage --parallel
       - name: Swift Coverage Report
         run: xcrun llvm-cov export -format="lcov" .build/debug/NetworkServicePackageTests.xctest/Contents/MacOS//NetworkServicePackageTests -instr-profile .build/debug/codecov/default.profdata > coverage_report.lcov
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true # optional (default = false)
