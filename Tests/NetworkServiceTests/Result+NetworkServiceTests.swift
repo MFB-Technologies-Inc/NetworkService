@@ -42,7 +42,7 @@
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
             }
-            XCTAssertNoDifference(error, try NetworkService.Failure.httpResponse(XCTUnwrap(response.httpResponse)))
+            try expectNoDifference(error, NetworkService.Failure.httpResponse(XCTUnwrap(response.httpResponse)))
         }
 
         func testSuccessfulInput() async throws {
@@ -56,7 +56,7 @@
             let input = try (Data(), XCTUnwrap(response.httpResponse))
             let result = Result<(Data, HTTPResponse), any Error>.success(input)
                 .httpMap()
-            XCTAssertNoDifference(try result.get(), input.0)
+            try expectNoDifference(result.get(), input.0)
         }
 
         // MARK: Publisher where Failure: Error, Failure == NetworkService.Failure
@@ -68,7 +68,7 @@
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
             }
-            XCTAssertNoDifference(error, NetworkService.Failure.urlError(URLError(.badServerResponse)))
+            expectNoDifference(error, NetworkService.Failure.urlError(URLError(.badServerResponse)))
         }
 
         func testNetworkServiceFailure() async throws {
@@ -84,7 +84,7 @@
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
             }
-            XCTAssertNoDifference(error, NetworkService.Failure.urlResponse(response))
+            expectNoDifference(error, NetworkService.Failure.urlResponse(response))
         }
     }
 #endif
