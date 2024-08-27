@@ -42,6 +42,7 @@
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
             }
+            try expectNoDifference(error, NetworkService.Failure.httpResponse(XCTUnwrap(response.httpResponse)))
             XCTAssertNoDifference(error, try NetworkServiceError.httpResponse(XCTUnwrap(response.httpResponse)))
         }
 
@@ -56,7 +57,7 @@
             let input = try (Data(), XCTUnwrap(response.httpResponse))
             let result = Result<(Data, HTTPResponse), any Error>.success(input)
                 .httpMap()
-            XCTAssertNoDifference(try result.get(), input.0)
+            try expectNoDifference(result.get(), input.0)
         }
 
         // MARK: Publisher where Failure: Error, Failure == NetworkServiceError
@@ -68,6 +69,7 @@
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
             }
+            expectNoDifference(error, NetworkService.Failure.urlError(URLError(.badServerResponse)))
             XCTAssertNoDifference(error, NetworkServiceError.urlError(URLError(.badServerResponse)))
         }
 
@@ -84,6 +86,7 @@
             guard case let .failure(error) = result else {
                 return XCTFail("Expecting failure but received success.")
             }
+            expectNoDifference(error, NetworkService.Failure.urlResponse(response))
             XCTAssertNoDifference(error, NetworkServiceError.urlResponse(response))
         }
     }
