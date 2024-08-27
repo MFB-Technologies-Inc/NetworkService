@@ -32,7 +32,7 @@
 
             let service = NetworkService()
             let result: Result<Lyric, Failure> = await service.get(url)
-            XCTAssertNoDifference(try result.get(), Lyric.test)
+            try expectNoDifference(result.get(), Lyric.test)
         }
 
         // MARK: Failure
